@@ -2,20 +2,142 @@
 @tailwind components;
 @tailwind utilities;
 
-.workspace-grid-background {
-  background-color: #1e1f22;
-  background-image:
-    linear-gradient(#2a2c30 1px, transparent 1px),
-    linear-gradient(to right, #2a2c30 1px, transparent 1px),
+@property --stop1 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 30%;
+}
+@property --stop2 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 60%;
+}
+@property --stop3 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 70%;
+}
+@property --angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 150deg;
+}
+@property --alpha1 {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0.005;
+}
+@property --alpha2 {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0.05;
+}
 
-    linear-gradient(#3a3d42 1px, transparent 1px),
-    linear-gradient(to right, #3a3d42 1px, transparent 1px);
+:root {
+  --stop1: 10%;
+  --stop2: 20%;
+  --stop3: 100%;
 
-  background-size:
-    20px 20px,
-    20px 20px,
-    100px 100px,
-    100px 100px;
+  --alpha1: 0.005;
+  --alpha2: 0.05;
+}
+
+.desktop-background {
+  position: relative;
+  background: #0b1111;
+  overflow: hidden;
+}
+
+.desktop-background::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      100deg,
+      rgba(0, 255, 255, var(--alpha1)) var(--stop1),
+      rgba(0, 255, 255, var(--alpha2)) var(--stop2),
+      transparent var(--stop3)
+    ),
+    linear-gradient(
+      120deg,
+      rgba(255, 255, 255, var(--alpha1)) var(--stop1),
+      rgba(255, 255, 255, var(--alpha2)) var(--stop2),
+      transparent var(--stop3)
+    ),
+    linear-gradient(
+      130deg,
+      rgba(255, 255, 0, var(--alpha1)) var(--stop1),
+      rgba(255, 255, 0, var(--alpha2)) var(--stop2),
+      transparent var(--stop3)
+    ),
+    linear-gradient(
+      140deg,
+      rgba(255, 255, 0, var(--alpha1)) var(--stop1),
+      rgba(255, 255, 0, var(--alpha2)) var(--stop2),
+      transparent var(--stop3)
+    ),
+    linear-gradient(
+      150deg,
+      rgba(255, 255, 255, var(--alpha1)) var(--stop1),
+      rgba(255, 255, 255, var(--alpha2)) var(--stop2),
+      transparent var(--stop3)
+    ),
+    linear-gradient(
+      160deg,
+      rgba(255, 255, 255, var(--alpha1)) var(--stop1),
+      rgba(255, 255, 255, var(--alpha2)) var(--stop2),
+      transparent var(--stop3)
+    ),
+    linear-gradient(
+      170deg,
+      rgba(255, 0, 0, var(--alpha1)) var(--stop1),
+      rgba(255, 0, 0, var(--alpha2)) var(--stop2),
+      transparent var(--stop3)
+    ),
+    #0d1113;
+
+  animation: refract 240s linear infinite;
+}
+
+@keyframes refract {
+  0% {
+    --stop1: 10%;
+    --stop2: 20%;
+    --stop3: 100%;
+  }
+  30% {
+    --stop1: 55%;
+    --stop2: 60%;
+    --stop3: 65%;
+  }
+  40% {
+    --stop1: 40%;
+    --stop2: 90%;
+    --stop3: 100%;
+  }
+  50% {
+    --stop1: 20%;
+    --stop2: 100%;
+    --stop3: 120%;
+  }
+  60% {
+    --stop1: 40%;
+    --stop2: 90%;
+    --stop3: 100%;
+  }
+  70% {
+    --stop1: 55%;
+    --stop2: 60%;
+    --stop3: 65%;
+  }
+  100% {
+    --stop1: 10%;
+    --stop2: 20%;
+    --stop3: 100%;
+  }
 }
 
 body {

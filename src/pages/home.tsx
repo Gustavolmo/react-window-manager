@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <>
       <WorkspaceLayout>
-        <div className="p-8 w-full h-full flex flex-col items-center mb-32 workspace-grid-background">
+        <div className="p-8 w-full h-full flex flex-col items-center mb-32 desktop-background">
           <p className="font-mono w-full text-white text-2xl uppercase tracking-[0.4em] mb-0 block opacity-20 max-w-xl ">
             Full Stack Engineer
           </p>
@@ -194,7 +194,7 @@ export default function Home() {
                   <div className="flex flex-col gap-2">
                     <h3 className="font-semibold text-zinc-800">2. Wrap with WorkspaceLayout</h3>
                     <pre className="bg-zinc-100 p-3 rounded-md overflow-x-auto text-xs">
-{`<WorkspaceLayout>
+                      {`<WorkspaceLayout>
   {/* WindowLayout components */}
 </WorkspaceLayout>`}
                     </pre>
@@ -208,7 +208,7 @@ export default function Home() {
                   <div className="flex flex-col gap-2">
                     <h3 className="font-semibold text-zinc-800">3. Render a Window</h3>
                     <pre className="bg-zinc-100 p-3 rounded-md overflow-x-auto text-xs">
-{`<WindowLayout
+                      {`<WindowLayout
   useWindowStore={myWindow}
   windowName="My Window"
   defaultDock="right"
@@ -228,7 +228,7 @@ export default function Home() {
                   <div className="flex flex-col gap-2">
                     <h3 className="font-semibold text-zinc-800">4. Control with WindowButton</h3>
                     <pre className="bg-zinc-100 p-3 rounded-md overflow-x-auto text-xs">
-{`<WindowButton useWindowStore={myWindow}>
+                      {`<WindowButton useWindowStore={myWindow}>
   <p>Open Window</p>
 </WindowButton>`}
                     </pre>
