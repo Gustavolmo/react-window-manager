@@ -17,43 +17,15 @@ export default function Home() {
     <>
       <WorkspaceLayout>
         <div className="p-8 w-full h-full flex flex-col items-center mb-32 desktop-background">
-          <p className="font-mono w-full text-white text-2xl uppercase tracking-[0.4em] mb-0 block opacity-20 max-w-xl ">
-            Full Stack Engineer
+          <p className="font-mono w-full text-white text-2xl uppercase tracking-[0.4em] mb-0 block opacity-50 max-w-xl ">
+            Reactive Window Manager
           </p>
-          <p className="font-sans text-white opacity-80 font-thin mt-4 max-w-xl text-sm sm:text-base">
+          <p className="font-sans text-white opacity-50 font-thin mt-4 max-w-xl text-sm sm:text-base">
             Hi, my name is Gustavo. Most of my work contains organization sensitive data, which
             makes it hard to showcase my experience. Therefore, I wanted to create something simple
             and dynamic, this portfolio is an example of custom and simple tech that can make a
             browser experience more dynamic.
           </p>
-
-          <div className="flex flex-col gap-4 items-center justify-center mt-8 sm:mt-16 max-w-xl w-full">
-            <p className="font-mono w-full text-white text-2xl uppercase tracking-[0.4em] mb-0 block opacity-20">
-              Case Studies
-            </p>
-            <div className="font-sans w-full text-white opacity-80 font-thin max-w-xl flex flex-col gap-2 mb-4">
-              <WindowButton
-                useWindowStore={allverkStore}
-                styles="border border-neutral-600 bg-neutral-600 bg-opacity-50 hover:bg-opacity-80 px-4 py-1 w-fit"
-              >
-                allverk.se
-              </WindowButton>{' '}
-              <p className="text-sm opacity-80">
-                Embeddings and AI powered vector search engine (React, Go and PgSQL)
-              </p>
-            </div>
-            <div className="font-sans w-full text-white opacity-80 font-thin max-w-xl flex flex-col gap-2">
-              <WindowButton
-                useWindowStore={offertAllverkStore}
-                styles="border border-neutral-600 bg-neutral-600 bg-opacity-50 hover:bg-opacity-80 px-4 py-1 w-fit"
-              >
-                offert.allverk.se
-              </WindowButton>{' '}
-              <p className="text-sm opacity-80">
-                Multi-tenant application + google ads integration (RR7 and Go)
-              </p>
-            </div>
-          </div>
         </div>
 
         <WindowLayout

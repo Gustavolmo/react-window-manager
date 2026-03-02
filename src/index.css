@@ -33,17 +33,53 @@
   initial-value: 0.05;
 }
 
+@property --a1 {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 110deg;
+}
+@property --a2 {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 120deg;
+}
+@property --a3 {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 130deg;
+}
+@property --a4 {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 140deg;
+}
+@property --a5 {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 150deg;
+}
+@property --a6 {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 160deg;
+}
+@property --a7 {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 170deg;
+}
+
 :root {
-  --stop1: 10%;
-  --stop2: 20%;
-  --stop3: 100%;
+  --stop1: -20%;
+  --stop2: -10%;
+  --stop3: 70%;
 
   --alpha1: 0.005;
   --alpha2: 0.05;
 }
 
 .desktop-background {
-  position: relative;
+  position: absolute;
   background: #0b1111;
   overflow: hidden;
 }
@@ -56,61 +92,63 @@
 
   background:
     linear-gradient(
-      100deg,
+      var(--a1),
       rgba(0, 255, 255, var(--alpha1)) var(--stop1),
       rgba(0, 255, 255, var(--alpha2)) var(--stop2),
       transparent var(--stop3)
     ),
     linear-gradient(
-      120deg,
+      var(--a2),
       rgba(255, 255, 255, var(--alpha1)) var(--stop1),
       rgba(255, 255, 255, var(--alpha2)) var(--stop2),
       transparent var(--stop3)
     ),
     linear-gradient(
-      130deg,
+      var(--a3),
       rgba(255, 255, 0, var(--alpha1)) var(--stop1),
       rgba(255, 255, 0, var(--alpha2)) var(--stop2),
       transparent var(--stop3)
     ),
     linear-gradient(
-      140deg,
+      var(--a4),
       rgba(255, 255, 0, var(--alpha1)) var(--stop1),
       rgba(255, 255, 0, var(--alpha2)) var(--stop2),
       transparent var(--stop3)
     ),
     linear-gradient(
-      150deg,
+      var(--a5),
       rgba(255, 255, 255, var(--alpha1)) var(--stop1),
       rgba(255, 255, 255, var(--alpha2)) var(--stop2),
       transparent var(--stop3)
     ),
     linear-gradient(
-      160deg,
+      var(--a6),
       rgba(255, 255, 255, var(--alpha1)) var(--stop1),
       rgba(255, 255, 255, var(--alpha2)) var(--stop2),
       transparent var(--stop3)
     ),
     linear-gradient(
-      170deg,
+      var(--a7),
       rgba(255, 0, 0, var(--alpha1)) var(--stop1),
       rgba(255, 0, 0, var(--alpha2)) var(--stop2),
       transparent var(--stop3)
     ),
     #0d1113;
 
-  animation: refract 240s linear infinite;
+  animation:
+    pan 240s linear infinite,
+    refract 180s linear infinite;
 }
 
-@keyframes refract {
+@keyframes pan {
   0% {
-    --stop1: 10%;
-    --stop2: 20%;
-    --stop3: 100%;
+    --stop1: -20%;
+    --stop2: -10%;
+    --stop3: 70%;
   }
   30% {
-    --stop1: 55%;
-    --stop2: 60%;
+    --stop1: 0%;
+    --stop2: 30%;
     --stop3: 65%;
   }
   40% {
@@ -119,7 +157,7 @@
     --stop3: 100%;
   }
   50% {
-    --stop1: 20%;
+    --stop1: 10%;
     --stop2: 100%;
     --stop3: 120%;
   }
@@ -129,14 +167,71 @@
     --stop3: 100%;
   }
   70% {
-    --stop1: 55%;
-    --stop2: 60%;
+    --stop1: 0%;
+    --stop2: 30%;
     --stop3: 65%;
   }
   100% {
-    --stop1: 10%;
-    --stop2: 20%;
-    --stop3: 100%;
+    --stop1: -20%;
+    --stop2: -10%;
+    --stop3: 70%;
+  }
+}
+
+@keyframes refract {
+  0% {
+    --a1: 110deg;
+    --a2: 120deg;
+    --a3: 130deg;
+    --a4: 140deg;
+    --a5: 150deg;
+    --a6: 160deg;
+    --a7: 170deg;
+  }
+  30% {
+    --a1: 280deg;
+    --a2: 300deg;
+    --a3: 310deg;
+    --a4: 320deg;
+    --a5: 330deg;
+    --a6: 340deg;
+    --a7: 360deg;
+  }
+  48% {
+    --a1: 465deg;
+    --a2: 475deg;
+    --a3: 485deg;
+    --a4: 495deg;
+    --a5: 505deg;
+    --a6: 515deg;
+    --a7: 525deg;
+  }
+  52% {
+    --a1: 470deg;
+    --a2: 480deg;
+    --a3: 490deg;
+    --a4: 500deg;
+    --a5: 510deg;
+    --a6: 520deg;
+    --a7: 550deg;
+  }
+  70% {
+    --a1: 280deg;
+    --a2: 300deg;
+    --a3: 310deg;
+    --a4: 320deg;
+    --a5: 330deg;
+    --a6: 340deg;
+    --a7: 360deg;
+  }
+  100% {
+    --a1: 110deg;
+    --a2: 120deg;
+    --a3: 130deg;
+    --a4: 140deg;
+    --a5: 150deg;
+    --a6: 160deg;
+    --a7: 170deg;
   }
 }
 
