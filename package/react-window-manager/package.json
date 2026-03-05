@@ -1,0 +1,42 @@
+{
+  "name": "@gustavolmo/react-window-manager",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./*": "./dist/*.js",
+    "./index.css": "./dist/index.css"
+  },
+  "files": ["dist"],
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "tsup": "^6.6.0",
+    "typescript": "~5.7.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "tailwindcss": "^3.4.17",
+    "eslint": "^9.19.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "build:css": "tailwindcss -c tailwind.config.js -i ./src/index.css -o ./dist/index.css --minify",
+    "clean": "rimraf dist",
+    "dev": "tsup --watch",
+    "lint": "eslint src --ext .ts,.tsx"
+  }
+}

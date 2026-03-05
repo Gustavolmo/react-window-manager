@@ -1,9 +1,6 @@
 import { CodeXml, Github, Linkedin } from 'lucide-react'
-import WindowButton from '../window-lib/window-manager/window-button'
-import WindowLayout from '../window-lib/window-manager/window-layout'
-import { createWindowStore } from '../window-lib/window-manager/window-store-factory'
-import WorkspaceLayout from '../window-lib/window-manager/workspace-layout'
 import ReadMe from '../components/read-me'
+import { createWindowStore, WindowButton, WindowLayout, WorkspaceLayout } from '@gustavolmo/react-window-manager'
 
 const bottomOffsetPx = 48
 const readMe = createWindowStore('read-me', bottomOffsetPx)
