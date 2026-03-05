@@ -18,10 +18,7 @@ export default function Home() {
           </h1>
         </div>
 
-        <WindowLayout
-          useWindowStore={readMe}
-          windowName={"README"}
-        >
+        <WindowLayout useWindowStore={readMe} windowName={'README'}>
           <ReadMe />
         </WindowLayout>
       </WorkspaceLayout>

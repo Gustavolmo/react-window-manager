@@ -6,7 +6,7 @@ import { iconWinMinimize, iconWinDemaximize, iconWinMaximize } from '../window-a
 import { bringTargetWindowToFront } from './window-global-actions'
 
 type StoreProp = {
-  responsiveBreak?: 'sm' | 'md' | 'lg' | 'xl'
+  responsiveBreak?: 'sm' | 'md' | 'lg' | 'xl' | 'never'
   children: React.ReactNode
   windowName: string | React.ReactNode
   navbarChildren?: React.ReactNode
@@ -19,6 +19,7 @@ const responsiveBreakInPx = {
   md: 768,
   lg: 1024,
   xl: 1280,
+  never: 0,
 }
 
 export default function WindowLayout({
