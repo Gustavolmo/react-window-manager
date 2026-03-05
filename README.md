@@ -1,4 +1,46 @@
-# React Window Library – Read Me
+# React Window Library
+
+---
+
+## Installation
+
+### Install the package
+
+```bash
+pnpm add @gustavolmo/react-window-manager
+# or
+npm install @gustavolmo/react-window-manager
+# or
+yarn add @gustavolmo/react-window-manager
+```
+
+## Requirements
+
+### You must have:
+
+- **React 18+ (or 19)**
+- **React DOM**
+- **Zustand**
+
+Install it with
+
+```bash
+pnpm add react react-dom zustand
+```
+
+### Styling
+
+This library ships with its own compiled CSS.
+
+Import the stylesheet once at your application root:
+
+```bash
+import "@gustavolmo/react-window-manager/styles.css";
+```
+
+The styling properties of compoents accept tailwind or regular css classes
+
+---
 
 ## Overview
 

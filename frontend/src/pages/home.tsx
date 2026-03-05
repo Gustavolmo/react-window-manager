@@ -1,9 +1,6 @@
 import { CodeXml, Github, Linkedin } from 'lucide-react'
-import WindowButton from '../window-lib/window-manager/window-button'
-import WindowLayout from '../window-lib/window-manager/window-layout'
-import { createWindowStore } from '../window-lib/window-manager/window-store-factory'
-import WorkspaceLayout from '../window-lib/window-manager/workspace-layout'
 import ReadMe from '../components/read-me'
+import { createWindowStore, WindowButton, WindowLayout, WorkspaceLayout } from '@gustavolmo/react-window-manager'
 
 const bottomOffsetPx = 48
 const readMe = createWindowStore('read-me', bottomOffsetPx)
@@ -30,7 +27,7 @@ export default function Home() {
 
       <nav className="fixed bottom-0 left-0 w-full h-12 bg-neutral-900 flex gap-2 py-2 px-4 justify-between z-50">
         <div className="flex gap-2 items-center">
-          <WindowButton useWindowStore={readMe} styles="p-2 rounded-md">
+          <WindowButton openStyle='bg-white' useWindowStore={readMe} styles="p-2 rounded-md">
             <CodeXml className="text-zinc-400 hover:text-zinc-50" />
           </WindowButton>
           <WindowButton useWindowStore={otherWindow} styles="p-2 rounded-md">
