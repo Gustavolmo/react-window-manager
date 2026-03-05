@@ -35,7 +35,7 @@ This library ships with its own compiled CSS.
 Import the stylesheet once at your application root:
 
 ```bash
-import "@gustavolmo/react-window-manager/styles.css";
+import "@gustavolmo/react-window-manager/index.css";
 ```
 
 The styling properties of compoents accept tailwind or regular css classes
