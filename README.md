@@ -1,4 +1,4 @@
-# React Window Library
+# React Window Manager
 
 ---
 
