@@ -5,7 +5,7 @@ import { Coord, ResizeState, WindowStates, WindowStore } from './window-types'
 export const windowRegistry: Record<string, UseBoundStore<StoreApi<WindowStore>>> = {}
 
 export const createWindowStore = (windowId: string, bottomOffsetPx: number) => {
-  if (windowRegistry[windowId]) throw new Error('This store ID is already in use: ' + windowId)
+  if (windowRegistry[windowId]) console.error('This store ID is already in use: ' + windowId)
 
   const zIndexAtLaunch = Object.keys(windowRegistry).length + 1
 
