@@ -27,7 +27,7 @@ export default function Home() {
 
       <nav className="fixed bottom-0 left-0 w-full h-12 bg-neutral-900 flex gap-2 py-2 px-4 justify-between z-50">
         <div className="flex gap-2 items-center">
-          <WindowButton openStyle='bg-white' useWindowStore={readMe} styles="p-2 rounded-md">
+          <WindowButton useWindowStore={readMe} styles="p-2 rounded-md">
             <CodeXml className="text-zinc-400 hover:text-zinc-50" />
           </WindowButton>
           <WindowButton useWindowStore={otherWindow} styles="p-2 rounded-md">
