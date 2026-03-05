@@ -6,6 +6,7 @@ import { iconWinMinimize, iconWinDemaximize, iconWinMaximize } from '../window-a
 import { bringTargetWindowToFront } from './window-global-actions'
 
 type StoreProp = {
+  responsiveBreak?: 'sm' | 'md' | 'lg' | 'xl'
   children: React.ReactNode
   windowName: string | React.ReactNode
   navbarChildren?: React.ReactNode
@@ -13,7 +14,15 @@ type StoreProp = {
   useWindowStore: UseBoundStore<StoreApi<WindowStore>>
 }
 
+const responsiveBreakInPx = {
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+}
+
 export default function WindowLayout({
+  responsiveBreak = 'lg',
   children,
   windowName,
   navbarChildren,
@@ -71,7 +80,9 @@ export default function WindowLayout({
 
   useEffect(() => {
     setSelf(windowRef)
-    if (defaultDock === 'left') dockWindowLeft()
+
+    if (isMobile()) maximizeWindow()
+    else if (defaultDock === 'left') dockWindowLeft()
     else if (defaultDock === 'right') dockWindowRight()
     else if (defaultDock === 'full') maximizeWindow()
     else demaximizeWindow()
@@ -79,6 +90,7 @@ export default function WindowLayout({
   }, [setSelf, windowRef, resetFlag])
 
   useEffect(() => {
+    if (isMobile()) return
     if (!isDragging) return
 
     if (winVisualState === 'maximized') demaximizeWindow()
@@ -111,6 +123,10 @@ export default function WindowLayout({
   const handleNavbarClick = (isDragging: boolean) => {
     setDragClickOffset({ pointX: x - winCoord.pointX, pointY: y - winCoord.pointY })
     setIsDragging(isDragging)
+  }
+
+  const isMobile = (): boolean => {
+    return window.innerWidth < responsiveBreakInPx[responsiveBreak]
   }
 
   const resizeRightWinWidth = () => {
@@ -185,6 +201,69 @@ export default function WindowLayout({
     setIsResizing(isResizing)
   }
 
+  const cornerDockControl = (
+    <div className={`flex xl:p-0 px-2 shrink-0 gap-1`}>
+      {/* LEFT SIDE */}
+      <div className="flex flex-col justify-center gap-1">
+        <button
+          className="hover:bg-gray-100 hover:bg-opacity-20  border w-4 h-[10px] rounded-sm"
+          onClick={dockWindowTopLeft}
+        ></button>
+        <button
+          className="hover:bg-gray-100 hover:bg-opacity-20  border w-4 h-[10px] rounded-sm"
+          onClick={dockWindowBottomLeft}
+        ></button>
+      </div>
+      {/* RIGHT SIDE */}
+      <div className="flex flex-col justify-center gap-1">
+        <button
+          className="hover:bg-gray-100 hover:bg-opacity-20  border w-4 h-[10px] rounded-sm"
+          onClick={dockWindowTopRight}
+        ></button>
+        <button
+          className="hover:bg-gray-100 hover:bg-opacity-20  border w-4 h-[10px] rounded-sm"
+          onClick={dockWindowBottomRight}
+        ></button>
+      </div>
+    </div>
+  )
+
+  const sideDideControl = (
+    <div className={`flex px-2 shrink-0 items-center gap-1`}>
+      <button
+        className="hover:bg-gray-100 hover:bg-opacity-20 px-[1px] border w-4 h-6 rounded-sm"
+        onClick={dockWindowLeft}
+      ></button>
+      <button
+        className="hover:bg-gray-100 hover:bg-opacity-20 px-[1px] border w-4 h-6 rounded-sm"
+        onClick={dockWindowRight}
+      ></button>
+    </div>
+  )
+
+  const maximizeControl =
+    winVisualState === 'maximized' ? (
+      <button
+        className={`block hover:bg-gray-100 hover:bg-opacity-20 px-5 h-full`}
+        onClick={demaximizeWindow}
+      >
+        {iconWinDemaximize()}
+      </button>
+    ) : (
+      <button
+        className={`block hover:bg-gray-100 hover:bg-opacity-20 px-5 h-full`}
+        onClick={maximizeWindow}
+      >
+        {iconWinMaximize()}
+      </button>
+    )
+
+  const minimizeControl = (
+    <button className="hover:bg-red-500 hover:bg-opacity-20 px-5 h-full" onClick={minimizeWindow}>
+      {iconWinMinimize()}
+    </button>
+  )
+
   return (
     <div
       onMouseDown={() => bringTargetWindowToFront(windowId)}
@@ -224,64 +303,10 @@ export default function WindowLayout({
           {navbarChildren}
         </div>
 
-        <div className="hidden lg:flex px-2 shrink-0 gap-1">
-          {/* LEFT SIDE */}
-          <div className="flex flex-col justify-center gap-1">
-            <button
-              className="hover:bg-gray-100 hover:bg-opacity-20  border w-4 h-[10px] rounded-sm"
-              onClick={dockWindowTopLeft}
-            ></button>
-            <button
-              className="hover:bg-gray-100 hover:bg-opacity-20  border w-4 h-[10px] rounded-sm"
-              onClick={dockWindowBottomLeft}
-            ></button>
-          </div>
-          {/* RIGHT SIDE */}
-          <div className="flex flex-col justify-center gap-1">
-            <button
-              className="hover:bg-gray-100 hover:bg-opacity-20  border w-4 h-[10px] rounded-sm"
-              onClick={dockWindowTopRight}
-            ></button>
-            <button
-              className="hover:bg-gray-100 hover:bg-opacity-20  border w-4 h-[10px] rounded-sm"
-              onClick={dockWindowBottomRight}
-            ></button>
-          </div>
-        </div>
-
-        <div className="hidden lg:flex px-2 shrink-0 items-center gap-1">
-          <button
-            className="hover:bg-gray-100 hover:bg-opacity-20 px-[1px] border w-4 h-6 rounded-sm"
-            onClick={dockWindowLeft}
-          ></button>
-          <button
-            className="hover:bg-gray-100 hover:bg-opacity-20 px-[1px] border w-4 h-6 rounded-sm"
-            onClick={dockWindowRight}
-          ></button>
-        </div>
-
-        {winVisualState === 'maximized' ? (
-          <button
-            className="hidden lg:block hover:bg-gray-100 hover:bg-opacity-20 px-5 h-full"
-            onClick={demaximizeWindow}
-          >
-            {iconWinDemaximize()}
-          </button>
-        ) : (
-          <button
-            className="hidden lg:block hover:bg-gray-100 hover:bg-opacity-20 px-5 h-full"
-            onClick={maximizeWindow}
-          >
-            {iconWinMaximize()}
-          </button>
-        )}
-
-        <button
-          className="hover:bg-red-500 hover:bg-opacity-20 px-5 h-full"
-          onClick={minimizeWindow}
-        >
-          {iconWinMinimize()}
-        </button>
+        {!isMobile() && cornerDockControl}
+        {!isMobile() && sideDideControl}
+        {!isMobile() && maximizeControl}
+        {minimizeControl}
       </nav>
 
       {/* FIX ME: Add resize on top right and left? */}

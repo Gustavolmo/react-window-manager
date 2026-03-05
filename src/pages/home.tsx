@@ -19,9 +19,8 @@ export default function Home() {
         </div>
 
         <WindowLayout
-          defaultDock="full"
           useWindowStore={readMe}
-          windowName={<CodeXml className="text-zinc-400" />}
+          windowName={"README"}
         >
           <ReadMe />
         </WindowLayout>
