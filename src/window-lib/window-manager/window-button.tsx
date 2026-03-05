@@ -6,16 +6,16 @@ type StoreProp = {
   children: React.ReactNode
   useWindowStore: UseBoundStore<StoreApi<WindowStore>>
   styles?: string
-  activeStyle?: string
-  innactiveStyle?: string
+  closedStyle?: string
+  openStyle?: string
 }
 
 export default function WindowButton({
   children,
   useWindowStore,
   styles,
-  activeStyle = 'brightness-150',
-  innactiveStyle = 'brightness-[85%]',
+  closedStyle = 'brightness-[85%]',
+  openStyle = 'brightness-150',
 }: StoreProp) {
   const { openWindow, minimizeWindow, isWinMinimized, windowId, isActive } = useWindowStore()
 
@@ -39,7 +39,7 @@ export default function WindowButton({
       onClick={handleOpenCloseWin}
       className={`
         ${styles} 
-        ${!isWinMinimized ? activeStyle : innactiveStyle}`}
+        ${isWinMinimized ? closedStyle : openStyle}`}
     >
       {children}
     </button>

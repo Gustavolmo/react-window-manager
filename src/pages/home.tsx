@@ -7,6 +7,7 @@ import ReadMe from '../components/read-me'
 
 const bottomOffsetPx = 48
 const readMe = createWindowStore('read-me', bottomOffsetPx)
+const otherWindow = createWindowStore('other-window', bottomOffsetPx)
 
 export default function Home() {
   return (
@@ -21,12 +22,19 @@ export default function Home() {
         <WindowLayout useWindowStore={readMe} windowName={'README'}>
           <ReadMe />
         </WindowLayout>
+
+        <WindowLayout useWindowStore={otherWindow} windowName={'OTHER'}>
+          <p>OTHER</p>
+        </WindowLayout>
       </WorkspaceLayout>
 
       <nav className="fixed bottom-0 left-0 w-full h-12 bg-neutral-900 flex gap-2 py-2 px-4 justify-between z-50">
         <div className="flex gap-2 items-center">
-          <WindowButton useWindowStore={readMe} styles="px-2">
+          <WindowButton useWindowStore={readMe} styles="p-2 rounded-md">
             <CodeXml className="text-zinc-400 hover:text-zinc-50" />
+          </WindowButton>
+          <WindowButton useWindowStore={otherWindow} styles="p-2 rounded-md">
+            <p className="text-zinc-400 hover:text-zinc-50">OTHER</p>
           </WindowButton>
         </div>
 
