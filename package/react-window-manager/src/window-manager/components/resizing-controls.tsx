@@ -135,7 +135,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
     <>
       <span
         onMouseDown={() => handleResizeClick('right-width')}
-        id="win-resize-width"
+        id="win-resize-right-width"
         className="fixed w-2 opacity-60 cursor-w-resize z-10"
         style={{
           top: `${winCoord.pointY}px`,
@@ -145,7 +145,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
       ></span>
       <span
         onMouseDown={() => handleResizeClick('left-width')}
-        id="win-resize-width"
+        id="win-resize-left-width"
         className="fixed w-2 opacity-60 cursor-w-resize z-10"
         style={{
           top: `${winCoord.pointY}px`,
@@ -155,7 +155,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
       ></span>
       <span
         onMouseDown={() => handleResizeClick('bottom-height')}
-        id="win-resize-height"
+        id="win-resize-bottom-height"
         className="fixed h-2 opacity-60 cursor-s-resize z-10"
         style={{
           top: `${winCoord.pointY + winHeight - 6}px`,
@@ -165,7 +165,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
       ></span>
       <span
         onMouseDown={() => handleResizeClick('top-height')}
-        id="win-resize-height"
+        id="win-resize-top-height"
         className="fixed h-2 opacity-60 cursor-s-resize z-10"
         style={{
           top: `${winCoord.pointY - 6}px`,
@@ -175,7 +175,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
       ></span>
       <span
         onMouseDown={() => handleResizeClick('bottom-right-all')}
-        id="win-resize-all"
+        id="win-resize-bottom-right-all"
         className="fixed h-3 w-3 opacity-60 cursor-se-resize z-20"
         style={{
           top: `${winCoord.pointY + winHeight - 8}px`,
@@ -184,7 +184,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
       ></span>
       <span
         onMouseDown={() => handleResizeClick('bottom-left-all')}
-        id="win-resize-all"
+        id="win-resize-bottom-left-all"
         className="fixed h-3 w-3 opacity-60 cursor-sw-resize z-20"
         style={{
           top: `${winCoord.pointY + winHeight - 8}px`,
@@ -194,7 +194,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
 
       <span
         onMouseDown={() => handleResizeClick('top-right-all')}
-        id="win-resize-all"
+        id="win-resize-top-right-all"
         className="fixed h-3 w-3 opacity-60 cursor-ne-resize z-20"
         style={{
           top: `${winCoord.pointY - 6}px`,
@@ -203,7 +203,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
       ></span>
       <span
         onMouseDown={() => handleResizeClick('top-left-all')}
-        id="win-resize-all"
+        id="win-resize-top-left-all"
         className="fixed h-3 w-3 opacity-60 cursor-nw-resize z-20"
         style={{
           top: `${winCoord.pointY - 6}px`,

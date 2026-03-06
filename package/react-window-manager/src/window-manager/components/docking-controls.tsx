@@ -29,7 +29,7 @@ export default function DockingControls({ useWindowStore }: Props) {
     if (isDragging) {
       dealy = setTimeout(() => {
         setIsVisible(true)
-      }, 400)
+      }, 100)
     } else {
       setIsVisible(false)
     }
@@ -104,10 +104,12 @@ export default function DockingControls({ useWindowStore }: Props) {
   )
 
   return (
-    true && (
-      <div className="absolute z-50 flex items-center justify-center top-2 w-full mx-auto pointer-events-none">
-        {isVisible && windowDockPannel}
-      </div>
-    )
+    <div
+      className={`
+        ${isVisible ? 'top-2' : 'top-[-64px]'} transition-all duration-500
+        absolute z-50 flex items-center justify-center w-full mx-auto pointer-events-none`}
+    >
+      {windowDockPannel}
+    </div>
   )
 }

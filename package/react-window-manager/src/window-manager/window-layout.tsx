@@ -66,7 +66,6 @@ export default function WindowLayout({
 
     dockWindowRight,
     dockWindowLeft,
-
   } = useWindowStore()
 
   useEffect(() => {
@@ -158,7 +157,8 @@ export default function WindowLayout({
           handleNavbarClick(false)
           handleResizeClick(false)
         }}
-        className={`fixed bg-white shadow-lg border border-zinc-600`}
+        className={`
+          fixed bg-white shadow-lg border border-zinc-600`}
       >
         <nav
           className={`h-[32px] w-full bg-neutral-800 flex items-center
@@ -166,12 +166,16 @@ export default function WindowLayout({
         >
           <div className="w-fit shrink-0 h-8 px-2 text-white flex items-center text-sm truncate">
             {windowName}
+          </div>
+
+          <div className="h-8 px-2 text-white flex items-center text-sm truncate">
             {navbarChildren}
           </div>
+
           <div
             onMouseDown={() => handleNavbarClick(true)}
             onDoubleClick={maximizeWindow}
-            className="w-full h-8 px-2 text-white flex items-center text-sm truncate"
+            className="grow min-w-8 h-8 px-2 text-white flex items-center text-sm"
           ></div>
 
           {!isMobile() && maximizeControl}

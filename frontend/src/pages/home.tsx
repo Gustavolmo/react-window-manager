@@ -1,6 +1,11 @@
 import { CodeXml, Github, Linkedin } from 'lucide-react'
 import ReadMe from '../components/read-me'
-import { createWindowStore, WindowButton, WindowLayout, WorkspaceLayout } from '@gustavolmo/react-window-manager'
+import {
+  createWindowStore,
+  WindowButton,
+  WindowLayout,
+  WorkspaceLayout,
+} from '@gustavolmo/react-window-manager'
 
 const bottomOffsetPx = 48
 const readMe = createWindowStore('read-me', bottomOffsetPx)
@@ -16,7 +21,7 @@ export default function Home() {
           </h1>
         </div>
 
-        <WindowLayout useWindowStore={readMe} windowName={'README'}>
+        <WindowLayout useWindowStore={readMe} windowName={<CodeXml className="text-zinc-400" />}>
           <ReadMe />
         </WindowLayout>
 
