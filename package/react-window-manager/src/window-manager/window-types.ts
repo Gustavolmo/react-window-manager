@@ -10,6 +10,8 @@ export type ResizeState =
   | 'left-width'
   | 'bottom-right-all'
   | 'bottom-left-all'
+  | 'top-right-all'
+  | 'top-left-all'
 
 export type WindowStore = {
   /* Self */
@@ -63,6 +65,9 @@ export type WindowStore = {
 
   dockWindowRight: () => void
   dockWindowLeft: () => void
+
+  dockWindowTop: () => void
+  dockWindowBottom: () => void
 
   dockWindowBottomRight: () => void
   dockWindowTopRight: () => void

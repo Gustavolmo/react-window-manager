@@ -95,6 +95,23 @@ export const createWindowStore = (windowId: string, bottomOffsetPx: number) => {
       })
     },
 
+    dockWindowTop: () => {
+      set({
+        winCoord: { pointX: 0, pointY: 0 },
+        winWidth: window.innerWidth,
+        winHeight: window.innerHeight / 2 - bottomOffsetPx / 2,
+        winVisualState: 'demaximized',
+      })
+    },
+    dockWindowBottom: () => {
+      set({
+        winCoord: { pointX: 0, pointY: window.innerHeight / 2 - bottomOffsetPx / 2 },
+        winWidth: window.innerWidth,
+        winHeight: window.innerHeight / 2 - bottomOffsetPx / 2,
+        winVisualState: 'demaximized',
+      })
+    },
+
     dockWindowBottomRight: () =>
       set({
         winCoord: {
