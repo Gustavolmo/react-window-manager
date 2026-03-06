@@ -12,7 +12,7 @@ export default function Home() {
       <WorkspaceLayout>
         <div className="p-8 w-full h-full flex flex-col items-center mb-32 desktop-background">
           <h1 className="font-mono w-full text-white text-2xl uppercase tracking-[0.4em] mb-0 block opacity-50 max-w-xl text-center">
-            Reactive Window Manager
+            React Window Manager
           </h1>
         </div>
 
@@ -39,7 +39,7 @@ export default function Home() {
           <a target="_blank" href="https://www.linkedin.com/in/gustavo-l-m-de-oliveira-037243108/">
             <Linkedin className="text-zinc-400 hover:text-zinc-50" />
           </a>
-          <a target="_blank" href="https://github.com/Gustavolmo/portfolio-v2">
+          <a target="_blank" href="https://github.com/Gustavolmo/react-window-manager">
             <Github className="text-zinc-400 hover:text-zinc-50" />
           </a>
         </div>

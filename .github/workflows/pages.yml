@@ -30,7 +30,6 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @gustavolmo/react-window-manager run build
       - run: pnpm --filter frontend run build
       - run: touch frontend/docs/.nojekyll
 
