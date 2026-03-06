@@ -36,7 +36,9 @@
     "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
     "build:css": "tailwindcss -c tailwind.config.js -i ./src/index.css -o ./dist/index.css --minify",
     "clean": "rimraf dist",
-    "dev": "tsup --watch",
+    "dev": "pnpm run dev:js & pnpm run dev:css",
+    "dev:js": "tsup --watch",
+    "dev:css": "tailwindcss -c tailwind.config.js -i ./src/index.css -o ./dist/index.css --watch",
     "lint": "eslint src --ext .ts,.tsx"
   }
 }

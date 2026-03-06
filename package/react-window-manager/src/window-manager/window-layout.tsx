@@ -1,9 +1,10 @@
 import { useScreenState } from '../screen-manager/screen-state'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { StoreApi, UseBoundStore } from 'zustand'
 import { WindowStore, ResizeState } from './window-types'
 import { iconWinMinimize, iconWinDemaximize, iconWinMaximize } from '../window-assets/svg-win-icons'
-import { bringTargetWindowToFront } from './window-global-actions'
+import { bringTargetWindowToFront } from './global-actions/window-global-actions'
+import DockingControls from './components/docking-controls'
 
 type StoreProp = {
   responsiveBreak?: 'sm' | 'md' | 'lg' | 'xl' | 'never'
@@ -69,11 +70,6 @@ export default function WindowLayout({
 
     dockWindowRight,
     dockWindowLeft,
-
-    dockWindowTopLeft,
-    dockWindowBottomLeft,
-    dockWindowTopRight,
-    dockWindowBottomRight,
 
     WIN_MIN_WIDTH,
     WIN_MIN_HEIGHT,
@@ -202,46 +198,6 @@ export default function WindowLayout({
     setIsResizing(isResizing)
   }
 
-  const cornerDockControl = (
-    <div className={`flex xl:p-0 px-2 shrink-0 gap-1`}>
-      {/* LEFT SIDE */}
-      <div className="flex flex-col justify-center gap-1">
-        <button
-          className="hover:bg-gray-100 hover:bg-opacity-20  border w-4 h-[10px] rounded-sm"
-          onClick={dockWindowTopLeft}
-        ></button>
-        <button
-          className="hover:bg-gray-100 hover:bg-opacity-20  border w-4 h-[10px] rounded-sm"
-          onClick={dockWindowBottomLeft}
-        ></button>
-      </div>
-      {/* RIGHT SIDE */}
-      <div className="flex flex-col justify-center gap-1">
-        <button
-          className="hover:bg-gray-100 hover:bg-opacity-20  border w-4 h-[10px] rounded-sm"
-          onClick={dockWindowTopRight}
-        ></button>
-        <button
-          className="hover:bg-gray-100 hover:bg-opacity-20  border w-4 h-[10px] rounded-sm"
-          onClick={dockWindowBottomRight}
-        ></button>
-      </div>
-    </div>
-  )
-
-  const sideDideControl = (
-    <div className={`flex px-2 shrink-0 items-center gap-1`}>
-      <button
-        className="hover:bg-gray-100 hover:bg-opacity-20 px-[1px] border w-4 h-6 rounded-sm"
-        onClick={dockWindowLeft}
-      ></button>
-      <button
-        className="hover:bg-gray-100 hover:bg-opacity-20 px-[1px] border w-4 h-6 rounded-sm"
-        onClick={dockWindowRight}
-      ></button>
-    </div>
-  )
-
   const maximizeControl =
     winVisualState === 'maximized' ? (
       <button
@@ -266,112 +222,114 @@ export default function WindowLayout({
   )
 
   return (
-    <div
-      onMouseDown={() => bringTargetWindowToFront(windowId)}
-      id={windowId}
-      ref={windowRef}
-      style={{
-        top: `${winCoord.pointY}px`,
-        left: `${winCoord.pointX}px`,
-        width: `${winWidth}px`,
-        height: `${winHeight}px`,
-        zIndex: `${zIndex}`,
+    <>
+      {!isMobile() && <DockingControls useWindowStore={useWindowStore} />}
+      <div
+        onMouseDown={() => bringTargetWindowToFront(windowId)}
+        id={windowId}
+        ref={windowRef}
+        style={{
+          top: `${winCoord.pointY}px`,
+          left: `${winCoord.pointX}px`,
+          width: `${winWidth}px`,
+          height: `${winHeight}px`,
+          zIndex: `${zIndex}`,
 
-        /* MINIMIZE LOGIC */
-        transition: 'transform 0.2s ease-in-out, opacity 0.3s ease-in-out',
-        opacity: isWinMinimized ? 0 : 1,
-        transform: isWinMinimized
-          ? `translate(${window.innerWidth / 2 - winCoord.pointX - winWidth / 2}px,
+          /* MINIMIZE LOGIC */
+          transition: 'transform 0.2s ease-in-out, opacity 0.3s ease-in-out',
+          opacity: isWinMinimized ? 0 : 1,
+          transform: isWinMinimized
+            ? `translate(${window.innerWidth / 2 - winCoord.pointX - winWidth / 2}px,
               ${window.innerHeight - winCoord.pointY - winHeight / 2}px) scale(0.02)`
-          : '',
-      }}
-      onMouseUp={() => {
-        handleNavbarClick(false)
-        handleResizeClick(false)
-      }}
-      className={`fixed bg-white shadow-lg border border-zinc-600`}
-    >
-      <nav
-        className={`h-[32px] w-full bg-neutral-800 flex items-center
-        ${isActive ? 'brightness-100 opacity-100' : 'brightness-75 opacity-90'}`}
+            : '',
+        }}
+        onMouseUp={() => {
+          handleNavbarClick(false)
+          handleResizeClick(false)
+        }}
+        className={`fixed bg-white shadow-lg border border-zinc-600`}
       >
-        <div
-          onMouseDown={() => handleNavbarClick(true)}
-          onDoubleClick={maximizeWindow}
-          className="w-full h-8 px-2 text-white flex items-center text-sm truncate"
+        <nav
+          className={`h-[32px] w-full bg-neutral-800 flex items-center
+        ${isActive ? 'brightness-100 opacity-100' : 'brightness-75 opacity-90'}`}
         >
-          {windowName}
-          {navbarChildren}
-        </div>
+          <div className="w-fit shrink-0 h-8 px-2 text-white flex items-center text-sm truncate">
+            {windowName}
+            {navbarChildren}
+          </div>
+          <div
+            onMouseDown={() => handleNavbarClick(true)}
+            onDoubleClick={maximizeWindow}
+            className="w-full h-8 px-2 text-white flex items-center text-sm truncate"
+          ></div>
 
-        {!isMobile() && cornerDockControl}
-        {!isMobile() && sideDideControl}
-        {!isMobile() && maximizeControl}
-        {minimizeControl}
-      </nav>
+          {!isMobile() && maximizeControl}
+          {minimizeControl}
+        </nav>
 
-      {/* FIX ME: Add resize on top right and left? */}
-      <span
-        onMouseDown={() => handleResizeClick('right-width')}
-        id="win-resize-width"
-        className="fixed w-2 opacity-60 cursor-w-resize z-10"
-        style={{
-          top: `${winCoord.pointY}px`,
-          left: `${winCoord.pointX + winWidth - 4}px`,
-          height: `${winHeight}px`,
-        }}
-      ></span>
-      <span
-        onMouseDown={() => handleResizeClick('left-width')}
-        id="win-resize-width"
-        className="fixed w-2 opacity-60 cursor-w-resize z-10"
-        style={{
-          top: `${winCoord.pointY}px`,
-          left: `${winCoord.pointX - 4}px`,
-          height: `${winHeight}px`,
-        }}
-      ></span>
-      <span
-        onMouseDown={() => handleResizeClick('bottom-height')}
-        id="win-resize-height"
-        className="fixed h-2 opacity-60 cursor-s-resize z-10"
-        style={{
-          top: `${winCoord.pointY + winHeight - 6}px`,
-          left: `${winCoord.pointX}px`,
-          width: `${winWidth}px`,
-        }}
-      ></span>
-      <span
-        onMouseDown={() => handleResizeClick('top-height')}
-        id="win-resize-height"
-        className="fixed h-2 opacity-60 cursor-s-resize z-10"
-        style={{
-          top: `${winCoord.pointY - 6}px`,
-          left: `${winCoord.pointX}px`,
-          width: `${winWidth}px`,
-        }}
-      ></span>
-      <span
-        onMouseDown={() => handleResizeClick('bottom-right-all')}
-        id="win-resize-all"
-        className="fixed h-3 w-3 opacity-60 cursor-se-resize z-20"
-        style={{
-          top: `${winCoord.pointY + winHeight - 8}px`,
-          left: `${winCoord.pointX + winWidth - 8}px`,
-        }}
-      ></span>
-      <span
-        onMouseDown={() => handleResizeClick('bottom-left-all')}
-        id="win-resize-all"
-        className="fixed h-3 w-3 opacity-60 cursor-sw-resize z-20"
-        style={{
-          top: `${winCoord.pointY + winHeight - 8}px`,
-          left: `${winCoord.pointX - 8}px`,
-        }}
-      ></span>
+        {/* FIX ME: Add resize on top right and left? */}
+        <span
+          onMouseDown={() => handleResizeClick('right-width')}
+          id="win-resize-width"
+          className="fixed w-2 opacity-60 cursor-w-resize z-10"
+          style={{
+            top: `${winCoord.pointY}px`,
+            left: `${winCoord.pointX + winWidth - 4}px`,
+            height: `${winHeight}px`,
+          }}
+        ></span>
+        <span
+          onMouseDown={() => handleResizeClick('left-width')}
+          id="win-resize-width"
+          className="fixed w-2 opacity-60 cursor-w-resize z-10"
+          style={{
+            top: `${winCoord.pointY}px`,
+            left: `${winCoord.pointX - 4}px`,
+            height: `${winHeight}px`,
+          }}
+        ></span>
+        <span
+          onMouseDown={() => handleResizeClick('bottom-height')}
+          id="win-resize-height"
+          className="fixed h-2 opacity-60 cursor-s-resize z-10"
+          style={{
+            top: `${winCoord.pointY + winHeight - 6}px`,
+            left: `${winCoord.pointX}px`,
+            width: `${winWidth}px`,
+          }}
+        ></span>
+        <span
+          onMouseDown={() => handleResizeClick('top-height')}
+          id="win-resize-height"
+          className="fixed h-2 opacity-60 cursor-s-resize z-10"
+          style={{
+            top: `${winCoord.pointY - 6}px`,
+            left: `${winCoord.pointX}px`,
+            width: `${winWidth}px`,
+          }}
+        ></span>
+        <span
+          onMouseDown={() => handleResizeClick('bottom-right-all')}
+          id="win-resize-all"
+          className="fixed h-3 w-3 opacity-60 cursor-se-resize z-20"
+          style={{
+            top: `${winCoord.pointY + winHeight - 8}px`,
+            left: `${winCoord.pointX + winWidth - 8}px`,
+          }}
+        ></span>
+        <span
+          onMouseDown={() => handleResizeClick('bottom-left-all')}
+          id="win-resize-all"
+          className="fixed h-3 w-3 opacity-60 cursor-sw-resize z-20"
+          style={{
+            top: `${winCoord.pointY + winHeight - 8}px`,
+            left: `${winCoord.pointX - 8}px`,
+          }}
+        ></span>
 
-      {/* Offset the navbar => 'h-[calc(100%-32px)]' */}
-      <div className={`w-full h-[calc(100%-32px)] overflow-auto`}>{children}</div>
-    </div>
+        {/* Offset the navbar => 'h-[calc(100%-32px)]' */}
+        <div className={`relative w-full h-[calc(100%-32px)] overflow-auto`}>{children}</div>
+      </div>{' '}
+    </>
   )
 }

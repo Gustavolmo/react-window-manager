@@ -64,6 +64,9 @@ export type WindowStore = {
   dockWindowRight: () => void
   dockWindowLeft: () => void
 
+  dockWindowTop: () => void
+  dockWindowBottom: () => void
+
   dockWindowBottomRight: () => void
   dockWindowTopRight: () => void
 

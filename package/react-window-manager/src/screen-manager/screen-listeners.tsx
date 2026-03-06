@@ -1,4 +1,4 @@
-import { resetAllWindows } from '../window-manager/window-global-actions'
+import { resetAllWindows } from '../window-manager/global-actions/window-global-actions'
 import { useScreenState } from './screen-state'
 import { useEffect } from 'react'
 
@@ -11,7 +11,7 @@ export default function ScreenListeners() {
   )
 }
 
-/* FIX ME: Until I find a better way to handle window resize, the state restes on resize */
+/* FIX ME: Until I find a better way to handle browser resize, the react window state resets if the browser resizes */
 function WindowResizeReset() {
   useEffect(() => {
     const handleWindowResize = () => {

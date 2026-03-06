@@ -1,6 +1,6 @@
 import { StoreApi, UseBoundStore } from 'zustand'
 import { WindowStore } from './window-types'
-import { bringTargetWindowToFront } from './window-global-actions'
+import { bringTargetWindowToFront } from './global-actions/window-global-actions'
 
 type StoreProp = {
   children: React.ReactNode
