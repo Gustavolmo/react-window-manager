@@ -10,6 +10,8 @@ export type ResizeState =
   | 'left-width'
   | 'bottom-right-all'
   | 'bottom-left-all'
+  | 'top-right-all'
+  | 'top-left-all'
 
 export type WindowStore = {
   /* Self */
