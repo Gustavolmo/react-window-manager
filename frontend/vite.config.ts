@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: { outDir: 'docs' },
-  base: '/read-me/',
+  base: '/react-window-manager/',
   esbuild: {
     jsxInject: `import React from 'react'`,
   },
