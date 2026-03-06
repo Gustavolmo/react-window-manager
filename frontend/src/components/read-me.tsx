@@ -118,7 +118,7 @@ export default function ReadMe() {
           <div className="flex gap-4">
             <a
               target="_blank"
-              href="https://github.com/Gustavolmo/portfolio-v2"
+              href="https://github.com/Gustavolmo/react-window-manager"
               className="hover:text-zinc-900 transition-colors"
             >
               GitHub
