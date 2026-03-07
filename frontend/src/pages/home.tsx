@@ -24,11 +24,7 @@ export default function Home() {
         </div>
 
         <WindowLayout
-          style={{
-            navBackgroundColor: undefined,
-            windowBackgroundColor: undefined,
-            navControlsColor: undefined,
-          }}
+          responsiveBreak={'sm'}
           useWindowStore={readMe}
           windowName={<CodeXml className="text-zinc-400" />}
         >
@@ -50,16 +46,16 @@ export default function Home() {
 
       <nav className="fixed bottom-0 left-0 w-full h-12 bg-neutral-900 flex gap-2 py-2 px-4 justify-between z-50">
         <div className="flex gap-2 items-center">
-          <WindowButton useWindowStore={readMe} styles="p-2 rounded-md">
+          <WindowButton useWindowStore={readMe} className="p-2 rounded-md">
             <CodeXml className="text-zinc-400 hover:text-zinc-50" />
           </WindowButton>
-          <WindowButton useWindowStore={test_1} styles="p-2 rounded-md">
+          <WindowButton useWindowStore={test_1} className="p-2 rounded-md">
             <p className="text-zinc-400 hover:text-zinc-50">test_1</p>
           </WindowButton>
-          <WindowButton useWindowStore={test_2} styles="p-2 rounded-md">
+          <WindowButton useWindowStore={test_2} className="p-2 rounded-md">
             <p className="text-zinc-400 hover:text-zinc-50">test_2</p>
           </WindowButton>
-          <WindowButton useWindowStore={test_3} styles="p-2 rounded-md">
+          <WindowButton useWindowStore={test_3} className="p-2 rounded-md">
             <p className="text-zinc-400 hover:text-zinc-50">test_3</p>
           </WindowButton>
         </div>

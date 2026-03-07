@@ -1,5 +1,5 @@
 import { resetAllWindows } from '../window-manager/global-actions/window-global-actions'
-import { useScreenState } from './screen-state'
+import { useCursorState } from './cursor-state'
 import { useEffect } from 'react'
 
 export default function ScreenListeners() {
@@ -11,7 +11,7 @@ export default function ScreenListeners() {
   )
 }
 
-/* FIX ME: Until I find a better way to handle browser resize, the react window state resets if the browser resizes */
+/**  @FixMe Until I find a better way to handle browser resize, the react window state resets if the browser resizes */
 function WindowResizeReset() {
   useEffect(() => {
     const handleWindowResize = () => {
@@ -27,7 +27,7 @@ function WindowResizeReset() {
 }
 
 function CursorCoordinates() {
-  const { setX, setY } = useScreenState()
+  const { setX, setY } = useCursorState()
 
   useEffect(() => {
     const handleWindowPosition = (e: MouseEvent) => {

@@ -1,6 +1,6 @@
 import { StoreApi, UseBoundStore } from 'zustand'
 import { ResizeState, WindowStore } from '../window-types'
-import { useScreenState } from '../../screen-manager/screen-state'
+import { useCursorState } from '../../screen-manager/cursor-state'
 import { RefObject, useEffect } from 'react'
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 }
 
 export default function ResizingControls({ useWindowStore, windowRef }: Props) {
-  const { x, y } = useScreenState()
+  const { x, y } = useCursorState()
   const {
     setWinVisualState,
 

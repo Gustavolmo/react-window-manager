@@ -1,4 +1,4 @@
-import { useScreenState } from '../screen-manager/screen-state'
+import { useCursorState } from '../screen-manager/cursor-state'
 import { useEffect, useRef } from 'react'
 import { StoreApi, UseBoundStore } from 'zustand'
 import { WindowStore, ResizeState } from './window-types'
@@ -6,16 +6,26 @@ import { iconWinMinimize, iconWinDemaximize, iconWinMaximize } from '../window-a
 import { bringTargetWindowToFront } from './global-actions/window-global-actions'
 import DockingControls from './components/docking-controls'
 import ResizingControls from './components/resizing-controls'
-type ResponsiveSizes = 'sm' | 'md' | 'lg' | 'xl' | 'never' | number
+
+type ResponsiveSizes = 'sm' | 'md' | 'lg' | 'xl' | 'never' | 'always' | number
 type StoreProp = {
   children: React.ReactNode
   windowName: string | React.ReactNode
   useWindowStore: UseBoundStore<StoreApi<WindowStore>>
-
+  /**
+   * @default 'lg'
+   * @param sm uses mobile format at 640px
+   * @param md uses mobile format at 768px
+   * @param lg uses mobile format at 1024px
+   * @param xl uses mobile format at 1280px
+   * @param never never uses mobile format
+   * @param always always uses mobile format
+   * @param number set custom break point value in px */
   responsiveBreak?: ResponsiveSizes
   navbarChildren?: React.ReactNode
   defaultDock?: 'right' | 'left' | 'full'
 
+  /** @note use CSS values such as hex or supported color names */
   style?: {
     navBackgroundColor?: string
     windowBackgroundColor?: string
@@ -32,7 +42,7 @@ export default function WindowLayout({
   defaultDock,
   style,
 }: StoreProp) {
-  const { x, y } = useScreenState()
+  const { x, y } = useCursorState()
   const windowRef = useRef<HTMLDivElement>(null)
   const {
     windowId,
@@ -107,6 +117,8 @@ export default function WindowLayout({
         return 1280
       case 'never':
         return 0
+      case 'always':
+        return Infinity
       default:
         return breakPoint
     }
