@@ -16,9 +16,11 @@ type StoreProp = {
   navbarChildren?: React.ReactNode
   defaultDock?: 'right' | 'left' | 'full'
 
-  navBackgroundColor?: string
-  windowBackgroundColor?: string
-  navControlsColor?: string
+  style?: {
+    navBackgroundColor?: string
+    windowBackgroundColor?: string
+    navControlsColor?: string
+  }
 }
 
 export default function WindowLayout({
@@ -28,9 +30,7 @@ export default function WindowLayout({
   navbarChildren,
   useWindowStore,
   defaultDock,
-  navBackgroundColor,
-  windowBackgroundColor,
-  navControlsColor,
+  style,
 }: StoreProp) {
   const { x, y } = useScreenState()
   const windowRef = useRef<HTMLDivElement>(null)
@@ -131,20 +131,20 @@ export default function WindowLayout({
         className={`block hover:bg-gray-100 hover:bg-opacity-20 px-5 h-full`}
         onClick={demaximizeWindow}
       >
-        {iconWinDemaximize(navControlsColor)}
+        {iconWinDemaximize(style?.navControlsColor)}
       </button>
     ) : (
       <button
         className={`block hover:bg-gray-100 hover:bg-opacity-20 px-5 h-full`}
         onClick={maximizeWindow}
       >
-        {iconWinMaximize(navControlsColor)}
+        {iconWinMaximize(style?.navControlsColor)}
       </button>
     )
 
   const minimizeControl = (
     <button className="hover:bg-red-500 hover:bg-opacity-20 px-5 h-full" onClick={minimizeWindow}>
-      {iconWinMinimize(navControlsColor)}
+      {iconWinMinimize(style?.navControlsColor)}
     </button>
   )
 
@@ -154,14 +154,14 @@ export default function WindowLayout({
       <div
         id={windowId}
         ref={windowRef}
-        className={`fixed bg-white shadow-lg border border-zinc-600`}
+        className={`fixed bg-white shadow-lg border border-zinc-600 rounded-sm overflow-hidden`}
         onMouseDown={() => bringTargetWindowToFront(windowId)}
         onMouseUp={() => {
           handleNavbarClick(false)
           handleResizeClick(false)
         }}
         style={{
-          backgroundColor: windowBackgroundColor,
+          backgroundColor: style?.windowBackgroundColor,
           top: `${winCoord.pointY}px`,
           left: `${winCoord.pointX}px`,
           width: `${winWidth}px`,
@@ -179,7 +179,7 @@ export default function WindowLayout({
       >
         <nav
           style={{
-            backgroundColor: navBackgroundColor,
+            backgroundColor: style?.navBackgroundColor,
           }}
           className={`
             h-[32px] w-full flex items-center bg-neutral-800

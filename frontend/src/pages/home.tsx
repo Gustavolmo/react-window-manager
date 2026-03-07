@@ -9,8 +9,9 @@ import {
 
 const bottomOffsetPx = 48
 const readMe = createWindowStore('read-me', bottomOffsetPx)
-const otherWindow = createWindowStore('other-window', bottomOffsetPx)
-const winWindow = createWindowStore('in-window', bottomOffsetPx)
+const test_1 = createWindowStore('test_1-window', bottomOffsetPx)
+const test_2 = createWindowStore('test_2-window', bottomOffsetPx)
+const test_3 = createWindowStore('test_3-window', bottomOffsetPx)
 
 export default function Home() {
   return (
@@ -22,16 +23,28 @@ export default function Home() {
           </h1>
         </div>
 
-        <WindowLayout useWindowStore={readMe} windowName={<CodeXml className="text-zinc-400" />}>
+        <WindowLayout
+          style={{
+            navBackgroundColor: undefined,
+            windowBackgroundColor: undefined,
+            navControlsColor: undefined,
+          }}
+          useWindowStore={readMe}
+          windowName={<CodeXml className="text-zinc-400" />}
+        >
           <ReadMe />
         </WindowLayout>
 
-        <WindowLayout useWindowStore={winWindow} windowName={'WIN'}>
-          <p>WIN</p>
+        <WindowLayout useWindowStore={test_1} windowName={'test_1'}>
+          <p>test_1</p>
         </WindowLayout>
 
-        <WindowLayout useWindowStore={otherWindow} windowName={'OTHER'}>
-          <p>OTHER</p>
+        <WindowLayout useWindowStore={test_2} windowName={'test_2'}>
+          <p>test_2</p>
+        </WindowLayout>
+
+        <WindowLayout useWindowStore={test_3} windowName={'test_3'}>
+          <p>test_3</p>
         </WindowLayout>
       </WorkspaceLayout>
 
@@ -40,11 +53,14 @@ export default function Home() {
           <WindowButton useWindowStore={readMe} styles="p-2 rounded-md">
             <CodeXml className="text-zinc-400 hover:text-zinc-50" />
           </WindowButton>
-          <WindowButton useWindowStore={otherWindow} styles="p-2 rounded-md">
-            <p className="text-zinc-400 hover:text-zinc-50">OTHER</p>
+          <WindowButton useWindowStore={test_1} styles="p-2 rounded-md">
+            <p className="text-zinc-400 hover:text-zinc-50">test_1</p>
           </WindowButton>
-          <WindowButton useWindowStore={winWindow} styles="p-2 rounded-md">
-            <p className="text-zinc-400 hover:text-zinc-50">WIN</p>
+          <WindowButton useWindowStore={test_2} styles="p-2 rounded-md">
+            <p className="text-zinc-400 hover:text-zinc-50">test_2</p>
+          </WindowButton>
+          <WindowButton useWindowStore={test_3} styles="p-2 rounded-md">
+            <p className="text-zinc-400 hover:text-zinc-50">test_3</p>
           </WindowButton>
         </div>
 
