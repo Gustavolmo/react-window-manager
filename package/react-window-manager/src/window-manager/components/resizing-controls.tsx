@@ -1,7 +1,8 @@
 import { StoreApi, UseBoundStore } from 'zustand'
-import { ResizeState, WindowStore } from '../window-types'
+import { Coord, ResizeState, WindowStore } from '../window-types'
 import { useCursorState } from '../../screen-manager/cursor-state'
 import { RefObject, useEffect } from 'react'
+import { windowRegistry } from '../window-store-factory'
 
 type Props = {
   useWindowStore: UseBoundStore<StoreApi<WindowStore>>
@@ -11,6 +12,8 @@ type Props = {
 export default function ResizingControls({ useWindowStore, windowRef }: Props) {
   const { x, y } = useCursorState()
   const {
+    windowId,
+
     setWinVisualState,
 
     winCoord,
@@ -65,7 +68,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
     const winBox = windowRef.current?.getBoundingClientRect()
     if (!winBox) return
 
-    const minWinWidth = winBox.right - x < WIN_MIN_WIDTH
+    const minWinWidth = winBox.right - x <= WIN_MIN_WIDTH
     if (minWinWidth) return
 
     const cursorOutOfBounds = x > window.innerWidth || x < 0
@@ -76,12 +79,11 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
     setWinCoord({ pointX: x, pointY: winCoord.pointY })
   }
 
-  /** @winXOverride we need to override windowX if another function that also sets windowX is called at the same time */
-  const resizeTopWinHeight = (winXOverride?: number) => {
+  const resizeTopWinHeight = () => {
     const winBox = windowRef.current?.getBoundingClientRect()
     if (!winBox) return
 
-    const minWinHeight = winBox.bottom - y < WIN_MIN_HEIGHT
+    const minWinHeight = winBox.bottom - y <= WIN_MIN_HEIGHT
     if (minWinHeight) return
 
     const cursorOutOfBounds = y > window.innerHeight || y < 0
@@ -89,8 +91,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
 
     const sizeDiff = winBox.top - y
     setWinHeight(winHeight + sizeDiff)
-    const winX = winXOverride ? winXOverride : winCoord.pointX
-    setWinCoord({ pointX: winX, pointY: y })
+    setWinCoord({ pointX: winCoord.pointX, pointY: y })
   }
 
   const resizeBottomWinHeight = () => {
@@ -122,13 +123,151 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
     resizeTopWinHeight()
   }
 
+  /**
+   * @note this specific case needs it's own logic instead of simply calling
+   * resizeLeftWinWidth & resizeTopWinHeight. Since both manipulate
+   * winWidth, winHeight and winCoord, one's logic will override the others
+   */
   const resizeLeftTopWidthAndHeight = () => {
-    resizeLeftWinWidth()
-    resizeTopWinHeight(x)
+    const winBox = windowRef.current?.getBoundingClientRect()
+    if (!winBox) return
+
+    const cursorOutOfBoundsY = y > window.innerHeight || y < 0
+    const cursorOutOfBoundsX = x > window.innerWidth || x < 0
+    if (cursorOutOfBoundsY || cursorOutOfBoundsX) return
+
+    const minWinHeight = winBox.bottom - y <= WIN_MIN_HEIGHT
+    const minWinWidth = winBox.right - x <= WIN_MIN_WIDTH
+
+    setWinCoord({
+      pointX: minWinWidth ? winCoord.pointX : x,
+      pointY: minWinHeight ? winCoord.pointY : y,
+    })
+
+    if (!minWinHeight) {
+      const sizeDiffY = winBox.top - y
+      setWinHeight(winHeight + sizeDiffY)
+    }
+
+    if (!minWinWidth) {
+      const sizeDiffX = winBox.left - x
+      setWinWidth(winWidth + sizeDiffX)
+    }
   }
 
   const handleResizeClick = (isResizing: ResizeState) => {
     setIsResizing(isResizing)
+    // setIsRemoteResizing(isResizing)
+  }
+
+  const setIsRemoteResizing = (currentResize: ResizeState) => {
+    const tolerance = 2
+
+    for (const key of Object.keys(windowRegistry)) {
+      const remoteWin = windowRegistry[key].getState()
+      const thisWin = windowRegistry[windowId].getState()
+
+      if (remoteWin.windowId === thisWin.windowId) {
+        continue
+      }
+
+      const thisWinStartY = thisWin.winCoord.pointY
+      const thisWinEndY = thisWin.winCoord.pointY + thisWin.winHeight
+      const remoteWinStartY = remoteWin.winCoord.pointY
+      const remoteWinEndY = remoteWin.winCoord.pointY + remoteWin.winHeight
+
+      const thisWinStartX = thisWin.winCoord.pointX
+      const thisWinEndX = thisWin.winCoord.pointX + thisWin.winWidth
+      const remoteWinStartX = remoteWin.winCoord.pointX
+      const remoteWinEndX = remoteWin.winCoord.pointX + remoteWin.winWidth
+
+      /* thisWin right edge <::::> remoteWin left edge */
+      if (currentResize === 'right-width') {
+        const isEdgeAlignedOnXAxis = Math.abs(thisWinEndX - remoteWinStartX) <= tolerance
+        const isOverlapOnYAxis = thisWinStartY <= remoteWinEndY && thisWinEndY >= remoteWinStartY
+
+        if (isEdgeAlignedOnXAxis /*  && isOverlapOnYAxis */) {
+          remoteWin.setIsResizing('left-width')
+        }
+
+        const isRemoteOnSameLane =
+          Math.abs(thisWinEndX - remoteWinEndX) < tolerance &&
+          Math.abs(thisWinStartX - remoteWinStartX) < tolerance
+        const isRemoteEdgeConnected =
+          Math.abs(thisWinEndY - remoteWinStartY) < tolerance ||
+          Math.abs(thisWinStartY - remoteWinEndY) < tolerance
+
+        if (isRemoteOnSameLane && isRemoteEdgeConnected) {
+          remoteWin.setIsResizing('right-width')
+        }
+      }
+
+      /* thisWin left edge <::::> remoteWin right edge */
+      if (currentResize === 'left-width') {
+        const isEdgeAlignedOnXAxis = Math.abs(thisWinStartX - remoteWinEndX) <= tolerance
+        const isOverlapOnYAxis = thisWinStartY <= remoteWinEndY && thisWinEndY >= remoteWinStartY
+
+        if (isEdgeAlignedOnXAxis /*  && isOverlapOnYAxis */) {
+          remoteWin.setIsResizing('right-width')
+        }
+
+        const isRemoteOnSameLane =
+          Math.abs(thisWinEndX - remoteWinEndX) < tolerance &&
+          Math.abs(thisWinStartX - remoteWinStartX) < tolerance
+
+        const isRemoteEdgeConnected =
+          Math.abs(thisWinEndY - remoteWinStartY) < tolerance ||
+          Math.abs(thisWinStartY - remoteWinEndY) < tolerance
+
+        if (isRemoteOnSameLane && isRemoteEdgeConnected) {
+          remoteWin.setIsResizing('left-width')
+        }
+      }
+
+      /* thisWin top edge <::::> remoteWin bottom edge */
+      if (currentResize === 'top-height') {
+        const isEdgeAlignedOnYAxis = Math.abs(thisWinStartY - remoteWinEndY) <= tolerance
+        const isOverlapOnXAxis = thisWinStartX <= remoteWinEndX && thisWinEndX >= remoteWinStartX
+
+        if (isEdgeAlignedOnYAxis /*  && isOverlapOnXAxis */) {
+          remoteWin.setIsResizing('bottom-height')
+        }
+
+        const isRemoteOnSameLane =
+          Math.abs(thisWinEndY - remoteWinEndY) < tolerance &&
+          Math.abs(thisWinStartY - remoteWinStartY) < tolerance
+
+        const isRemoteEdgeConnected =
+          Math.abs(thisWinEndX - remoteWinStartX) < tolerance ||
+          Math.abs(thisWinStartX - remoteWinEndX) < tolerance
+
+        if (isRemoteOnSameLane && isRemoteEdgeConnected) {
+          remoteWin.setIsResizing('top-height')
+        }
+      }
+
+      /* thisWin bottom edge <::::> remoteWin top edge */
+      if (currentResize === 'bottom-height') {
+        const isEdgeAlignedOnYAxis = Math.abs(thisWinEndY - remoteWinStartY) <= tolerance
+        const isOverlapOnXAxis = thisWinStartX <= remoteWinEndX && thisWinEndX >= remoteWinStartX
+
+        if (isEdgeAlignedOnYAxis /*  && isOverlapOnXAxis */) {
+          remoteWin.setIsResizing('top-height')
+        }
+
+        const isRemoteOnSameLane =
+          Math.abs(thisWinEndY - remoteWinEndY) < tolerance &&
+          Math.abs(thisWinStartY - remoteWinStartY) < tolerance
+
+        const isRemoteEdgeConnected =
+          Math.abs(thisWinEndX - remoteWinStartX) < tolerance ||
+          Math.abs(thisWinStartX - remoteWinEndX) < tolerance
+
+        if (isRemoteOnSameLane && isRemoteEdgeConnected) {
+          remoteWin.setIsResizing('bottom-height')
+        }
+      }
+    }
   }
 
   return (
