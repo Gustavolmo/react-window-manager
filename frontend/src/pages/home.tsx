@@ -10,6 +10,7 @@ import {
 const bottomOffsetPx = 48
 const readMe = createWindowStore('read-me', bottomOffsetPx)
 const otherWindow = createWindowStore('other-window', bottomOffsetPx)
+const winWindow = createWindowStore('in-window', bottomOffsetPx)
 
 export default function Home() {
   return (
@@ -25,6 +26,10 @@ export default function Home() {
           <ReadMe />
         </WindowLayout>
 
+        <WindowLayout useWindowStore={winWindow} windowName={'WIN'}>
+          <p>WIN</p>
+        </WindowLayout>
+
         <WindowLayout useWindowStore={otherWindow} windowName={'OTHER'}>
           <p>OTHER</p>
         </WindowLayout>
@@ -37,6 +42,9 @@ export default function Home() {
           </WindowButton>
           <WindowButton useWindowStore={otherWindow} styles="p-2 rounded-md">
             <p className="text-zinc-400 hover:text-zinc-50">OTHER</p>
+          </WindowButton>
+          <WindowButton useWindowStore={winWindow} styles="p-2 rounded-md">
+            <p className="text-zinc-400 hover:text-zinc-50">WIN</p>
           </WindowButton>
         </div>
 

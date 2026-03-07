@@ -1,27 +1,24 @@
 import { useScreenState } from '../screen-manager/screen-state'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { StoreApi, UseBoundStore } from 'zustand'
 import { WindowStore, ResizeState } from './window-types'
 import { iconWinMinimize, iconWinDemaximize, iconWinMaximize } from '../window-assets/svg-win-icons'
 import { bringTargetWindowToFront } from './global-actions/window-global-actions'
 import DockingControls from './components/docking-controls'
 import ResizingControls from './components/resizing-controls'
-
+type ResponsiveSizes = 'sm' | 'md' | 'lg' | 'xl' | 'never' | number
 type StoreProp = {
-  responsiveBreak?: 'sm' | 'md' | 'lg' | 'xl' | 'never'
   children: React.ReactNode
   windowName: string | React.ReactNode
+  useWindowStore: UseBoundStore<StoreApi<WindowStore>>
+
+  responsiveBreak?: ResponsiveSizes
   navbarChildren?: React.ReactNode
   defaultDock?: 'right' | 'left' | 'full'
-  useWindowStore: UseBoundStore<StoreApi<WindowStore>>
-}
 
-const responsiveBreakInPx = {
-  sm: 640,
-  md: 768,
-  lg: 1024,
-  xl: 1280,
-  never: 0,
+  navBackgroundColor?: string
+  windowBackgroundColor?: string
+  navControlsColor?: string
 }
 
 export default function WindowLayout({
@@ -31,6 +28,9 @@ export default function WindowLayout({
   navbarChildren,
   useWindowStore,
   defaultDock,
+  navBackgroundColor,
+  windowBackgroundColor,
+  navControlsColor,
 }: StoreProp) {
   const { x, y } = useScreenState()
   const windowRef = useRef<HTMLDivElement>(null)
@@ -95,13 +95,30 @@ export default function WindowLayout({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDragging, x, y])
 
+  const responsiveBreakInPx = (breakPoint: ResponsiveSizes): number => {
+    switch (breakPoint) {
+      case 'sm':
+        return 640
+      case 'md':
+        return 768
+      case 'lg':
+        return 1024
+      case 'xl':
+        return 1280
+      case 'never':
+        return 0
+      default:
+        return breakPoint
+    }
+  }
+
   const handleNavbarClick = (isDragging: boolean) => {
     setDragClickOffset({ pointX: x - winCoord.pointX, pointY: y - winCoord.pointY })
     setIsDragging(isDragging)
   }
 
   const isMobile = (): boolean => {
-    return window.innerWidth < responsiveBreakInPx[responsiveBreak]
+    return window.innerWidth < responsiveBreakInPx(responsiveBreak)
   }
 
   const handleResizeClick = (isResizing: ResizeState) => {
@@ -114,20 +131,20 @@ export default function WindowLayout({
         className={`block hover:bg-gray-100 hover:bg-opacity-20 px-5 h-full`}
         onClick={demaximizeWindow}
       >
-        {iconWinDemaximize()}
+        {iconWinDemaximize(navControlsColor)}
       </button>
     ) : (
       <button
         className={`block hover:bg-gray-100 hover:bg-opacity-20 px-5 h-full`}
         onClick={maximizeWindow}
       >
-        {iconWinMaximize()}
+        {iconWinMaximize(navControlsColor)}
       </button>
     )
 
   const minimizeControl = (
     <button className="hover:bg-red-500 hover:bg-opacity-20 px-5 h-full" onClick={minimizeWindow}>
-      {iconWinMinimize()}
+      {iconWinMinimize(navControlsColor)}
     </button>
   )
 
@@ -135,10 +152,16 @@ export default function WindowLayout({
     <>
       {!isMobile() && <DockingControls useWindowStore={useWindowStore} />}
       <div
-        onMouseDown={() => bringTargetWindowToFront(windowId)}
         id={windowId}
         ref={windowRef}
+        className={`fixed bg-white shadow-lg border border-zinc-600`}
+        onMouseDown={() => bringTargetWindowToFront(windowId)}
+        onMouseUp={() => {
+          handleNavbarClick(false)
+          handleResizeClick(false)
+        }}
         style={{
+          backgroundColor: windowBackgroundColor,
           top: `${winCoord.pointY}px`,
           left: `${winCoord.pointX}px`,
           width: `${winWidth}px`,
@@ -153,16 +176,14 @@ export default function WindowLayout({
               ${window.innerHeight - winCoord.pointY - winHeight / 2}px) scale(0.02)`
             : '',
         }}
-        onMouseUp={() => {
-          handleNavbarClick(false)
-          handleResizeClick(false)
-        }}
-        className={`
-          fixed bg-white shadow-lg border border-zinc-600`}
       >
         <nav
-          className={`h-[32px] w-full bg-neutral-800 flex items-center
-        ${isActive ? 'brightness-100 opacity-100' : 'brightness-75 opacity-90'}`}
+          style={{
+            backgroundColor: navBackgroundColor,
+          }}
+          className={`
+            h-[32px] w-full flex items-center bg-neutral-800
+            ${isActive ? 'brightness-100 opacity-100' : 'brightness-75 opacity-80'}`}
         >
           <div className="w-fit shrink-0 h-8 px-2 text-white flex items-center text-sm truncate">
             {windowName}
