@@ -13,6 +13,11 @@ const test_1 = createWindowStore('test_1-window', bottomOffsetPx)
 const test_2 = createWindowStore('test_2-window', bottomOffsetPx)
 const test_3 = createWindowStore('test_3-window', bottomOffsetPx)
 
+const test_4 = createWindowStore('test_4-window', bottomOffsetPx)
+const test_5 = createWindowStore('test_5-window', bottomOffsetPx)
+const test_6 = createWindowStore('test_6-window', bottomOffsetPx)
+const test_7 = createWindowStore('test_7-window', bottomOffsetPx)
+
 export default function Home() {
   return (
     <>
@@ -42,22 +47,51 @@ export default function Home() {
         <WindowLayout useWindowStore={test_3} windowName={'test_3'}>
           <p>test_3</p>
         </WindowLayout>
+        
+        <WindowLayout useWindowStore={test_4} windowName={'test_4'}>
+          <p>test_4</p>
+        </WindowLayout>
+
+        <WindowLayout useWindowStore={test_5} windowName={'test_5'}>
+          <p>test_5</p>
+        </WindowLayout>
+
+        <WindowLayout useWindowStore={test_6} windowName={'test_6'}>
+          <p>test_6</p>
+        </WindowLayout>
+        <WindowLayout useWindowStore={test_7} windowName={'test_7'}>
+          <p>test_7</p>
+        </WindowLayout>
       </WorkspaceLayout>
 
       <nav className="fixed bottom-0 left-0 w-full h-12 bg-neutral-900 flex gap-2 py-2 px-4 justify-between z-50">
-        <div className="flex gap-2 items-center">
-          <WindowButton useWindowStore={readMe} className="p-2 rounded-md">
+        <div className="flex gap-2 items-center overflow-y-auto">
+          <WindowButton useWindowStore={readMe} className="px-2 py-0 rounded-md">
             <CodeXml className="text-zinc-400 hover:text-zinc-50" />
           </WindowButton>
-          <WindowButton useWindowStore={test_1} className="p-2 rounded-md">
+          <WindowButton useWindowStore={test_1} className="px-2 py-0 rounded-md">
             <p className="text-zinc-400 hover:text-zinc-50">test_1</p>
           </WindowButton>
-          <WindowButton useWindowStore={test_2} className="p-2 rounded-md">
+          <WindowButton useWindowStore={test_2} className="px-2 py-0 rounded-md">
             <p className="text-zinc-400 hover:text-zinc-50">test_2</p>
           </WindowButton>
-          <WindowButton useWindowStore={test_3} className="p-2 rounded-md">
+          <WindowButton useWindowStore={test_3} className="px-2 py-0 rounded-md">
             <p className="text-zinc-400 hover:text-zinc-50">test_3</p>
           </WindowButton>
+
+          <WindowButton useWindowStore={test_4} className="px-2 py-0 rounded-md">
+            <p className="text-zinc-400 hover:text-zinc-50">test_4</p>
+          </WindowButton>
+          <WindowButton useWindowStore={test_5} className="px-2 py-0 rounded-md">
+            <p className="text-zinc-400 hover:text-zinc-50">test_5</p>
+          </WindowButton>
+          <WindowButton useWindowStore={test_6} className="px-2 py-0 rounded-md">
+            <p className="text-zinc-400 hover:text-zinc-50">test_6</p>
+          </WindowButton>
+          <WindowButton useWindowStore={test_7} className="px-2 py-0 rounded-md">
+            <p className="text-zinc-400 hover:text-zinc-50">test_7</p>
+          </WindowButton>
+
         </div>
 
         <div className="flex gap-4 items-center">

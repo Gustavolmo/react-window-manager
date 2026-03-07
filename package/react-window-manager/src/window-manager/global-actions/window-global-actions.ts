@@ -31,3 +31,13 @@ export const bringTargetWindowToFront = (targetId: string) => {
   targetWindow.setZIndex(Object.keys(windowRegistry).length)
   targetWindow.setIsActive(true)
 }
+
+export const getOpenedWindowCount = () => {
+  let openWnidowCount = 0
+
+  for (const key of Object.keys(windowRegistry)) {
+    if (!windowRegistry[key].getState().isWinMinimized) openWnidowCount++
+  }
+
+  return openWnidowCount
+}

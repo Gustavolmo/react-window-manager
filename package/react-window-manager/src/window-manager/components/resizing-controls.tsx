@@ -3,6 +3,7 @@ import { Coord, ResizeState, WindowStore } from '../window-types'
 import { useCursorState } from '../../screen-manager/cursor-state'
 import { RefObject, useEffect } from 'react'
 import { windowRegistry } from '../window-store-factory'
+import { getOpenedWindowCount } from '../global-actions/window-global-actions'
 
 type Props = {
   useWindowStore: UseBoundStore<StoreApi<WindowStore>>
@@ -126,7 +127,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
   /**
    * @note this specific case needs it's own logic instead of simply calling
    * resizeLeftWinWidth & resizeTopWinHeight. Since both manipulate
-   * winWidth, winHeight and winCoord, one's logic will override the others
+   * winWidth, winHeight and winCoord, one's logic will override the other
    */
   const resizeLeftTopWidthAndHeight = () => {
     const winBox = windowRef.current?.getBoundingClientRect()
@@ -157,11 +158,13 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
 
   const handleResizeClick = (isResizing: ResizeState) => {
     setIsResizing(isResizing)
-    // setIsRemoteResizing(isResizing)
+    setRemoteIsResizing(isResizing)
   }
 
-  const setIsRemoteResizing = (currentResize: ResizeState) => {
-    const tolerance = 2
+  /** @FixMe this function is a nice feature, but very complex, needs to be written in a clearer way */
+  const setRemoteIsResizing = (currentResize: ResizeState) => {
+    const tolerance = 4
+    const allowDistantResize = getOpenedWindowCount() >= 3
 
     for (const key of Object.keys(windowRegistry)) {
       const remoteWin = windowRegistry[key].getState()
@@ -181,12 +184,21 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
       const remoteWinStartX = remoteWin.winCoord.pointX
       const remoteWinEndX = remoteWin.winCoord.pointX + remoteWin.winWidth
 
-      /* thisWin right edge <::::> remoteWin left edge */
+      const isRemoteOutside =
+        remoteWinEndY !== thisWinEndY ||
+        remoteWinEndX !== thisWinEndX ||
+        remoteWinStartY !== thisWinStartY ||
+        remoteWinStartX !== thisWinStartX
+      /*
+       * thisWin right edge <::::> remoteWin left edge || remoteWin is stacked */
       if (currentResize === 'right-width') {
         const isEdgeAlignedOnXAxis = Math.abs(thisWinEndX - remoteWinStartX) <= tolerance
         const isOverlapOnYAxis = thisWinStartY <= remoteWinEndY && thisWinEndY >= remoteWinStartY
 
-        if (isEdgeAlignedOnXAxis /*  && isOverlapOnYAxis */) {
+        const isEdgeResize = allowDistantResize
+          ? isEdgeAlignedOnXAxis
+          : isEdgeAlignedOnXAxis && isOverlapOnYAxis
+        if (isEdgeResize) {
           remoteWin.setIsResizing('left-width')
         }
 
@@ -197,73 +209,94 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
           Math.abs(thisWinEndY - remoteWinStartY) < tolerance ||
           Math.abs(thisWinStartY - remoteWinEndY) < tolerance
 
-        if (isRemoteOnSameLane && isRemoteEdgeConnected) {
+        const isStackResize = allowDistantResize
+          ? isRemoteOnSameLane && isRemoteOutside
+          : isRemoteOnSameLane && isRemoteEdgeConnected
+        if (isStackResize) {
           remoteWin.setIsResizing('right-width')
         }
       }
 
-      /* thisWin left edge <::::> remoteWin right edge */
+      /*
+       * thisWin left edge <::::> remoteWin right edge || remoteWin is stacked */
       if (currentResize === 'left-width') {
         const isEdgeAlignedOnXAxis = Math.abs(thisWinStartX - remoteWinEndX) <= tolerance
         const isOverlapOnYAxis = thisWinStartY <= remoteWinEndY && thisWinEndY >= remoteWinStartY
 
-        if (isEdgeAlignedOnXAxis /*  && isOverlapOnYAxis */) {
+        const isEdgeResize = allowDistantResize
+          ? isEdgeAlignedOnXAxis
+          : isEdgeAlignedOnXAxis && isOverlapOnYAxis
+        if (isEdgeResize) {
           remoteWin.setIsResizing('right-width')
         }
 
         const isRemoteOnSameLane =
           Math.abs(thisWinEndX - remoteWinEndX) < tolerance &&
           Math.abs(thisWinStartX - remoteWinStartX) < tolerance
-
         const isRemoteEdgeConnected =
           Math.abs(thisWinEndY - remoteWinStartY) < tolerance ||
           Math.abs(thisWinStartY - remoteWinEndY) < tolerance
 
-        if (isRemoteOnSameLane && isRemoteEdgeConnected) {
+        const isStackResize = allowDistantResize
+          ? isRemoteOnSameLane && isRemoteOutside
+          : isRemoteOnSameLane && isRemoteEdgeConnected
+        if (isStackResize) {
           remoteWin.setIsResizing('left-width')
         }
       }
 
-      /* thisWin top edge <::::> remoteWin bottom edge */
+      /*
+       * thisWin top edge <::::> remoteWin bottom edge || remoteWin is stacked */
       if (currentResize === 'top-height') {
         const isEdgeAlignedOnYAxis = Math.abs(thisWinStartY - remoteWinEndY) <= tolerance
         const isOverlapOnXAxis = thisWinStartX <= remoteWinEndX && thisWinEndX >= remoteWinStartX
 
-        if (isEdgeAlignedOnYAxis /*  && isOverlapOnXAxis */) {
+        const isEdgeResize = allowDistantResize
+          ? isEdgeAlignedOnYAxis
+          : isEdgeAlignedOnYAxis && isOverlapOnXAxis
+        if (isEdgeResize) {
           remoteWin.setIsResizing('bottom-height')
         }
 
         const isRemoteOnSameLane =
           Math.abs(thisWinEndY - remoteWinEndY) < tolerance &&
           Math.abs(thisWinStartY - remoteWinStartY) < tolerance
-
         const isRemoteEdgeConnected =
           Math.abs(thisWinEndX - remoteWinStartX) < tolerance ||
           Math.abs(thisWinStartX - remoteWinEndX) < tolerance
 
-        if (isRemoteOnSameLane && isRemoteEdgeConnected) {
+        const isStackResize = allowDistantResize
+          ? isRemoteOnSameLane && isRemoteOutside
+          : isRemoteOnSameLane && isRemoteEdgeConnected
+        if (isStackResize) {
           remoteWin.setIsResizing('top-height')
         }
       }
 
-      /* thisWin bottom edge <::::> remoteWin top edge */
+      /*
+       * thisWin bottom edge <::::> remoteWin top edge || remoteWin is stacked */
       if (currentResize === 'bottom-height') {
         const isEdgeAlignedOnYAxis = Math.abs(thisWinEndY - remoteWinStartY) <= tolerance
         const isOverlapOnXAxis = thisWinStartX <= remoteWinEndX && thisWinEndX >= remoteWinStartX
 
-        if (isEdgeAlignedOnYAxis /*  && isOverlapOnXAxis */) {
+        const isEdgeResize = allowDistantResize
+          ? isEdgeAlignedOnYAxis
+          : isEdgeAlignedOnYAxis && isOverlapOnXAxis
+        if (isEdgeResize) {
           remoteWin.setIsResizing('top-height')
         }
 
         const isRemoteOnSameLane =
           Math.abs(thisWinEndY - remoteWinEndY) < tolerance &&
           Math.abs(thisWinStartY - remoteWinStartY) < tolerance
-
         const isRemoteEdgeConnected =
           Math.abs(thisWinEndX - remoteWinStartX) < tolerance ||
           Math.abs(thisWinStartX - remoteWinEndX) < tolerance
 
-        if (isRemoteOnSameLane && isRemoteEdgeConnected) {
+        const isStackResize = allowDistantResize
+          ? isRemoteOnSameLane && isRemoteOutside
+          : isRemoteOnSameLane && isRemoteEdgeConnected
+        if (isStackResize) {
           remoteWin.setIsResizing('bottom-height')
         }
       }
