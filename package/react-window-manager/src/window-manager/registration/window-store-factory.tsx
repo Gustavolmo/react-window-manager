@@ -3,6 +3,7 @@ import { RefObject } from 'react'
 import { Coord, ResizeState, WindowApi, WindowStates, WindowStore } from '../model/window-types'
 import WindowLayout, { WindowLayoutProps } from '../internal/features/window-layout'
 import WindowButton, { WindowButtonProps } from '../internal/features/window-button'
+import { useWorkspaceState as ws } from '../internal/states/workspace-state'
 
 /** @howToUse use the syntax `windowRegistry[<winId>]()` to access a store outside of */
 export const windowRegistry: Record<string, UseBoundStore<StoreApi<WindowStore>>> = {}
@@ -71,8 +72,8 @@ export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
     },
     demaximizeWindow: () => {
       set({
-        winCoord: { pointX: window.innerWidth * 0.2, pointY: 40 },
-        winWidth: window.innerWidth * 0.6,
+        winCoord: { pointX: 20, pointY: 40 },
+        winWidth: window.innerWidth * 0.95,
         winHeight: window.innerHeight * 0.75,
         winVisualState: 'demaximized',
       })

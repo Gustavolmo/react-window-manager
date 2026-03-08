@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { resetAllWindows, stopAllDragAndResize } from './internal/shared/bulk-actions'
 import { useCursorState } from './internal/states/cursor-state'
-import { useWorkspaceState } from './internal/states/workspace.state'
+import { useWorkspaceState } from './internal/states/workspace-state'
 
 type Props = {
   children: React.ReactNode
@@ -12,22 +12,22 @@ export default function WorkspaceLayout({ children }: Props) {
   const { setInnerHeight, setInnerWidth, setCoord } = useWorkspaceState()
 
   useEffect(() => {
-    const wsElement = workspaceRef.current
-    if (!wsElement) return
+    // const wsElement = workspaceRef.current
+    // if (!wsElement) return
 
-    const updateRect = () => {
-      if (!wsElement) return
-      const rect = wsElement.getBoundingClientRect()
-      setInnerHeight(rect.height)
-      setInnerWidth(rect.width)
-      setCoord({ pointX: rect.left, pointY: rect.top })
-    }
+    // const updateRect = () => {
+    //   if (!wsElement) return
+    //   const rect = wsElement.getBoundingClientRect()
+    //   setInnerHeight(rect.height)
+    //   setInnerWidth(rect.width)
+    //   setCoord({ pointX: rect.left, pointY: rect.top })
+    // }
 
-    updateRect()
-    const observer = new ResizeObserver(() => updateRect())
+    // updateRect()
+    // const observer = new ResizeObserver(() => updateRect())
 
-    observer.observe(wsElement)
-    return () => observer.disconnect()
+    // observer.observe(wsElement)
+    // return () => observer.disconnect()
   }, [])
 
   return (

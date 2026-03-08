@@ -3,6 +3,7 @@ import { useCursorState } from '../../states/cursor-state'
 import { RefObject, useEffect } from 'react'
 import { windowRegistry } from '../../../registration/window-store-factory'
 import { getOpenedWindowCount } from '../../shared/bulk-actions'
+import { useWorkspaceState } from '../../states/workspace-state'
 
 type Props = {
   winId: string
@@ -10,6 +11,7 @@ type Props = {
 }
 
 export default function ResizingControls({ winId, windowRef }: Props) {
+  const ws = useWorkspaceState()
   const { x, y } = useCursorState()
   const {
     windowId,

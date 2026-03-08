@@ -27,10 +27,7 @@ export default function WindowButton({
       return
     }
 
-    if (isActive) {
-      closeWindow()
-    }
-
+    if (isActive) closeWindow()
     bringTargetWindowToFront(windowId)
   }
 

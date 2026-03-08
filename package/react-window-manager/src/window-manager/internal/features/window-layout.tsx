@@ -6,6 +6,7 @@ import { bringTargetWindowToFront } from '../shared/bulk-actions'
 import DockingControls from './docking/docking-controls'
 import ResizingControls from './resizing/resizing-controls'
 import { windowRegistry } from '../../registration/window-store-factory'
+import { useWorkspaceState } from '../states/workspace-state'
 
 type ResponsiveSizes = 'sm' | 'md' | 'lg' | 'xl' | 'never' | 'always' | number
 
@@ -14,7 +15,7 @@ export type WindowLayoutProps = {
   windowName: string | React.ReactNode
   winId: string
   /**
-   * @default 'lg'
+   * @default 'sm'
    * @param sm uses mobile format at 640px
    * @param md uses mobile format at 768px
    * @param lg uses mobile format at 1024px
@@ -35,7 +36,7 @@ export type WindowLayoutProps = {
 }
 
 export default function WindowLayout({
-  responsiveBreak = 'lg',
+  responsiveBreak = 'sm',
   children,
   windowName,
   navbarChildren,
@@ -43,6 +44,7 @@ export default function WindowLayout({
   defaultDock,
   style,
 }: WindowLayoutProps) {
+  const ws = useWorkspaceState()
   const { x, y } = useCursorState()
   const windowRef = useRef<HTMLDivElement>(null)
   const {
@@ -62,8 +64,6 @@ export default function WindowLayout({
 
     winCoord,
     setWinCoord,
-
-    setResizeAction,
 
     winWidth,
     winHeight,
@@ -124,17 +124,13 @@ export default function WindowLayout({
     }
   }
 
-  const handleNavbarClick = (isDragging: boolean) => {
-    setDragClickOffset({ pointX: x - winCoord.pointX, pointY: y - winCoord.pointY })
-    setIsDragging(isDragging)
-  }
-
   const isMobile = (): boolean => {
     return window.innerWidth < responsiveBreakInPx(responsiveBreak)
   }
 
-  const handleResizeClick = (isResizing: ResizeState) => {
-    setResizeAction(isResizing)
+  const handleNavbarClick = (isDragging: boolean) => {
+    setDragClickOffset({ pointX: x - winCoord.pointX, pointY: y - winCoord.pointY })
+    setIsDragging(isDragging)
   }
 
   const maximizeControl =

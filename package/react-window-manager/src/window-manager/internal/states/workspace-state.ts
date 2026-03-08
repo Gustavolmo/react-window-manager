@@ -12,11 +12,11 @@ type WorkspaceState = {
 }
 
 export const useWorkspaceState = create<WorkspaceState>((set) => ({
-  innerWidth: window.innerWidth,
-  innerHeight: window.innerHeight,
+  innerWidth: 0,
+  innerHeight: 0,
   coord: { pointX: 0, pointY: 0 },
 
-  setInnerWidth: (width: number) => set({ innerWidth: width }),
-  setInnerHeight: (height: number) => set({ innerHeight: height }),
+  setInnerWidth: (newWidth: number) => set({ innerWidth: newWidth }),
+  setInnerHeight: (newHeight: number) => set({ innerHeight: newHeight }),
   setCoord: (newCoord: Coord) => set({ coord: newCoord }),
 }))
