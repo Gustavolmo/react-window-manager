@@ -19,8 +19,8 @@ export default function ResizingControls({ winId, windowRef }: Props) {
     winCoord,
     setWinCoord,
 
-    isResizing,
-    setIsResizing,
+    resizeAction,
+    setResizeAction,
 
     winWidth,
     setWinWidth,
@@ -33,22 +33,22 @@ export default function ResizingControls({ winId, windowRef }: Props) {
   } = windowRegistry[winId]()
 
   useEffect(() => {
-    if (!isResizing) return
+    if (!resizeAction) return
 
     setWinVisualState('demaximized')
-    if (isResizing === 'bottom-height') resizeBottomWinHeight()
-    if (isResizing === 'top-height') resizeTopWinHeight()
+    if (resizeAction === 'bottom-height') resizeBottomWinHeight()
+    if (resizeAction === 'top-height') resizeTopWinHeight()
 
-    if (isResizing === 'right-width') resizeRightWinWidth()
-    if (isResizing === 'left-width') resizeLeftWinWidth()
+    if (resizeAction === 'right-width') resizeRightWinWidth()
+    if (resizeAction === 'left-width') resizeLeftWinWidth()
 
-    if (isResizing === 'bottom-right-all') resizeRightBottomWidthAndHeight()
-    if (isResizing === 'bottom-left-all') resizeLeftBottomWidthAndHeight()
+    if (resizeAction === 'bottom-right-all') resizeRightBottomWidthAndHeight()
+    if (resizeAction === 'bottom-left-all') resizeLeftBottomWidthAndHeight()
 
-    if (isResizing === 'top-right-all') resizeRightTopWidthAndHeight()
-    if (isResizing === 'top-left-all') resizeLeftTopWidthAndHeight()
+    if (resizeAction === 'top-right-all') resizeRightTopWidthAndHeight()
+    if (resizeAction === 'top-left-all') resizeLeftTopWidthAndHeight()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isResizing, x, y])
+  }, [resizeAction, x, y])
 
   const resizeRightWinWidth = () => {
     const winBox = windowRef.current?.getBoundingClientRect()
@@ -156,7 +156,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
   }
 
   const handleResizeClick = (isResizing: ResizeState) => {
-    setIsResizing(isResizing)
+    setResizeAction(isResizing)
     setRemoteIsResizing(isResizing)
   }
 
@@ -202,7 +202,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
           ? isEdgeAlignedOnXAxis
           : isEdgeAlignedOnXAxis && isOverlapOnYAxis
         if (isEdgeResize) {
-          remoteWin.setIsResizing('left-width')
+          remoteWin.setResizeAction('left-width')
         }
 
         const isRemoteOnSameLane =
@@ -216,7 +216,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
           ? isRemoteOnSameLane && isRemoteOutside
           : isRemoteOnSameLane && isRemoteEdgeConnected
         if (isStackResize) {
-          remoteWin.setIsResizing('right-width')
+          remoteWin.setResizeAction('right-width')
         }
       }
 
@@ -230,7 +230,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
           ? isEdgeAlignedOnXAxis
           : isEdgeAlignedOnXAxis && isOverlapOnYAxis
         if (isEdgeResize) {
-          remoteWin.setIsResizing('right-width')
+          remoteWin.setResizeAction('right-width')
         }
 
         const isRemoteOnSameLane =
@@ -244,7 +244,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
           ? isRemoteOnSameLane && isRemoteOutside
           : isRemoteOnSameLane && isRemoteEdgeConnected
         if (isStackResize) {
-          remoteWin.setIsResizing('left-width')
+          remoteWin.setResizeAction('left-width')
         }
       }
 
@@ -258,7 +258,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
           ? isEdgeAlignedOnYAxis
           : isEdgeAlignedOnYAxis && isOverlapOnXAxis
         if (isEdgeResize) {
-          remoteWin.setIsResizing('bottom-height')
+          remoteWin.setResizeAction('bottom-height')
         }
 
         const isRemoteOnSameLane =
@@ -272,7 +272,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
           ? isRemoteOnSameLane && isRemoteOutside
           : isRemoteOnSameLane && isRemoteEdgeConnected
         if (isStackResize) {
-          remoteWin.setIsResizing('top-height')
+          remoteWin.setResizeAction('top-height')
         }
       }
 
@@ -286,7 +286,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
           ? isEdgeAlignedOnYAxis
           : isEdgeAlignedOnYAxis && isOverlapOnXAxis
         if (isEdgeResize) {
-          remoteWin.setIsResizing('top-height')
+          remoteWin.setResizeAction('top-height')
         }
 
         const isRemoteOnSameLane =
@@ -300,7 +300,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
           ? isRemoteOnSameLane && isRemoteOutside
           : isRemoteOnSameLane && isRemoteEdgeConnected
         if (isStackResize) {
-          remoteWin.setIsResizing('bottom-height')
+          remoteWin.setResizeAction('bottom-height')
         }
       }
     }
@@ -309,6 +309,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
   return (
     <>
       <span
+        onMouseUp={() => handleResizeClick(false)}
         onMouseDown={() => handleResizeClick('right-width')}
         id="win-resize-right-width"
         className="fixed w-2 opacity-60 cursor-w-resize z-10"
@@ -319,6 +320,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
         }}
       ></span>
       <span
+        onMouseUp={() => handleResizeClick(false)}
         onMouseDown={() => handleResizeClick('left-width')}
         id="win-resize-left-width"
         className="fixed w-2 opacity-60 cursor-w-resize z-10"
@@ -329,6 +331,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
         }}
       ></span>
       <span
+        onMouseUp={() => handleResizeClick(false)}
         onMouseDown={() => handleResizeClick('bottom-height')}
         id="win-resize-bottom-height"
         className="fixed h-2 opacity-60 cursor-s-resize z-10"
@@ -339,6 +342,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
         }}
       ></span>
       <span
+        onMouseUp={() => handleResizeClick(false)}
         onMouseDown={() => handleResizeClick('top-height')}
         id="win-resize-top-height"
         className="fixed h-2 opacity-60 cursor-s-resize z-10"
@@ -349,6 +353,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
         }}
       ></span>
       <span
+        onMouseUp={() => handleResizeClick(false)}
         onMouseDown={() => handleResizeClick('bottom-right-all')}
         id="win-resize-bottom-right-all"
         className="fixed h-3 w-3 opacity-60 cursor-se-resize z-20"
@@ -358,6 +363,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
         }}
       ></span>
       <span
+        onMouseUp={() => handleResizeClick(false)}
         onMouseDown={() => handleResizeClick('bottom-left-all')}
         id="win-resize-bottom-left-all"
         className="fixed h-3 w-3 opacity-60 cursor-sw-resize z-20"
@@ -368,6 +374,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
       ></span>
 
       <span
+        onMouseUp={() => handleResizeClick(false)}
         onMouseDown={() => handleResizeClick('top-right-all')}
         id="win-resize-top-right-all"
         className="fixed h-3 w-3 opacity-60 cursor-ne-resize z-20"
@@ -377,6 +384,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
         }}
       ></span>
       <span
+        onMouseUp={() => handleResizeClick(false)}
         onMouseDown={() => handleResizeClick('top-left-all')}
         id="win-resize-top-left-all"
         className="fixed h-3 w-3 opacity-60 cursor-nw-resize z-20"

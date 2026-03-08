@@ -1,15 +1,18 @@
 import { JSX, RefObject } from 'react'
 import { WindowLayoutProps } from '../internal/features/window-layout'
 import { WindowButtonProps } from '../internal/features/window-button'
+import { StoreApi, UseBoundStore } from 'zustand'
+
+export type WindowStates = 'maximized' | 'demaximized'
+export type Coord = { pointX: number; pointY: number }
 
 export type WindowApi = {
-  id: () => string
+  id: string
+  store: UseBoundStore<StoreApi<WindowStore>>
   Window: (props: Omit<WindowLayoutProps, 'winId'>) => JSX.Element
   Button: (props: Omit<WindowButtonProps, 'winId'>) => JSX.Element
 }
 
-export type WindowStates = 'maximized' | 'demaximized'
-export type Coord = { pointX: number; pointY: number }
 export type ResizeState =
   | false
   | 'bottom-height'
@@ -41,11 +44,8 @@ export type WindowStore = {
   winVisualState: WindowStates
   setWinVisualState: (newState: WindowStates) => void
 
-  isWinMinimized: boolean
-  setIsWinMinimized: (isMini: boolean) => void
-
-  dragClickOffset: Coord
-  setDragClickOffset: (newCoord: Coord) => void
+  isWindowClosed: boolean
+  setisWindowClosed: (isMini: boolean) => void
 
   isDragging: boolean
   setIsDragging: (updatedIsDragging: boolean) => void
@@ -53,8 +53,8 @@ export type WindowStore = {
   winCoord: Coord
   setWinCoord: (newWinCoord: Coord) => void
 
-  isResizing: ResizeState
-  setIsResizing: (updatedIsResizing: ResizeState) => void
+  resizeAction: ResizeState
+  setResizeAction: (updatedIsResizing: ResizeState) => void
 
   winWidth: number
   setWinWidth: (newWinWidth: number) => void
@@ -66,7 +66,7 @@ export type WindowStore = {
   stopDragAndResize: () => void
 
   openWindow: () => void
-  minimizeWindow: () => void
+  closeWindow: () => void
 
   maximizeWindow: () => void
   demaximizeWindow: () => void

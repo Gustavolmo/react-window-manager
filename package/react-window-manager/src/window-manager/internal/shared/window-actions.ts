@@ -36,7 +36,7 @@ export const getOpenedWindowCount = () => {
   let openWnidowCount = 0
 
   for (const key of Object.keys(windowRegistry)) {
-    if (!windowRegistry[key].getState().isWinMinimized) openWnidowCount++
+    if (!windowRegistry[key].getState().isWindowClosed) openWnidowCount++
   }
 
   return openWnidowCount

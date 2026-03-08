@@ -1,6 +1,6 @@
 import { useCursorState } from '../event-listeners/cursor-state'
-import { useEffect, useRef } from 'react'
-import { ResizeState } from '../../model/window-types'
+import { useEffect, useRef, useState } from 'react'
+import { Coord, ResizeState } from '../../model/window-types'
 import { iconWinMinimize, iconWinDemaximize, iconWinMaximize } from '../assets/svg-win-icons'
 import { bringTargetWindowToFront } from '../shared/window-actions'
 import DockingControls from './docking/docking-controls'
@@ -55,10 +55,7 @@ export default function WindowLayout({
 
     winVisualState,
 
-    isWinMinimized,
-
-    dragClickOffset,
-    setDragClickOffset,
+    isWindowClosed,
 
     isDragging,
     setIsDragging,
@@ -66,18 +63,20 @@ export default function WindowLayout({
     winCoord,
     setWinCoord,
 
-    setIsResizing,
+    setResizeAction,
 
     winWidth,
     winHeight,
 
-    minimizeWindow,
+    closeWindow,
     maximizeWindow,
     demaximizeWindow,
 
     dockWindowRight,
     dockWindowLeft,
   } = windowRegistry[winId]()
+
+  const [dragClickOffset , setDragClickOffset] = useState<Coord>({ pointX: 0, pointY: 0 })
 
   useEffect(() => {
     setSelf(windowRef)
@@ -135,7 +134,7 @@ export default function WindowLayout({
   }
 
   const handleResizeClick = (isResizing: ResizeState) => {
-    setIsResizing(isResizing)
+    setResizeAction(isResizing)
   }
 
   const maximizeControl =
@@ -156,7 +155,7 @@ export default function WindowLayout({
     )
 
   const minimizeControl = (
-    <button className="hover:bg-red-500 hover:bg-opacity-20 px-5 h-full" onClick={minimizeWindow}>
+    <button className="hover:bg-red-500 hover:bg-opacity-20 px-5 h-full" onClick={closeWindow}>
       {iconWinMinimize(style?.navControlsColor)}
     </button>
   )
@@ -171,7 +170,6 @@ export default function WindowLayout({
         onMouseDown={() => bringTargetWindowToFront(windowId)}
         onMouseUp={() => {
           handleNavbarClick(false)
-          handleResizeClick(false)
         }}
         style={{
           backgroundColor: style?.windowBackgroundColor,
@@ -183,8 +181,8 @@ export default function WindowLayout({
 
           /* MINIMIZE LOGIC */
           transition: 'transform 0.2s ease-in-out, opacity 0.3s ease-in-out',
-          opacity: isWinMinimized ? 0 : 1,
-          transform: isWinMinimized
+          opacity: isWindowClosed ? 0 : 1,
+          transform: isWindowClosed
             ? `translate(${window.innerWidth / 2 - winCoord.pointX - winWidth / 2}px,
               ${window.innerHeight - winCoord.pointY - winHeight / 2}px) scale(0.02)`
             : '',

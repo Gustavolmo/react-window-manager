@@ -18,17 +18,17 @@ export default function WindowButton({
   isClosedClassName = 'brightness-[85%]',
   isOpenClassName = 'brightness-150',
 }: WindowButtonProps) {
-  const { openWindow, minimizeWindow, isWinMinimized, windowId, isActive } = windowRegistry[winId]()
+  const { openWindow, closeWindow, isWindowClosed, windowId, isActive } = windowRegistry[winId]()
 
   const handleOpenCloseWin = () => {
-    if (isWinMinimized) {
+    if (isWindowClosed) {
       bringTargetWindowToFront(windowId)
       openWindow()
       return
     }
 
     if (isActive) {
-      minimizeWindow()
+      closeWindow()
     }
 
     bringTargetWindowToFront(windowId)
@@ -40,7 +40,7 @@ export default function WindowButton({
       onClick={handleOpenCloseWin}
       className={`
         ${className} 
-        ${isWinMinimized ? isClosedClassName : isOpenClassName}`}
+        ${isWindowClosed ? isClosedClassName : isOpenClassName}`}
     >
       {children}
     </button>

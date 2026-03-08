@@ -22,7 +22,7 @@ export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
     setIsActive: (isActive: boolean) => set({ isActive: isActive }),
 
     resetFlag: false,
-    reset: () => set({ resetFlag: !get().resetFlag, isWinMinimized: true }),
+    reset: () => set({ resetFlag: !get().resetFlag, isWindowClosed: true }),
 
     zIndex: zIndexAtLaunch,
     setZIndex: (newIndex: number) => set({ zIndex: newIndex }),
@@ -33,12 +33,8 @@ export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
     winVisualState: 'demaximized',
     setWinVisualState: (newState: WindowStates) => set({ winVisualState: newState }),
 
-    isWinMinimized: true,
-    setIsWinMinimized: (isMini: boolean) => set({ isWinMinimized: isMini }),
-
-    dragClickOffset: { pointX: 0, pointY: 0 },
-    setDragClickOffset: (newCoord: Coord) =>
-      set({ dragClickOffset: { pointX: newCoord.pointX, pointY: newCoord.pointY } }),
+    isWindowClosed: true,
+    setisWindowClosed: (isMini: boolean) => set({ isWindowClosed: isMini }),
 
     isDragging: false,
     setIsDragging: (updatedIsDragging: boolean) => set({ isDragging: updatedIsDragging }),
@@ -47,8 +43,8 @@ export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
     setWinCoord: (newWinCoord: Coord) =>
       set({ winCoord: { pointX: newWinCoord.pointX, pointY: newWinCoord.pointY } }),
 
-    isResizing: false,
-    setIsResizing: (updatedIsResizing: ResizeState) => set({ isResizing: updatedIsResizing }),
+    resizeAction: false,
+    setResizeAction: (updatedIsResizing: ResizeState) => set({ resizeAction: updatedIsResizing }),
 
     winWidth: window.innerWidth * 0.95,
     setWinWidth: (newWinWidth: number) => set({ winWidth: newWinWidth }),
@@ -56,7 +52,7 @@ export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
     winHeight: window.innerHeight * 0.75,
     setWinHeight: (newWinHeight: number) => set({ winHeight: newWinHeight }),
 
-    stopDragAndResize: () => set({ isDragging: false, isResizing: false }),
+    stopDragAndResize: () => set({ isDragging: false, resizeAction: false }),
 
     maximizeWindow: () => {
       set({
@@ -75,15 +71,16 @@ export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
       })
     },
 
-    minimizeWindow: () => set({ isWinMinimized: true }),
+    closeWindow: () => set({ isWindowClosed: true }),
     openWindow: () => {
       const winRef = get().self
-      if (get().isWinMinimized && winRef?.current) {
-        set({ isWinMinimized: false })
+      if (get().isWindowClosed && winRef?.current) {
+        set({ isWindowClosed: false })
         winRef.current.style.transform = 'translate(0, 0) scale(1)'
       }
     },
 
+    /* POSSIBLE SEPARATIONS LAYER DOCK CONTROLS */
     dockWindowRight: () => {
       set({
         winCoord: { pointX: window.innerWidth / 2, pointY: 0 },
@@ -160,7 +157,9 @@ export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
   windowRegistry[windowInstanceId] = storeInstance
 
   return {
-    id: () => storeInstance.getState().windowId,
+    id: storeInstance.getState().windowId,
+
+    store: storeInstance,
 
     Window: (props: Omit<WindowLayoutProps, 'winId'>) => (
       <WindowLayout {...props} winId={windowInstanceId} />
