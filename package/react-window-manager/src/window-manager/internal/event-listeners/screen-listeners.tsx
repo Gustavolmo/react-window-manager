@@ -1,4 +1,4 @@
-import { adjustAllWindowsToViewport } from '../shared/window-actions'
+import { resetAllWindows } from '../shared/window-actions'
 import { useCursorState } from './cursor-state'
 import { useEffect } from 'react'
 
@@ -13,24 +13,9 @@ export default function ScreenListeners() {
 
 function WindowResizeReset() {
   useEffect(() => {
-    let prevViewport = {
-      width: window.innerWidth,
-      height: window.innerHeight,
-    }
+    window.addEventListener('resize', resetAllWindows)
 
-    const adjustOnResize = () => {
-      const nextViewport = {
-        width: window.innerWidth,
-        height: window.innerHeight,
-      }
-
-      adjustAllWindowsToViewport(prevViewport, nextViewport, 48)
-      prevViewport = nextViewport
-    }
-
-    window.addEventListener('resize', adjustOnResize)
-
-    return () => window.removeEventListener('resize', adjustOnResize)
+    return () => window.removeEventListener('resize', resetAllWindows)
   }, [])
 
   return <></>
