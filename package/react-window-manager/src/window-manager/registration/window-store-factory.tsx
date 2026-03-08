@@ -52,8 +52,15 @@ export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
     winHeight: window.innerHeight * 0.75,
     setWinHeight: (newWinHeight: number) => set({ winHeight: newWinHeight }),
 
-    stopDragAndResize: () => set({ isDragging: false, resizeAction: false }),
+    WIN_MIN_WIDTH: 232,
+    WIN_MIN_HEIGHT: 128,
+    setWIN_MIN_WIDTH: (w: number) => set({ WIN_MIN_WIDTH: w }),
+    setWIN_MIN_HEIGHT: (h: number) => set({ WIN_MIN_HEIGHT: h }),
 
+    /* NON WINDOW ESSENTIAL -- POSSIBLE SEPARATION LAYER */
+    //dockingApi
+    //resizeApi
+    //positionApi
     maximizeWindow: () => {
       set({
         winCoord: { pointX: 0, pointY: 0 },
@@ -64,8 +71,8 @@ export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
     },
     demaximizeWindow: () => {
       set({
-        winCoord: { pointX: 40, pointY: 40 },
-        winWidth: window.innerWidth * 0.95,
+        winCoord: { pointX: window.innerWidth * 0.2, pointY: 40 },
+        winWidth: window.innerWidth * 0.6,
         winHeight: window.innerHeight * 0.75,
         winVisualState: 'demaximized',
       })
@@ -80,7 +87,6 @@ export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
       }
     },
 
-    /* POSSIBLE SEPARATIONS LAYER DOCK CONTROLS */
     dockWindowRight: () => {
       set({
         winCoord: { pointX: window.innerWidth / 2, pointY: 0 },
@@ -147,11 +153,6 @@ export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
         winHeight: window.innerHeight / 2 - bottomOffsetPx / 2,
         winVisualState: 'demaximized',
       }),
-
-    WIN_MIN_WIDTH: 232,
-    WIN_MIN_HEIGHT: 128,
-    setWIN_MIN_WIDTH: (w: number) => set({ WIN_MIN_WIDTH: w }),
-    setWIN_MIN_HEIGHT: (h: number) => set({ WIN_MIN_HEIGHT: h }),
   }))
 
   windowRegistry[windowInstanceId] = storeInstance

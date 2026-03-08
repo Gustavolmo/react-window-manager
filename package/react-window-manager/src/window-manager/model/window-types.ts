@@ -61,10 +61,14 @@ export type WindowStore = {
 
   winHeight: number
   setWinHeight: (newWinHeight: number) => void
+ 
+  /* constants */
+  WIN_MIN_WIDTH: number
+  WIN_MIN_HEIGHT: number
+  setWIN_MIN_WIDTH: (w: number) => void
+  setWIN_MIN_HEIGHT: (h: number) => void
 
   /* Logic handlers */
-  stopDragAndResize: () => void
-
   openWindow: () => void
   closeWindow: () => void
 
@@ -83,9 +87,5 @@ export type WindowStore = {
   dockWindowBottomLeft: () => void
   dockWindowTopLeft: () => void
 
-  /* constants */
-  WIN_MIN_WIDTH: number
-  WIN_MIN_HEIGHT: number
-  setWIN_MIN_WIDTH: (w: number) => void
-  setWIN_MIN_HEIGHT: (h: number) => void
+
 }

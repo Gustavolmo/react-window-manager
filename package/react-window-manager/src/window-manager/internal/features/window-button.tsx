@@ -1,4 +1,4 @@
-import { bringTargetWindowToFront } from '../shared/window-actions'
+import { bringTargetWindowToFront } from '../shared/bulk-actions'
 import { windowRegistry } from '../../registration/window-store-factory'
 
 export type WindowButtonProps = {

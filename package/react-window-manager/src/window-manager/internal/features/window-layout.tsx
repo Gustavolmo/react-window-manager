@@ -1,8 +1,8 @@
-import { useCursorState } from '../event-listeners/cursor-state'
+import { useCursorState } from '../states/cursor-state'
 import { useEffect, useRef, useState } from 'react'
 import { Coord, ResizeState } from '../../model/window-types'
 import { iconWinMinimize, iconWinDemaximize, iconWinMaximize } from '../assets/svg-win-icons'
-import { bringTargetWindowToFront } from '../shared/window-actions'
+import { bringTargetWindowToFront } from '../shared/bulk-actions'
 import DockingControls from './docking/docking-controls'
 import ResizingControls from './resizing/resizing-controls'
 import { windowRegistry } from '../../registration/window-store-factory'
@@ -76,7 +76,7 @@ export default function WindowLayout({
     dockWindowLeft,
   } = windowRegistry[winId]()
 
-  const [dragClickOffset , setDragClickOffset] = useState<Coord>({ pointX: 0, pointY: 0 })
+  const [dragClickOffset, setDragClickOffset] = useState<Coord>({ pointX: 0, pointY: 0 })
 
   useEffect(() => {
     setSelf(windowRef)
