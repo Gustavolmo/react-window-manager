@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { windowRegistry } from '../window-store-factory'
+import { windowRegistry } from '../../../registration/window-store-factory'
 
 type Props = {
   winId: string

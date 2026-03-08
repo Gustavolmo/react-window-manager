@@ -1,5 +1,5 @@
-import ScreenListeners from '../screen-manager/screen-listeners'
-import { stopAllDragAndResize } from './global-actions/window-global-actions'
+import ScreenListeners from './internal/event-listeners/screen-listeners'
+import { stopAllDragAndResize } from './internal/shared/window-actions'
 
 type Props = {
   children: React.ReactNode

@@ -1,11 +1,15 @@
-import { useCursorState } from '../screen-manager/cursor-state'
+import { useCursorState } from './internal/event-listeners/cursor-state'
 import { useEffect, useRef } from 'react'
-import { ResizeState } from './window-types'
-import { iconWinMinimize, iconWinDemaximize, iconWinMaximize } from '../window-assets/svg-win-icons'
-import { bringTargetWindowToFront } from './global-actions/window-global-actions'
-import DockingControls from './components/docking-controls'
-import ResizingControls from './components/resizing-controls'
-import { windowRegistry } from './window-store-factory'
+import { ResizeState } from './model/window-types'
+import {
+  iconWinMinimize,
+  iconWinDemaximize,
+  iconWinMaximize,
+} from './internal/assets/svg-win-icons'
+import { bringTargetWindowToFront } from './internal/shared/window-actions'
+import DockingControls from './internal/features/docking/docking-controls'
+import ResizingControls from './internal/features/resizing/resizing-controls'
+import { windowRegistry } from './registration/window-store-factory'
 
 type ResponsiveSizes = 'sm' | 'md' | 'lg' | 'xl' | 'never' | 'always' | number
 type StoreProp = {

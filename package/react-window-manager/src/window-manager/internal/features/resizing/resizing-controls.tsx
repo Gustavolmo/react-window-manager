@@ -1,8 +1,8 @@
-import { ResizeState } from '../window-types'
-import { useCursorState } from '../../screen-manager/cursor-state'
+import { ResizeState } from '../../../model/window-types'
+import { useCursorState } from '../../event-listeners/cursor-state'
 import { RefObject, useEffect } from 'react'
-import { windowRegistry } from '../window-store-factory'
-import { getOpenedWindowCount } from '../global-actions/window-global-actions'
+import { windowRegistry } from '../../../registration/window-store-factory'
+import { getOpenedWindowCount } from '../../shared/window-actions'
 
 type Props = {
   winId: string

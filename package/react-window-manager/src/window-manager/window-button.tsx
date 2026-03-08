@@ -1,5 +1,5 @@
-import { bringTargetWindowToFront } from './global-actions/window-global-actions'
-import { windowRegistry } from './window-store-factory'
+import { bringTargetWindowToFront } from './internal/shared/window-actions'
+import { windowRegistry } from './registration/window-store-factory'
 
 type Prop = {
   children: React.ReactNode

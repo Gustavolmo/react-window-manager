@@ -1,4 +1,4 @@
-import { resetAllWindows } from '../window-manager/global-actions/window-global-actions'
+import { resetAllWindows } from '../shared/window-actions'
 import { useCursorState } from './cursor-state'
 import { useEffect } from 'react'
 
@@ -20,7 +20,7 @@ function WindowResizeReset() {
 
     window.addEventListener('resize', handleWindowResize)
 
-    return () => document.removeEventListener('pointermove', handleWindowResize)
+    return () => window.removeEventListener('resize', handleWindowResize)
   }, [])
 
   return <></>
@@ -36,9 +36,9 @@ function CursorCoordinates() {
       setY(e.clientY)
     }
 
-    document.addEventListener('pointermove', handleWindowPosition)
+    window.addEventListener('pointermove', handleWindowPosition)
 
-    return () => document.removeEventListener('pointermove', handleWindowPosition)
+    return () => window.removeEventListener('pointermove', handleWindowPosition)
   }, [setX, setY])
 
   return <></>

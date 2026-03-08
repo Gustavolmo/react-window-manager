@@ -1,6 +1,6 @@
 import { create, StoreApi, UseBoundStore } from 'zustand'
 import { RefObject } from 'react'
-import { Coord, ResizeState, WindowStates, WindowStore } from './window-types'
+import { Coord, ResizeState, WindowStates, WindowStore } from '../model/window-types'
 
 /** @howToUse use the syntax `windowRegistry[<winId>]()` to access the state store */
 export const windowRegistry: Record<string, UseBoundStore<StoreApi<WindowStore>>> = {}
@@ -157,3 +157,14 @@ export const createWindowStore = (windowId: string, bottomOffsetPx: number): str
 
   return storeInstance.getState().windowId
 }
+
+/*
+FIND ME: IMPLEMENT ME
+function Window(props: WindowLayoutProps) {
+    return <WindowLayout winId={windowId} {...props} />
+  }
+
+  function Button(props: WindowButtonProps) {
+    return <WindowButton winId={windowId} {...props} />
+  }
+ */

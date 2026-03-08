@@ -1,4 +1,4 @@
-import { windowRegistry } from '../window-store-factory'
+import { windowRegistry } from '../../registration/window-store-factory'
 
 export const stopAllDragAndResize = () => {
   for (const key of Object.keys(windowRegistry)) {
