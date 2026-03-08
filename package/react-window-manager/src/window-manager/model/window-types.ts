@@ -1,4 +1,12 @@
-import { RefObject } from 'react'
+import { JSX, RefObject } from 'react'
+import { WindowLayoutProps } from '../internal/features/window-layout'
+import { WindowButtonProps } from '../internal/features/window-button'
+
+export type WindowApi = {
+  id: () => string
+  Window: (props: Omit<WindowLayoutProps, 'winId'>) => JSX.Element
+  Button: (props: Omit<WindowButtonProps, 'winId'>) => JSX.Element
+}
 
 export type WindowStates = 'maximized' | 'demaximized'
 export type Coord = { pointX: number; pointY: number }

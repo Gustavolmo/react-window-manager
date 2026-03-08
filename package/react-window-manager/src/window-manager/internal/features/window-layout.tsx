@@ -1,18 +1,15 @@
-import { useCursorState } from './internal/event-listeners/cursor-state'
+import { useCursorState } from '../event-listeners/cursor-state'
 import { useEffect, useRef } from 'react'
-import { ResizeState } from './model/window-types'
-import {
-  iconWinMinimize,
-  iconWinDemaximize,
-  iconWinMaximize,
-} from './internal/assets/svg-win-icons'
-import { bringTargetWindowToFront } from './internal/shared/window-actions'
-import DockingControls from './internal/features/docking/docking-controls'
-import ResizingControls from './internal/features/resizing/resizing-controls'
-import { windowRegistry } from './registration/window-store-factory'
+import { ResizeState } from '../../model/window-types'
+import { iconWinMinimize, iconWinDemaximize, iconWinMaximize } from '../assets/svg-win-icons'
+import { bringTargetWindowToFront } from '../shared/window-actions'
+import DockingControls from './docking/docking-controls'
+import ResizingControls from './resizing/resizing-controls'
+import { windowRegistry } from '../../registration/window-store-factory'
 
 type ResponsiveSizes = 'sm' | 'md' | 'lg' | 'xl' | 'never' | 'always' | number
-type StoreProp = {
+
+export type WindowLayoutProps = {
   children: React.ReactNode
   windowName: string | React.ReactNode
   winId: string
@@ -45,7 +42,7 @@ export default function WindowLayout({
   winId,
   defaultDock,
   style,
-}: StoreProp) {
+}: WindowLayoutProps) {
   const { x, y } = useCursorState()
   const windowRef = useRef<HTMLDivElement>(null)
   const {

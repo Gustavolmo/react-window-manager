@@ -1,18 +1,22 @@
 import { create, StoreApi, UseBoundStore } from 'zustand'
 import { RefObject } from 'react'
-import { Coord, ResizeState, WindowStates, WindowStore } from '../model/window-types'
+import { Coord, ResizeState, WindowApi, WindowStates, WindowStore } from '../model/window-types'
+import WindowLayout, { WindowLayoutProps } from '../internal/features/window-layout'
+import WindowButton, { WindowButtonProps } from '../internal/features/window-button'
 
-/** @howToUse use the syntax `windowRegistry[<winId>]()` to access the state store */
+/** @howToUse use the syntax `windowRegistry[<winId>]()` to access a store outside of */
 export const windowRegistry: Record<string, UseBoundStore<StoreApi<WindowStore>>> = {}
 
-/** @return the id used to reference this instance of the window state in other components */
-export const createWindowStore = (windowId: string, bottomOffsetPx: number): string => {
-  if (windowRegistry[windowId]) console.error('This store ID is already in use: ' + windowId)
-
+/**
+ * @return `id` auto generated id at the root of the window component. `id` can be used in `windowRegistry` to access the window state store
+ * @return `window` JSX component representing an interactive window
+ * @return `button` JSX component that control this window */
+export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
   const zIndexAtLaunch = Object.keys(windowRegistry).length + 1
+  const windowInstanceId = `react-dynamic-window-instance${Object.keys(windowRegistry).length}`
 
   const storeInstance = create<WindowStore>((set, get) => ({
-    windowId: windowId,
+    windowId: windowInstanceId,
 
     isActive: false,
     setIsActive: (isActive: boolean) => set({ isActive: isActive }),
@@ -153,18 +157,17 @@ export const createWindowStore = (windowId: string, bottomOffsetPx: number): str
     setWIN_MIN_HEIGHT: (h: number) => set({ WIN_MIN_HEIGHT: h }),
   }))
 
-  windowRegistry[windowId] = storeInstance
+  windowRegistry[windowInstanceId] = storeInstance
 
-  return storeInstance.getState().windowId
+  return {
+    id: () => storeInstance.getState().windowId,
+
+    Window: (props: Omit<WindowLayoutProps, 'winId'>) => (
+      <WindowLayout {...props} winId={windowInstanceId} />
+    ),
+
+    Button: (props: Omit<WindowButtonProps, 'winId'>) => (
+      <WindowButton {...props} winId={windowInstanceId} />
+    ),
+  }
 }
-
-/*
-FIND ME: IMPLEMENT ME
-function Window(props: WindowLayoutProps) {
-    return <WindowLayout winId={windowId} {...props} />
-  }
-
-  function Button(props: WindowButtonProps) {
-    return <WindowButton winId={windowId} {...props} />
-  }
- */

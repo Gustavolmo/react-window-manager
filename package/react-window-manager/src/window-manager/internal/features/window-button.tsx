@@ -1,7 +1,7 @@
-import { bringTargetWindowToFront } from './internal/shared/window-actions'
-import { windowRegistry } from './registration/window-store-factory'
+import { bringTargetWindowToFront } from '../shared/window-actions'
+import { windowRegistry } from '../../registration/window-store-factory'
 
-type Prop = {
+export type WindowButtonProps = {
   children: React.ReactNode
   winId: string
   className?: string
@@ -17,7 +17,7 @@ export default function WindowButton({
   className,
   isClosedClassName = 'brightness-[85%]',
   isOpenClassName = 'brightness-150',
-}: Prop) {
+}: WindowButtonProps) {
   const { openWindow, minimizeWindow, isWinMinimized, windowId, isActive } = windowRegistry[winId]()
 
   const handleOpenCloseWin = () => {
