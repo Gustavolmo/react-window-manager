@@ -1,17 +1,17 @@
 import { useCursorState } from '../screen-manager/cursor-state'
 import { useEffect, useRef } from 'react'
-import { StoreApi, UseBoundStore } from 'zustand'
-import { WindowStore, ResizeState } from './window-types'
+import { ResizeState } from './window-types'
 import { iconWinMinimize, iconWinDemaximize, iconWinMaximize } from '../window-assets/svg-win-icons'
 import { bringTargetWindowToFront } from './global-actions/window-global-actions'
 import DockingControls from './components/docking-controls'
 import ResizingControls from './components/resizing-controls'
+import { windowRegistry } from './window-store-factory'
 
 type ResponsiveSizes = 'sm' | 'md' | 'lg' | 'xl' | 'never' | 'always' | number
 type StoreProp = {
   children: React.ReactNode
   windowName: string | React.ReactNode
-  useWindowStore: UseBoundStore<StoreApi<WindowStore>>
+  winId: string
   /**
    * @default 'lg'
    * @param sm uses mobile format at 640px
@@ -38,7 +38,7 @@ export default function WindowLayout({
   children,
   windowName,
   navbarChildren,
-  useWindowStore,
+  winId,
   defaultDock,
   style,
 }: StoreProp) {
@@ -76,7 +76,7 @@ export default function WindowLayout({
 
     dockWindowRight,
     dockWindowLeft,
-  } = useWindowStore()
+  } = windowRegistry[winId]()
 
   useEffect(() => {
     setSelf(windowRef)
@@ -162,7 +162,7 @@ export default function WindowLayout({
 
   return (
     <>
-      {!isMobile() && <DockingControls useWindowStore={useWindowStore} />}
+      {!isMobile() && <DockingControls winId={winId} />}
       <div
         id={windowId}
         ref={windowRef}
@@ -215,7 +215,7 @@ export default function WindowLayout({
           {minimizeControl}
         </nav>
 
-        {!isMobile() && <ResizingControls useWindowStore={useWindowStore} windowRef={windowRef} />}
+        {!isMobile() && <ResizingControls winId={winId} windowRef={windowRef} />}
 
         {/* Offset the navbar => 'h-[calc(100%-32px)]' */}
         <div className={`relative w-full h-[calc(100%-32px)] overflow-auto`}>{children}</div>

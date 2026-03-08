@@ -2,9 +2,11 @@ import { create, StoreApi, UseBoundStore } from 'zustand'
 import { RefObject } from 'react'
 import { Coord, ResizeState, WindowStates, WindowStore } from './window-types'
 
+/** @howToUse use the syntax `windowRegistry[<winId>]()` to access the state store */
 export const windowRegistry: Record<string, UseBoundStore<StoreApi<WindowStore>>> = {}
 
-export const createWindowStore = (windowId: string, bottomOffsetPx: number) => {
+/** @return the id used to reference this instance of the window state in other components */
+export const createWindowStore = (windowId: string, bottomOffsetPx: number): string => {
   if (windowRegistry[windowId]) console.error('This store ID is already in use: ' + windowId)
 
   const zIndexAtLaunch = Object.keys(windowRegistry).length + 1
@@ -153,5 +155,5 @@ export const createWindowStore = (windowId: string, bottomOffsetPx: number) => {
 
   windowRegistry[windowId] = storeInstance
 
-  return storeInstance
+  return storeInstance.getState().windowId
 }

@@ -1,10 +1,9 @@
-import { StoreApi, UseBoundStore } from 'zustand'
-import { WindowStore } from './window-types'
 import { bringTargetWindowToFront } from './global-actions/window-global-actions'
+import { windowRegistry } from './window-store-factory'
 
 type Prop = {
   children: React.ReactNode
-  useWindowStore: UseBoundStore<StoreApi<WindowStore>>
+  winId: string
   className?: string
   /** @default 'brightness-[85%]' */
   isClosedClassName?: string
@@ -14,12 +13,12 @@ type Prop = {
 
 export default function WindowButton({
   children,
-  useWindowStore,
+  winId,
   className,
   isClosedClassName = 'brightness-[85%]',
   isOpenClassName = 'brightness-150',
 }: Prop) {
-  const { openWindow, minimizeWindow, isWinMinimized, windowId, isActive } = useWindowStore()
+  const { openWindow, minimizeWindow, isWinMinimized, windowId, isActive } = windowRegistry[winId]()
 
   const handleOpenCloseWin = () => {
     if (isWinMinimized) {

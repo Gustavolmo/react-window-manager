@@ -1,16 +1,15 @@
-import { StoreApi, UseBoundStore } from 'zustand'
-import { Coord, ResizeState, WindowStore } from '../window-types'
+import { ResizeState } from '../window-types'
 import { useCursorState } from '../../screen-manager/cursor-state'
 import { RefObject, useEffect } from 'react'
 import { windowRegistry } from '../window-store-factory'
 import { getOpenedWindowCount } from '../global-actions/window-global-actions'
 
 type Props = {
-  useWindowStore: UseBoundStore<StoreApi<WindowStore>>
+  winId: string
   windowRef: RefObject<HTMLDivElement | null>
 }
 
-export default function ResizingControls({ useWindowStore, windowRef }: Props) {
+export default function ResizingControls({ winId, windowRef }: Props) {
   const { x, y } = useCursorState()
   const {
     windowId,
@@ -31,7 +30,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
 
     WIN_MIN_WIDTH,
     WIN_MIN_HEIGHT,
-  } = useWindowStore()
+  } = windowRegistry[winId]()
 
   useEffect(() => {
     if (!isResizing) return
@@ -161,7 +160,11 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
     setRemoteIsResizing(isResizing)
   }
 
-  /** @FixMe this function is a nice feature, but very complex, needs to be written in a clearer way */
+  /**
+   * @FixMe
+   * this function is a nice feature, but very complex, needs to be written in a clearer way.
+   * Multi-window tiling can be brittle - isRemoteOutside needs refinement
+   * */
   const setRemoteIsResizing = (currentResize: ResizeState) => {
     const tolerance = 4
     const allowDistantResize = getOpenedWindowCount() >= 3

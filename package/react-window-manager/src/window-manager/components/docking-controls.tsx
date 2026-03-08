@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
-import { StoreApi, UseBoundStore } from 'zustand'
-import { WindowStore } from '../window-types'
+import { windowRegistry } from '../window-store-factory'
 
 type Props = {
-  useWindowStore: UseBoundStore<StoreApi<WindowStore>>
+  winId: string
 }
 
-export default function DockingControls({ useWindowStore }: Props) {
+export default function DockingControls({ winId }: Props) {
   const {
     isDragging,
 
@@ -20,7 +19,7 @@ export default function DockingControls({ useWindowStore }: Props) {
     dockWindowBottomLeft,
     dockWindowTopRight,
     dockWindowBottomRight,
-  } = useWindowStore()
+  } = windowRegistry[winId]()
 
   const [isVisible, setIsVisible] = useState(false)
   const [isHovering, setIsHovering] = useState(false)
@@ -93,7 +92,7 @@ export default function DockingControls({ useWindowStore }: Props) {
 
   const windowDockPannel = (
     <span
-      className="pointer-events-auto px-4 pb-4"
+      className="pointer-events-auto px-4 pb-2"
       onMouseOver={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
