@@ -145,8 +145,8 @@ export const createWindowStore = (windowId: string, bottomOffsetPx: number) => {
         winVisualState: 'demaximized',
       }),
 
-    WIN_MIN_WIDTH: 360,
-    WIN_MIN_HEIGHT: 240,
+    WIN_MIN_WIDTH: 232,
+    WIN_MIN_HEIGHT: 128,
     setWIN_MIN_WIDTH: (w: number) => set({ WIN_MIN_WIDTH: w }),
     setWIN_MIN_HEIGHT: (h: number) => set({ WIN_MIN_HEIGHT: h }),
   }))

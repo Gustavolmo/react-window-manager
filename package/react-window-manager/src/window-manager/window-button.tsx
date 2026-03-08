@@ -2,21 +2,23 @@ import { StoreApi, UseBoundStore } from 'zustand'
 import { WindowStore } from './window-types'
 import { bringTargetWindowToFront } from './global-actions/window-global-actions'
 
-type StoreProp = {
+type Prop = {
   children: React.ReactNode
   useWindowStore: UseBoundStore<StoreApi<WindowStore>>
-  styles?: string
-  closedStyle?: string
-  openStyle?: string
+  className?: string
+  /** @default 'brightness-[85%]' */
+  isClosedClassName?: string
+  /** @default 'brightness-150' */
+  isOpenClassName?: string
 }
 
 export default function WindowButton({
   children,
   useWindowStore,
-  styles,
-  closedStyle = 'brightness-[85%]',
-  openStyle = 'brightness-150',
-}: StoreProp) {
+  className,
+  isClosedClassName = 'brightness-[85%]',
+  isOpenClassName = 'brightness-150',
+}: Prop) {
   const { openWindow, minimizeWindow, isWinMinimized, windowId, isActive } = useWindowStore()
 
   const handleOpenCloseWin = () => {
@@ -38,8 +40,8 @@ export default function WindowButton({
       id={`${windowId}_button`}
       onClick={handleOpenCloseWin}
       className={`
-        ${styles} 
-        ${isWinMinimized ? closedStyle : openStyle}`}
+        ${className} 
+        ${isWinMinimized ? isClosedClassName : isOpenClassName}`}
     >
       {children}
     </button>

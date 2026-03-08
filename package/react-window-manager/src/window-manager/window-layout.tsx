@@ -1,5 +1,5 @@
-import { useScreenState } from '../screen-manager/screen-state'
-import { useEffect, useRef, useState } from 'react'
+import { useCursorState } from '../screen-manager/cursor-state'
+import { useEffect, useRef } from 'react'
 import { StoreApi, UseBoundStore } from 'zustand'
 import { WindowStore, ResizeState } from './window-types'
 import { iconWinMinimize, iconWinDemaximize, iconWinMaximize } from '../window-assets/svg-win-icons'
@@ -7,21 +7,30 @@ import { bringTargetWindowToFront } from './global-actions/window-global-actions
 import DockingControls from './components/docking-controls'
 import ResizingControls from './components/resizing-controls'
 
+type ResponsiveSizes = 'sm' | 'md' | 'lg' | 'xl' | 'never' | 'always' | number
 type StoreProp = {
-  responsiveBreak?: 'sm' | 'md' | 'lg' | 'xl' | 'never'
   children: React.ReactNode
   windowName: string | React.ReactNode
+  useWindowStore: UseBoundStore<StoreApi<WindowStore>>
+  /**
+   * @default 'lg'
+   * @param sm uses mobile format at 640px
+   * @param md uses mobile format at 768px
+   * @param lg uses mobile format at 1024px
+   * @param xl uses mobile format at 1280px
+   * @param never never uses mobile format
+   * @param always always uses mobile format
+   * @param number set custom break point value in px */
+  responsiveBreak?: ResponsiveSizes
   navbarChildren?: React.ReactNode
   defaultDock?: 'right' | 'left' | 'full'
-  useWindowStore: UseBoundStore<StoreApi<WindowStore>>
-}
 
-const responsiveBreakInPx = {
-  sm: 640,
-  md: 768,
-  lg: 1024,
-  xl: 1280,
-  never: 0,
+  /** @note use CSS values such as hex or supported color names */
+  style?: {
+    navBackgroundColor?: string
+    windowBackgroundColor?: string
+    navControlsColor?: string
+  }
 }
 
 export default function WindowLayout({
@@ -31,8 +40,9 @@ export default function WindowLayout({
   navbarChildren,
   useWindowStore,
   defaultDock,
+  style,
 }: StoreProp) {
-  const { x, y } = useScreenState()
+  const { x, y } = useCursorState()
   const windowRef = useRef<HTMLDivElement>(null)
   const {
     windowId,
@@ -66,7 +76,6 @@ export default function WindowLayout({
 
     dockWindowRight,
     dockWindowLeft,
-
   } = useWindowStore()
 
   useEffect(() => {
@@ -96,13 +105,32 @@ export default function WindowLayout({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDragging, x, y])
 
+  const responsiveBreakInPx = (breakPoint: ResponsiveSizes): number => {
+    switch (breakPoint) {
+      case 'sm':
+        return 640
+      case 'md':
+        return 768
+      case 'lg':
+        return 1024
+      case 'xl':
+        return 1280
+      case 'never':
+        return 0
+      case 'always':
+        return Infinity
+      default:
+        return breakPoint
+    }
+  }
+
   const handleNavbarClick = (isDragging: boolean) => {
     setDragClickOffset({ pointX: x - winCoord.pointX, pointY: y - winCoord.pointY })
     setIsDragging(isDragging)
   }
 
   const isMobile = (): boolean => {
-    return window.innerWidth < responsiveBreakInPx[responsiveBreak]
+    return window.innerWidth < responsiveBreakInPx(responsiveBreak)
   }
 
   const handleResizeClick = (isResizing: ResizeState) => {
@@ -115,20 +143,20 @@ export default function WindowLayout({
         className={`block hover:bg-gray-100 hover:bg-opacity-20 px-5 h-full`}
         onClick={demaximizeWindow}
       >
-        {iconWinDemaximize()}
+        {iconWinDemaximize(style?.navControlsColor)}
       </button>
     ) : (
       <button
         className={`block hover:bg-gray-100 hover:bg-opacity-20 px-5 h-full`}
         onClick={maximizeWindow}
       >
-        {iconWinMaximize()}
+        {iconWinMaximize(style?.navControlsColor)}
       </button>
     )
 
   const minimizeControl = (
     <button className="hover:bg-red-500 hover:bg-opacity-20 px-5 h-full" onClick={minimizeWindow}>
-      {iconWinMinimize()}
+      {iconWinMinimize(style?.navControlsColor)}
     </button>
   )
 
@@ -136,10 +164,16 @@ export default function WindowLayout({
     <>
       {!isMobile() && <DockingControls useWindowStore={useWindowStore} />}
       <div
-        onMouseDown={() => bringTargetWindowToFront(windowId)}
         id={windowId}
         ref={windowRef}
+        className={`fixed bg-white shadow-lg border border-zinc-600 rounded-sm overflow-hidden`}
+        onMouseDown={() => bringTargetWindowToFront(windowId)}
+        onMouseUp={() => {
+          handleNavbarClick(false)
+          handleResizeClick(false)
+        }}
         style={{
+          backgroundColor: style?.windowBackgroundColor,
           top: `${winCoord.pointY}px`,
           left: `${winCoord.pointX}px`,
           width: `${winWidth}px`,
@@ -154,24 +188,27 @@ export default function WindowLayout({
               ${window.innerHeight - winCoord.pointY - winHeight / 2}px) scale(0.02)`
             : '',
         }}
-        onMouseUp={() => {
-          handleNavbarClick(false)
-          handleResizeClick(false)
-        }}
-        className={`fixed bg-white shadow-lg border border-zinc-600`}
       >
         <nav
-          className={`h-[32px] w-full bg-neutral-800 flex items-center
-        ${isActive ? 'brightness-100 opacity-100' : 'brightness-75 opacity-90'}`}
+          style={{
+            backgroundColor: style?.navBackgroundColor,
+          }}
+          className={`
+            h-[32px] w-full flex items-center bg-neutral-800
+            ${isActive ? 'brightness-100 opacity-100' : 'brightness-75 opacity-80'}`}
         >
           <div className="w-fit shrink-0 h-8 px-2 text-white flex items-center text-sm truncate">
             {windowName}
+          </div>
+
+          <div className="h-8 px-2 text-white flex items-center text-sm truncate">
             {navbarChildren}
           </div>
+
           <div
             onMouseDown={() => handleNavbarClick(true)}
             onDoubleClick={maximizeWindow}
-            className="w-full h-8 px-2 text-white flex items-center text-sm truncate"
+            className="grow min-w-8 h-8 px-2 text-white flex items-center text-sm"
           ></div>
 
           {!isMobile() && maximizeControl}

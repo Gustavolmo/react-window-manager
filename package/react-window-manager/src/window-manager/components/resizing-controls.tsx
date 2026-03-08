@@ -1,7 +1,9 @@
 import { StoreApi, UseBoundStore } from 'zustand'
-import { ResizeState, WindowStore } from '../window-types'
-import { useScreenState } from '../../screen-manager/screen-state'
+import { Coord, ResizeState, WindowStore } from '../window-types'
+import { useCursorState } from '../../screen-manager/cursor-state'
 import { RefObject, useEffect } from 'react'
+import { windowRegistry } from '../window-store-factory'
+import { getOpenedWindowCount } from '../global-actions/window-global-actions'
 
 type Props = {
   useWindowStore: UseBoundStore<StoreApi<WindowStore>>
@@ -9,8 +11,10 @@ type Props = {
 }
 
 export default function ResizingControls({ useWindowStore, windowRef }: Props) {
-  const { x, y } = useScreenState()
+  const { x, y } = useCursorState()
   const {
+    windowId,
+
     setWinVisualState,
 
     winCoord,
@@ -65,7 +69,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
     const winBox = windowRef.current?.getBoundingClientRect()
     if (!winBox) return
 
-    const minWinWidth = winBox.right - x < WIN_MIN_WIDTH
+    const minWinWidth = winBox.right - x <= WIN_MIN_WIDTH
     if (minWinWidth) return
 
     const cursorOutOfBounds = x > window.innerWidth || x < 0
@@ -76,12 +80,11 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
     setWinCoord({ pointX: x, pointY: winCoord.pointY })
   }
 
-  /** @winXOverride we need to override windowX if another function that also sets windowX is called at the same time */
-  const resizeTopWinHeight = (winXOverride?: number) => {
+  const resizeTopWinHeight = () => {
     const winBox = windowRef.current?.getBoundingClientRect()
     if (!winBox) return
 
-    const minWinHeight = winBox.bottom - y < WIN_MIN_HEIGHT
+    const minWinHeight = winBox.bottom - y <= WIN_MIN_HEIGHT
     if (minWinHeight) return
 
     const cursorOutOfBounds = y > window.innerHeight || y < 0
@@ -89,8 +92,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
 
     const sizeDiff = winBox.top - y
     setWinHeight(winHeight + sizeDiff)
-    const winX = winXOverride ? winXOverride : winCoord.pointX
-    setWinCoord({ pointX: winX, pointY: y })
+    setWinCoord({ pointX: winCoord.pointX, pointY: y })
   }
 
   const resizeBottomWinHeight = () => {
@@ -122,20 +124,190 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
     resizeTopWinHeight()
   }
 
+  /**
+   * @note this specific case needs it's own logic instead of simply calling
+   * resizeLeftWinWidth & resizeTopWinHeight. Since both manipulate
+   * winWidth, winHeight and winCoord, one's logic will override the other
+   */
   const resizeLeftTopWidthAndHeight = () => {
-    resizeLeftWinWidth()
-    resizeTopWinHeight(x)
+    const winBox = windowRef.current?.getBoundingClientRect()
+    if (!winBox) return
+
+    const cursorOutOfBoundsY = y > window.innerHeight || y < 0
+    const cursorOutOfBoundsX = x > window.innerWidth || x < 0
+    if (cursorOutOfBoundsY || cursorOutOfBoundsX) return
+
+    const minWinHeight = winBox.bottom - y <= WIN_MIN_HEIGHT
+    const minWinWidth = winBox.right - x <= WIN_MIN_WIDTH
+
+    setWinCoord({
+      pointX: minWinWidth ? winCoord.pointX : x,
+      pointY: minWinHeight ? winCoord.pointY : y,
+    })
+
+    if (!minWinHeight) {
+      const sizeDiffY = winBox.top - y
+      setWinHeight(winHeight + sizeDiffY)
+    }
+
+    if (!minWinWidth) {
+      const sizeDiffX = winBox.left - x
+      setWinWidth(winWidth + sizeDiffX)
+    }
   }
 
   const handleResizeClick = (isResizing: ResizeState) => {
     setIsResizing(isResizing)
+    setRemoteIsResizing(isResizing)
+  }
+
+  /** @FixMe this function is a nice feature, but very complex, needs to be written in a clearer way */
+  const setRemoteIsResizing = (currentResize: ResizeState) => {
+    const tolerance = 4
+    const allowDistantResize = getOpenedWindowCount() >= 3
+
+    for (const key of Object.keys(windowRegistry)) {
+      const remoteWin = windowRegistry[key].getState()
+      const thisWin = windowRegistry[windowId].getState()
+
+      if (remoteWin.windowId === thisWin.windowId) {
+        continue
+      }
+
+      const thisWinStartY = thisWin.winCoord.pointY
+      const thisWinEndY = thisWin.winCoord.pointY + thisWin.winHeight
+      const remoteWinStartY = remoteWin.winCoord.pointY
+      const remoteWinEndY = remoteWin.winCoord.pointY + remoteWin.winHeight
+
+      const thisWinStartX = thisWin.winCoord.pointX
+      const thisWinEndX = thisWin.winCoord.pointX + thisWin.winWidth
+      const remoteWinStartX = remoteWin.winCoord.pointX
+      const remoteWinEndX = remoteWin.winCoord.pointX + remoteWin.winWidth
+
+      const isRemoteOutside =
+        remoteWinEndY !== thisWinEndY ||
+        remoteWinEndX !== thisWinEndX ||
+        remoteWinStartY !== thisWinStartY ||
+        remoteWinStartX !== thisWinStartX
+      /*
+       * thisWin right edge <::::> remoteWin left edge || remoteWin is stacked */
+      if (currentResize === 'right-width') {
+        const isEdgeAlignedOnXAxis = Math.abs(thisWinEndX - remoteWinStartX) <= tolerance
+        const isOverlapOnYAxis = thisWinStartY <= remoteWinEndY && thisWinEndY >= remoteWinStartY
+
+        const isEdgeResize = allowDistantResize
+          ? isEdgeAlignedOnXAxis
+          : isEdgeAlignedOnXAxis && isOverlapOnYAxis
+        if (isEdgeResize) {
+          remoteWin.setIsResizing('left-width')
+        }
+
+        const isRemoteOnSameLane =
+          Math.abs(thisWinEndX - remoteWinEndX) < tolerance &&
+          Math.abs(thisWinStartX - remoteWinStartX) < tolerance
+        const isRemoteEdgeConnected =
+          Math.abs(thisWinEndY - remoteWinStartY) < tolerance ||
+          Math.abs(thisWinStartY - remoteWinEndY) < tolerance
+
+        const isStackResize = allowDistantResize
+          ? isRemoteOnSameLane && isRemoteOutside
+          : isRemoteOnSameLane && isRemoteEdgeConnected
+        if (isStackResize) {
+          remoteWin.setIsResizing('right-width')
+        }
+      }
+
+      /*
+       * thisWin left edge <::::> remoteWin right edge || remoteWin is stacked */
+      if (currentResize === 'left-width') {
+        const isEdgeAlignedOnXAxis = Math.abs(thisWinStartX - remoteWinEndX) <= tolerance
+        const isOverlapOnYAxis = thisWinStartY <= remoteWinEndY && thisWinEndY >= remoteWinStartY
+
+        const isEdgeResize = allowDistantResize
+          ? isEdgeAlignedOnXAxis
+          : isEdgeAlignedOnXAxis && isOverlapOnYAxis
+        if (isEdgeResize) {
+          remoteWin.setIsResizing('right-width')
+        }
+
+        const isRemoteOnSameLane =
+          Math.abs(thisWinEndX - remoteWinEndX) < tolerance &&
+          Math.abs(thisWinStartX - remoteWinStartX) < tolerance
+        const isRemoteEdgeConnected =
+          Math.abs(thisWinEndY - remoteWinStartY) < tolerance ||
+          Math.abs(thisWinStartY - remoteWinEndY) < tolerance
+
+        const isStackResize = allowDistantResize
+          ? isRemoteOnSameLane && isRemoteOutside
+          : isRemoteOnSameLane && isRemoteEdgeConnected
+        if (isStackResize) {
+          remoteWin.setIsResizing('left-width')
+        }
+      }
+
+      /*
+       * thisWin top edge <::::> remoteWin bottom edge || remoteWin is stacked */
+      if (currentResize === 'top-height') {
+        const isEdgeAlignedOnYAxis = Math.abs(thisWinStartY - remoteWinEndY) <= tolerance
+        const isOverlapOnXAxis = thisWinStartX <= remoteWinEndX && thisWinEndX >= remoteWinStartX
+
+        const isEdgeResize = allowDistantResize
+          ? isEdgeAlignedOnYAxis
+          : isEdgeAlignedOnYAxis && isOverlapOnXAxis
+        if (isEdgeResize) {
+          remoteWin.setIsResizing('bottom-height')
+        }
+
+        const isRemoteOnSameLane =
+          Math.abs(thisWinEndY - remoteWinEndY) < tolerance &&
+          Math.abs(thisWinStartY - remoteWinStartY) < tolerance
+        const isRemoteEdgeConnected =
+          Math.abs(thisWinEndX - remoteWinStartX) < tolerance ||
+          Math.abs(thisWinStartX - remoteWinEndX) < tolerance
+
+        const isStackResize = allowDistantResize
+          ? isRemoteOnSameLane && isRemoteOutside
+          : isRemoteOnSameLane && isRemoteEdgeConnected
+        if (isStackResize) {
+          remoteWin.setIsResizing('top-height')
+        }
+      }
+
+      /*
+       * thisWin bottom edge <::::> remoteWin top edge || remoteWin is stacked */
+      if (currentResize === 'bottom-height') {
+        const isEdgeAlignedOnYAxis = Math.abs(thisWinEndY - remoteWinStartY) <= tolerance
+        const isOverlapOnXAxis = thisWinStartX <= remoteWinEndX && thisWinEndX >= remoteWinStartX
+
+        const isEdgeResize = allowDistantResize
+          ? isEdgeAlignedOnYAxis
+          : isEdgeAlignedOnYAxis && isOverlapOnXAxis
+        if (isEdgeResize) {
+          remoteWin.setIsResizing('top-height')
+        }
+
+        const isRemoteOnSameLane =
+          Math.abs(thisWinEndY - remoteWinEndY) < tolerance &&
+          Math.abs(thisWinStartY - remoteWinStartY) < tolerance
+        const isRemoteEdgeConnected =
+          Math.abs(thisWinEndX - remoteWinStartX) < tolerance ||
+          Math.abs(thisWinStartX - remoteWinEndX) < tolerance
+
+        const isStackResize = allowDistantResize
+          ? isRemoteOnSameLane && isRemoteOutside
+          : isRemoteOnSameLane && isRemoteEdgeConnected
+        if (isStackResize) {
+          remoteWin.setIsResizing('bottom-height')
+        }
+      }
+    }
   }
 
   return (
     <>
       <span
         onMouseDown={() => handleResizeClick('right-width')}
-        id="win-resize-width"
+        id="win-resize-right-width"
         className="fixed w-2 opacity-60 cursor-w-resize z-10"
         style={{
           top: `${winCoord.pointY}px`,
@@ -145,7 +317,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
       ></span>
       <span
         onMouseDown={() => handleResizeClick('left-width')}
-        id="win-resize-width"
+        id="win-resize-left-width"
         className="fixed w-2 opacity-60 cursor-w-resize z-10"
         style={{
           top: `${winCoord.pointY}px`,
@@ -155,7 +327,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
       ></span>
       <span
         onMouseDown={() => handleResizeClick('bottom-height')}
-        id="win-resize-height"
+        id="win-resize-bottom-height"
         className="fixed h-2 opacity-60 cursor-s-resize z-10"
         style={{
           top: `${winCoord.pointY + winHeight - 6}px`,
@@ -165,7 +337,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
       ></span>
       <span
         onMouseDown={() => handleResizeClick('top-height')}
-        id="win-resize-height"
+        id="win-resize-top-height"
         className="fixed h-2 opacity-60 cursor-s-resize z-10"
         style={{
           top: `${winCoord.pointY - 6}px`,
@@ -175,7 +347,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
       ></span>
       <span
         onMouseDown={() => handleResizeClick('bottom-right-all')}
-        id="win-resize-all"
+        id="win-resize-bottom-right-all"
         className="fixed h-3 w-3 opacity-60 cursor-se-resize z-20"
         style={{
           top: `${winCoord.pointY + winHeight - 8}px`,
@@ -184,7 +356,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
       ></span>
       <span
         onMouseDown={() => handleResizeClick('bottom-left-all')}
-        id="win-resize-all"
+        id="win-resize-bottom-left-all"
         className="fixed h-3 w-3 opacity-60 cursor-sw-resize z-20"
         style={{
           top: `${winCoord.pointY + winHeight - 8}px`,
@@ -194,7 +366,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
 
       <span
         onMouseDown={() => handleResizeClick('top-right-all')}
-        id="win-resize-all"
+        id="win-resize-top-right-all"
         className="fixed h-3 w-3 opacity-60 cursor-ne-resize z-20"
         style={{
           top: `${winCoord.pointY - 6}px`,
@@ -203,7 +375,7 @@ export default function ResizingControls({ useWindowStore, windowRef }: Props) {
       ></span>
       <span
         onMouseDown={() => handleResizeClick('top-left-all')}
-        id="win-resize-all"
+        id="win-resize-top-left-all"
         className="fixed h-3 w-3 opacity-60 cursor-nw-resize z-20"
         style={{
           top: `${winCoord.pointY - 6}px`,

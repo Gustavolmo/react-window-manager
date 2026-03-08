@@ -13,6 +13,8 @@ dist
 docs
 *.local
 
+.notes.md
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

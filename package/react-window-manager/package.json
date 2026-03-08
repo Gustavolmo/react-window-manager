@@ -1,7 +1,8 @@
 {
   "name": "@gustavolmo/react-window-manager",
-  "version": "0.1.401",
+  "version": "0.2.1",
   "private": false,
+  "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -13,7 +14,9 @@
     "./*": "./dist/*.js",
     "./index.css": "./dist/index.css"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "peerDependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

@@ -1,4 +1,4 @@
-export function iconWinMaximize() {
+export function iconWinMaximize(color?: string) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -7,8 +7,8 @@ export function iconWinMaximize() {
       width={24}
       height={24}
       strokeWidth={1.5}
-      stroke="white"
-      color="white"
+      stroke={color ? color : '#cccccc'}
+      color={color ? color : '#cccccc'}
       className="size-6"
     >
       <path
@@ -20,7 +20,7 @@ export function iconWinMaximize() {
   )
 }
 
-export function iconWinDemaximize() {
+export function iconWinDemaximize(color?: string) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -29,8 +29,8 @@ export function iconWinDemaximize() {
       width={24}
       height={24}
       strokeWidth={1.5}
-      stroke="white"
-      color="white"
+      stroke={color ? color : '#cccccc'}
+      color={color ? color : '#cccccc'}
       className="size-6"
     >
       <path
@@ -42,7 +42,7 @@ export function iconWinDemaximize() {
   )
 }
 
-export function iconWinMinimize() {
+export function iconWinMinimize(color?: string) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -51,8 +51,8 @@ export function iconWinMinimize() {
       width={24}
       height={24}
       strokeWidth={1.5}
-      stroke="white"
-      color="white"
+      stroke={color ? color : '#cccccc'}
+      color={color ? color : '#cccccc'}
       className="size-6"
     >
       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
