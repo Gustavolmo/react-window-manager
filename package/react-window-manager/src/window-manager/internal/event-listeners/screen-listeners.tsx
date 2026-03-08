@@ -1,4 +1,4 @@
-import { resetAllWindows } from '../shared/window-actions'
+import { adjustAllWindowsToViewport } from '../shared/window-actions'
 import { useCursorState } from './cursor-state'
 import { useEffect } from 'react'
 
@@ -11,16 +11,26 @@ export default function ScreenListeners() {
   )
 }
 
-/**  @FixMe Until I find a better way to handle browser resize, the react window state resets if the browser resizes */
 function WindowResizeReset() {
   useEffect(() => {
-    const handleWindowResize = () => {
-      resetAllWindows()
+    let prevViewport = {
+      width: window.innerWidth,
+      height: window.innerHeight,
     }
 
-    window.addEventListener('resize', handleWindowResize)
+    const adjustOnResize = () => {
+      const nextViewport = {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      }
 
-    return () => window.removeEventListener('resize', handleWindowResize)
+      adjustAllWindowsToViewport(prevViewport, nextViewport, 48)
+      prevViewport = nextViewport
+    }
+
+    window.addEventListener('resize', adjustOnResize)
+
+    return () => window.removeEventListener('resize', adjustOnResize)
   }, [])
 
   return <></>
