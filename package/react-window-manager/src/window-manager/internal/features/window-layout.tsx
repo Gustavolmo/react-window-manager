@@ -1,29 +1,16 @@
 import { useCursorState } from '../states/cursor-state'
 import { useEffect, useRef, useState } from 'react'
-import { Coord, ResizeState } from '../../model/window-types'
+import { Coord } from '../../model/window-types'
 import { iconWinMinimize, iconWinDemaximize, iconWinMaximize } from '../assets/svg-win-icons'
 import { bringTargetWindowToFront } from '../shared/bulk-actions'
-import DockingControls from './docking/docking-controls'
 import ResizingControls from './resizing/resizing-controls'
 import { windowRegistry } from '../../registration/window-store-factory'
-import { useWorkspaceState } from '../states/workspace-state'
-
-type ResponsiveSizes = 'sm' | 'md' | 'lg' | 'xl' | 'never' | 'always' | number
+import { getWSRect, isBelowBreakPoint, useWorkspaceState } from '../states/workspace-state'
 
 export type WindowLayoutProps = {
   children: React.ReactNode
   windowName: string | React.ReactNode
   winId: string
-  /**
-   * @default 'sm'
-   * @param sm uses mobile format at 640px
-   * @param md uses mobile format at 768px
-   * @param lg uses mobile format at 1024px
-   * @param xl uses mobile format at 1280px
-   * @param never never uses mobile format
-   * @param always always uses mobile format
-   * @param number set custom break point value in px */
-  responsiveBreak?: ResponsiveSizes
   navbarChildren?: React.ReactNode
   defaultDock?: 'right' | 'left' | 'full'
 
@@ -36,7 +23,6 @@ export type WindowLayoutProps = {
 }
 
 export default function WindowLayout({
-  responsiveBreak = 'sm',
   children,
   windowName,
   navbarChildren,
@@ -44,7 +30,7 @@ export default function WindowLayout({
   defaultDock,
   style,
 }: WindowLayoutProps) {
-  const ws = useWorkspaceState()
+  const { responsiveBreak } = useWorkspaceState()
   const { x, y } = useCursorState()
   const windowRef = useRef<HTMLDivElement>(null)
   const {
@@ -76,12 +62,15 @@ export default function WindowLayout({
     dockWindowLeft,
   } = windowRegistry[winId]()
 
-  const [dragClickOffset, setDragClickOffset] = useState<Coord>({ pointX: 0, pointY: 0 })
+  const [dragClickOffset, setDragClickOffset] = useState<Coord>({
+    pointX: getWSRect().left,
+    pointY: getWSRect().top,
+  })
 
   useEffect(() => {
     setSelf(windowRef)
 
-    if (isMobile()) maximizeWindow()
+    if (isBelowBreakPoint(responsiveBreak)) maximizeWindow()
     else if (defaultDock === 'left') dockWindowLeft()
     else if (defaultDock === 'right') dockWindowRight()
     else if (defaultDock === 'full') maximizeWindow()
@@ -90,45 +79,24 @@ export default function WindowLayout({
   }, [setSelf, windowRef, resetFlag])
 
   useEffect(() => {
-    if (isMobile()) return
+    if (isBelowBreakPoint(responsiveBreak)) return
     if (!isDragging) return
 
     if (winVisualState === 'maximized') demaximizeWindow()
 
+    const wSpace = getWSRect()
+
     let adjustedX = x - dragClickOffset.pointX
-    if (x > window.innerWidth || x < 0) adjustedX = winCoord.pointX
+    if (x > wSpace.right || x < wSpace.left) adjustedX = winCoord.pointX
 
     let adjustedY = y - dragClickOffset.pointY
-    if (y > window.innerHeight || y < 0) adjustedY = winCoord.pointY
+    if (y > wSpace.bottom || y < wSpace.top) adjustedY = winCoord.pointY
 
     setWinCoord({ pointX: adjustedX, pointY: adjustedY })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDragging, x, y])
 
-  const responsiveBreakInPx = (breakPoint: ResponsiveSizes): number => {
-    switch (breakPoint) {
-      case 'sm':
-        return 640
-      case 'md':
-        return 768
-      case 'lg':
-        return 1024
-      case 'xl':
-        return 1280
-      case 'never':
-        return 0
-      case 'always':
-        return Infinity
-      default:
-        return breakPoint
-    }
-  }
-
-  const isMobile = (): boolean => {
-    return window.innerWidth < responsiveBreakInPx(responsiveBreak)
-  }
-
-  const handleNavbarClick = (isDragging: boolean) => {
+  const handleNavbarDrag = (isDragging: boolean) => {
     setDragClickOffset({ pointX: x - winCoord.pointX, pointY: y - winCoord.pointY })
     setIsDragging(isDragging)
   }
@@ -158,14 +126,13 @@ export default function WindowLayout({
 
   return (
     <>
-      {!isMobile() && <DockingControls winId={winId} />}
       <div
         id={windowId}
         ref={windowRef}
         className={`fixed bg-white shadow-lg border border-zinc-600 rounded-sm overflow-hidden`}
         onMouseDown={() => bringTargetWindowToFront(windowId)}
         onMouseUp={() => {
-          handleNavbarClick(false)
+          handleNavbarDrag(false)
         }}
         style={{
           backgroundColor: style?.windowBackgroundColor,
@@ -179,8 +146,8 @@ export default function WindowLayout({
           transition: 'transform 0.2s ease-in-out, opacity 0.3s ease-in-out',
           opacity: isWindowClosed ? 0 : 1,
           transform: isWindowClosed
-            ? `translate(${window.innerWidth / 2 - winCoord.pointX - winWidth / 2}px,
-              ${window.innerHeight - winCoord.pointY - winHeight / 2}px) scale(0.02)`
+            ? `translate(${getWSRect().innerWidth / 2 - winCoord.pointX - winWidth / 2}px,
+              ${getWSRect().innerHeight - winCoord.pointY - winHeight / 2}px) scale(0.02)`
             : '',
         }}
       >
@@ -201,16 +168,18 @@ export default function WindowLayout({
           </div>
 
           <div
-            onMouseDown={() => handleNavbarClick(true)}
+            onMouseDown={() => handleNavbarDrag(true)}
             onDoubleClick={maximizeWindow}
             className="grow min-w-8 h-8 px-2 text-white flex items-center text-sm"
           ></div>
 
-          {!isMobile() && maximizeControl}
+          {!isBelowBreakPoint(responsiveBreak) && maximizeControl}
           {minimizeControl}
         </nav>
 
-        {!isMobile() && <ResizingControls winId={winId} windowRef={windowRef} />}
+        {!isBelowBreakPoint(responsiveBreak) && (
+          <ResizingControls winId={winId} windowRef={windowRef} />
+        )}
 
         {/* Offset the navbar => 'h-[calc(100%-32px)]' */}
         <div className={`relative w-full h-[calc(100%-32px)] overflow-auto`}>{children}</div>

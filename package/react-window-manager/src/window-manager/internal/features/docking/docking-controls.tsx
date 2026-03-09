@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { windowRegistry } from '../../../registration/window-store-factory'
+import { useWorkspaceState } from '../../states/workspace-state'
 
 type Props = {
   winId: string
 }
 
-export default function DockingControls({ winId }: Props) {
+export default function DockingControls() {
+  const { activeWindowId } = useWorkspaceState()
   const {
     isDragging,
 
@@ -19,23 +21,9 @@ export default function DockingControls({ winId }: Props) {
     dockWindowBottomLeft,
     dockWindowTopRight,
     dockWindowBottomRight,
-  } = windowRegistry[winId]()
+  } = windowRegistry[activeWindowId]()
 
-  const [isVisible, setIsVisible] = useState(false)
   const [isHovering, setIsHovering] = useState(false)
-  useEffect(() => {
-    let dealy: ReturnType<typeof setTimeout>
-
-    if (isDragging) {
-      dealy = setTimeout(() => {
-        setIsVisible(true)
-      }, 100)
-    } else {
-      setIsVisible(false)
-    }
-
-    return () => clearTimeout(dealy)
-  }, [isDragging])
 
   const cornerDockControl = (
     <div className={`flex xl:p-0 shrink-0 gap-0.5`}>
@@ -113,7 +101,7 @@ export default function DockingControls({ winId }: Props) {
     <div
       className={`
         ${
-          isVisible
+          isDragging
             ? isHovering
               ? 'top-0 opacity-50'
               : 'top-[-68px] opacity-80'

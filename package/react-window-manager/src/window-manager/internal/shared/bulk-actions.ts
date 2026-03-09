@@ -46,7 +46,7 @@ export const getOpenedWindowCount = () => {
 /**
  * @FixMe
  * This code tried to maintain the proportions of opened windows when resizing.
- * Should consider using the workspace as a reference in a state.
+ * Should consider using the workspace as a reference in a state as well - major change.
  * */
 // type ViewportSize = {
 //   width: number

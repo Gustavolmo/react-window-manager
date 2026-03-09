@@ -2,27 +2,26 @@ import { CodeXml, Github, Linkedin } from 'lucide-react'
 import ReadMe from '../components/read-me'
 import { createWindowStore, WorkspaceLayout } from '@gustavolmo/react-window-manager'
 
-const bottomOffsetPx = 48
-const readMe = createWindowStore(bottomOffsetPx)
-const test_1 = createWindowStore(bottomOffsetPx)
-const test_2 = createWindowStore(bottomOffsetPx)
-const test_3 = createWindowStore(bottomOffsetPx)
-const test_4 = createWindowStore(bottomOffsetPx)
-const test_5 = createWindowStore(bottomOffsetPx)
-const test_6 = createWindowStore(bottomOffsetPx)
-const test_7 = createWindowStore(bottomOffsetPx)
+const readMe = createWindowStore()
+const test_1 = createWindowStore()
+const test_2 = createWindowStore()
+const test_3 = createWindowStore()
+const test_4 = createWindowStore()
+const test_5 = createWindowStore()
+const test_6 = createWindowStore()
+const test_7 = createWindowStore()
 
 export default function Home() {
   return (
-    <>
-      <WorkspaceLayout>
-        <div className="p-8 w-full h-full flex flex-col items-center mb-32 desktop-background">
+    <section className="fixed w-full h-full flex flex-col p-20">
+      <WorkspaceLayout className="h-full w-full grow border border-red-600">
+        <div className="p-8 w-full h-full flex flex-col items-center mb-32 desktop-background-DISABLED ">
           <h1 className="font-mono w-full text-white text-2xl uppercase tracking-[0.4em] mb-0 block opacity-50 max-w-xl text-center">
             React Window Manager
           </h1>
         </div>
 
-        <readMe.Window responsiveBreak={'sm'} windowName={<CodeXml className="text-zinc-400" />}>
+        <readMe.Window windowName={<CodeXml className="text-zinc-400" />}>
           <ReadMe />
         </readMe.Window>
 
@@ -54,8 +53,8 @@ export default function Home() {
         </test_7.Window>
       </WorkspaceLayout>
 
-      <nav className="fixed bottom-0 left-0 w-full h-12 bg-neutral-900 flex gap-2 py-2 px-4 justify-between z-50">
-        <div className="flex gap-2 items-center overflow-y-auto">
+      <nav className="w-full h-12 bg-neutral-900 flex gap-2 py-2 px-4 justify-between z-50">
+        <div className="flex gap-2 items-center overflow-x-auto overflow-y-hidden">
           <readMe.Button className="px-2 py-0 rounded-md">
             <CodeXml className="text-zinc-400 hover:text-zinc-50" />
           </readMe.Button>
@@ -92,6 +91,6 @@ export default function Home() {
           </a>
         </div>
       </nav>
-    </>
+    </section>
   )
 }

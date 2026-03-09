@@ -3,7 +3,7 @@ import { useCursorState } from '../../states/cursor-state'
 import { RefObject, useEffect } from 'react'
 import { windowRegistry } from '../../../registration/window-store-factory'
 import { getOpenedWindowCount } from '../../shared/bulk-actions'
-import { useWorkspaceState } from '../../states/workspace-state'
+import { getWSRect } from '../../states/workspace-state'
 
 type Props = {
   winId: string
@@ -11,7 +11,6 @@ type Props = {
 }
 
 export default function ResizingControls({ winId, windowRef }: Props) {
-  const ws = useWorkspaceState()
   const { x, y } = useCursorState()
   const {
     windowId,
@@ -53,13 +52,14 @@ export default function ResizingControls({ winId, windowRef }: Props) {
   }, [resizeAction, x, y])
 
   const resizeRightWinWidth = () => {
+    const wSpace = getWSRect()
     const winBox = windowRef.current?.getBoundingClientRect()
     if (!winBox) return
 
     const minWinWidth = x - winBox.left < WIN_MIN_WIDTH
     if (minWinWidth) return
 
-    const cursorOutOfBounds = x > window.innerWidth || x < 0
+    const cursorOutOfBounds = x > wSpace.right || x < wSpace.left
     if (cursorOutOfBounds) return
 
     const sizeDiff = x - winBox.right
@@ -67,13 +67,14 @@ export default function ResizingControls({ winId, windowRef }: Props) {
   }
 
   const resizeLeftWinWidth = () => {
+    const wSpace = getWSRect()
     const winBox = windowRef.current?.getBoundingClientRect()
     if (!winBox) return
 
     const minWinWidth = winBox.right - x <= WIN_MIN_WIDTH
     if (minWinWidth) return
 
-    const cursorOutOfBounds = x > window.innerWidth || x < 0
+    const cursorOutOfBounds = x > wSpace.right || x < wSpace.left
     if (cursorOutOfBounds) return
 
     const sizeDiff = winBox.left - x
@@ -82,13 +83,14 @@ export default function ResizingControls({ winId, windowRef }: Props) {
   }
 
   const resizeTopWinHeight = () => {
+    const wSpace = getWSRect()
     const winBox = windowRef.current?.getBoundingClientRect()
     if (!winBox) return
 
     const minWinHeight = winBox.bottom - y <= WIN_MIN_HEIGHT
     if (minWinHeight) return
 
-    const cursorOutOfBounds = y > window.innerHeight || y < 0
+    const cursorOutOfBounds = y > wSpace.bottom || y < wSpace.top
     if (cursorOutOfBounds) return
 
     const sizeDiff = winBox.top - y
@@ -97,13 +99,14 @@ export default function ResizingControls({ winId, windowRef }: Props) {
   }
 
   const resizeBottomWinHeight = () => {
+    const wSpace = getWSRect()
     const winBox = windowRef.current?.getBoundingClientRect()
     if (!winBox) return
 
     const minWinHeight = y - winBox.top < WIN_MIN_HEIGHT
     if (minWinHeight) return
 
-    const cursorOutOfBounds = y > window.innerHeight || y < 0
+    const cursorOutOfBounds = y > wSpace.bottom || y < wSpace.top
     if (cursorOutOfBounds) return
 
     const sizeDiff = y - winBox.bottom
@@ -132,10 +135,11 @@ export default function ResizingControls({ winId, windowRef }: Props) {
    */
   const resizeLeftTopWidthAndHeight = () => {
     const winBox = windowRef.current?.getBoundingClientRect()
+    const wSpace = getWSRect()
     if (!winBox) return
 
-    const cursorOutOfBoundsY = y > window.innerHeight || y < 0
-    const cursorOutOfBoundsX = x > window.innerWidth || x < 0
+    const cursorOutOfBoundsY = y > wSpace.bottom || y < wSpace.top
+    const cursorOutOfBoundsX = x > wSpace.right || x < wSpace.left
     if (cursorOutOfBoundsY || cursorOutOfBoundsX) return
 
     const minWinHeight = winBox.bottom - y <= WIN_MIN_HEIGHT
@@ -163,9 +167,11 @@ export default function ResizingControls({ winId, windowRef }: Props) {
   }
 
   /**
-   * @FixMe
-   * this function is a nice feature, but very complex, needs to be written in a clearer way.
-   * Multi-window tiling can be brittle - isRemoteOutside needs refinement
+   * @FixMe Most complex feature:
+   * this function is a nice feature, needs to be written in a clearer way.
+   * Multi-window tiling can be brittle
+   * - isRemoteOutside needs refinement
+   * - needs a stop if the other window stops moving
    * */
   const setRemoteIsResizing = (currentResize: ResizeState) => {
     const tolerance = 4

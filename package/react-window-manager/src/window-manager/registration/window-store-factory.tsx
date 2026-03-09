@@ -3,24 +3,36 @@ import { RefObject } from 'react'
 import { Coord, ResizeState, WindowApi, WindowStates, WindowStore } from '../model/window-types'
 import WindowLayout, { WindowLayoutProps } from '../internal/features/window-layout'
 import WindowButton, { WindowButtonProps } from '../internal/features/window-button'
-import { useWorkspaceState as ws } from '../internal/states/workspace-state'
+import { getWSRect, useWorkspaceState, useWorkspaceState as ws } from '../internal/states/workspace-state'
+
+const windownMinWidth = 232
+const windownMinHeight = 128
 
 /** @howToUse use the syntax `windowRegistry[<winId>]()` to access a store outside of */
 export const windowRegistry: Record<string, UseBoundStore<StoreApi<WindowStore>>> = {}
 
 /**
  * @return `id` auto generated id at the root of the window component. `id` can be used in `windowRegistry` to access the window state store
+ * @return `store` zustand state store associated to this window instnace
  * @return `window` JSX component representing an interactive window
  * @return `button` JSX component that control this window */
-export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
+export const createWindowStore = (): WindowApi => {
   const zIndexAtLaunch = Object.keys(windowRegistry).length + 1
   const windowInstanceId = `react-dynamic-window-instance${Object.keys(windowRegistry).length}`
 
   const storeInstance = create<WindowStore>((set, get) => ({
+    WIN_MIN_WIDTH: windownMinWidth,
+    WIN_MIN_HEIGHT: windownMinHeight,
+    setWIN_MIN_WIDTH: (w: number) => set({ WIN_MIN_WIDTH: w }),
+    setWIN_MIN_HEIGHT: (h: number) => set({ WIN_MIN_HEIGHT: h }),
+
     windowId: windowInstanceId,
 
     isActive: false,
-    setIsActive: (isActive: boolean) => set({ isActive: isActive }),
+    setIsActive: (isActive: boolean) => {
+      useWorkspaceState.getState().setActiveWindowId(get().windowId)
+      set({ isActive: isActive })
+    },
 
     resetFlag: false,
     reset: () => set({ resetFlag: !get().resetFlag, isWindowClosed: true }),
@@ -47,16 +59,11 @@ export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
     resizeAction: false,
     setResizeAction: (updatedIsResizing: ResizeState) => set({ resizeAction: updatedIsResizing }),
 
-    winWidth: window.innerWidth * 0.95,
+    winWidth: windownMinWidth,
     setWinWidth: (newWinWidth: number) => set({ winWidth: newWinWidth }),
 
-    winHeight: window.innerHeight * 0.75,
+    winHeight: windownMinHeight,
     setWinHeight: (newWinHeight: number) => set({ winHeight: newWinHeight }),
-
-    WIN_MIN_WIDTH: 232,
-    WIN_MIN_HEIGHT: 128,
-    setWIN_MIN_WIDTH: (w: number) => set({ WIN_MIN_WIDTH: w }),
-    setWIN_MIN_HEIGHT: (h: number) => set({ WIN_MIN_HEIGHT: h }),
 
     /* NON WINDOW ESSENTIAL -- POSSIBLE SEPARATION LAYER */
     //dockingApi
@@ -64,17 +71,17 @@ export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
     //positionApi
     maximizeWindow: () => {
       set({
-        winCoord: { pointX: 0, pointY: 0 },
-        winHeight: window.innerHeight - bottomOffsetPx,
-        winWidth: window.innerWidth,
+        winCoord: { pointX: getWSRect().left, pointY: getWSRect().top },
+        winHeight: getWSRect().innerHeight,
+        winWidth: getWSRect().innerWidth,
         winVisualState: 'maximized',
       })
     },
     demaximizeWindow: () => {
       set({
-        winCoord: { pointX: 20, pointY: 40 },
-        winWidth: window.innerWidth * 0.95,
-        winHeight: window.innerHeight * 0.75,
+        winCoord: { pointX: getWSRect().left + 16, pointY: getWSRect().top + 16 },
+        winWidth: getWSRect().innerWidth * 0.95,
+        winHeight: getWSRect().innerHeight * 0.75,
         winVisualState: 'demaximized',
       })
     },
@@ -90,34 +97,34 @@ export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
 
     dockWindowRight: () => {
       set({
-        winCoord: { pointX: window.innerWidth / 2, pointY: 0 },
-        winWidth: window.innerWidth / 2,
-        winHeight: window.innerHeight - bottomOffsetPx,
+        winCoord: { pointX: getWSRect().centerX, pointY: getWSRect().top },
+        winWidth: getWSRect().innerWidth / 2,
+        winHeight: getWSRect().innerHeight,
         winVisualState: 'demaximized',
       })
     },
     dockWindowLeft: () => {
       set({
-        winCoord: { pointX: 0, pointY: 0 },
-        winWidth: window.innerWidth / 2,
-        winHeight: window.innerHeight - bottomOffsetPx,
+        winCoord: { pointX: getWSRect().left, pointY: getWSRect().top },
+        winWidth: getWSRect().innerWidth / 2,
+        winHeight: getWSRect().innerHeight,
         winVisualState: 'demaximized',
       })
     },
 
     dockWindowTop: () => {
       set({
-        winCoord: { pointX: 0, pointY: 0 },
-        winWidth: window.innerWidth,
-        winHeight: window.innerHeight / 2 - bottomOffsetPx / 2,
+        winCoord: { pointX: getWSRect().left, pointY: getWSRect().top },
+        winWidth: getWSRect().innerWidth,
+        winHeight: getWSRect().innerHeight / 2,
         winVisualState: 'demaximized',
       })
     },
     dockWindowBottom: () => {
       set({
-        winCoord: { pointX: 0, pointY: window.innerHeight / 2 - bottomOffsetPx / 2 },
-        winWidth: window.innerWidth,
-        winHeight: window.innerHeight / 2 - bottomOffsetPx / 2,
+        winCoord: { pointX: getWSRect().left, pointY: getWSRect().centerY },
+        winWidth: getWSRect().innerWidth,
+        winHeight: getWSRect().innerHeight / 2,
         winVisualState: 'demaximized',
       })
     },
@@ -125,33 +132,33 @@ export const createWindowStore = (bottomOffsetPx: number): WindowApi => {
     dockWindowBottomRight: () =>
       set({
         winCoord: {
-          pointX: window.innerWidth / 2,
-          pointY: window.innerHeight / 2 - bottomOffsetPx / 2,
+          pointX: getWSRect().centerX,
+          pointY: getWSRect().centerY,
         },
-        winWidth: window.innerWidth / 2,
-        winHeight: window.innerHeight / 2 - bottomOffsetPx / 2,
+        winWidth: getWSRect().innerWidth / 2,
+        winHeight: getWSRect().innerHeight / 2,
         winVisualState: 'demaximized',
       }),
     dockWindowTopRight: () =>
       set({
-        winCoord: { pointX: window.innerWidth / 2, pointY: 0 },
-        winWidth: window.innerWidth / 2,
-        winHeight: window.innerHeight / 2 - bottomOffsetPx / 2,
+        winCoord: { pointX: getWSRect().centerX, pointY: getWSRect().top },
+        winWidth: getWSRect().innerWidth / 2,
+        winHeight: getWSRect().innerHeight / 2,
         winVisualState: 'demaximized',
       }),
 
     dockWindowBottomLeft: () =>
       set({
-        winCoord: { pointX: 0, pointY: window.innerHeight / 2 - bottomOffsetPx / 2 },
-        winWidth: window.innerWidth / 2,
-        winHeight: window.innerHeight / 2 - bottomOffsetPx / 2,
+        winCoord: { pointX: getWSRect().left, pointY: getWSRect().centerY },
+        winWidth: getWSRect().innerWidth / 2,
+        winHeight: getWSRect().innerHeight / 2,
         winVisualState: 'demaximized',
       }),
     dockWindowTopLeft: () =>
       set({
-        winCoord: { pointX: 0, pointY: 0 },
-        winWidth: window.innerWidth / 2,
-        winHeight: window.innerHeight / 2 - bottomOffsetPx / 2,
+        winCoord: { pointX: getWSRect().left, pointY: getWSRect().top },
+        winWidth: getWSRect().innerWidth / 2,
+        winHeight: getWSRect().innerHeight / 2,
         winVisualState: 'demaximized',
       }),
   }))
