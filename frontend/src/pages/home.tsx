@@ -13,9 +13,9 @@ const test_7 = createWindowStore()
 
 export default function Home() {
   return (
-    <section className="fixed w-full h-full flex flex-col p-20">
-      <WorkspaceLayout className="h-full w-full grow border border-red-600">
-        <div className="p-8 w-full h-full flex flex-col items-center mb-32 desktop-background-DISABLED ">
+    <section className="fixed w-full h-full flex flex-col p-10">
+      <WorkspaceLayout className="h-full w-full grow">
+        <div className="p-8 w-full h-full flex flex-col items-center mb-32 desktop-background">
           <h1 className="font-mono w-full text-white text-2xl uppercase tracking-[0.4em] mb-0 block opacity-50 max-w-xl text-center">
             React Window Manager
           </h1>

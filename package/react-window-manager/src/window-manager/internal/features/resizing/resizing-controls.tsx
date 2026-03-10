@@ -2,8 +2,8 @@ import { ResizeState } from '../../../model/window-types'
 import { useCursorState } from '../../states/cursor-state'
 import { RefObject, useEffect } from 'react'
 import { windowRegistry } from '../../../registration/window-store-factory'
-import { getOpenedWindowCount } from '../../shared/bulk-actions'
-import { getWSRect } from '../../states/workspace-state'
+import { getWSRect } from '../../../workspace-state'
+import { stackApi } from '../stack/stack-api'
 
 type Props = {
   winId: string
@@ -163,7 +163,7 @@ export default function ResizingControls({ winId, windowRef }: Props) {
 
   const handleResizeClick = (isResizing: ResizeState) => {
     setResizeAction(isResizing)
-    setRemoteIsResizing(isResizing)
+    setRemoteResizeAction(isResizing)
   }
 
   /**
@@ -173,9 +173,9 @@ export default function ResizingControls({ winId, windowRef }: Props) {
    * - isRemoteOutside needs refinement
    * - needs a stop if the other window stops moving
    * */
-  const setRemoteIsResizing = (currentResize: ResizeState) => {
+  const setRemoteResizeAction = (currentResize: ResizeState) => {
     const tolerance = 4
-    const allowDistantResize = getOpenedWindowCount() >= 3
+    const allowDistantResize = stackApi.getOpenedWindowCount() >= 3
 
     for (const key of Object.keys(windowRegistry)) {
       const remoteWin = windowRegistry[key].getState()

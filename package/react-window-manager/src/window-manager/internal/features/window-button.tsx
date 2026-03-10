@@ -1,5 +1,6 @@
-import { bringTargetWindowToFront } from '../shared/bulk-actions'
 import { windowRegistry } from '../../registration/window-store-factory'
+import { dockApi } from './docking/docking-api'
+import { stackApi } from './stack/stack-api'
 
 export type WindowButtonProps = {
   children: React.ReactNode
@@ -18,17 +19,17 @@ export default function WindowButton({
   isClosedClassName = 'brightness-[85%]',
   isOpenClassName = 'brightness-150',
 }: WindowButtonProps) {
-  const { openWindow, closeWindow, isWindowClosed, windowId, isActive } = windowRegistry[winId]()
+  const { isWindowClosed, windowId, isActive } = windowRegistry[winId]()
 
   const handleOpenCloseWin = () => {
     if (isWindowClosed) {
-      bringTargetWindowToFront(windowId)
-      openWindow()
+      stackApi.bringTargetWindowToFront(windowId)
+      dockApi.openWindow(winId)
       return
     }
 
-    if (isActive) closeWindow()
-    bringTargetWindowToFront(windowId)
+    if (isActive) dockApi.closeWindow(winId)
+    stackApi.bringTargetWindowToFront(windowId)
   }
 
   return (

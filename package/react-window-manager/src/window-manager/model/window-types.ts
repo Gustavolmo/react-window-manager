@@ -25,7 +25,6 @@ export type ResizeState =
   | 'top-left-all'
 
 export type WindowStore = {
-  /* Self */
   windowId: string
 
   isActive: boolean
@@ -40,7 +39,6 @@ export type WindowStore = {
   self: RefObject<HTMLDivElement | null> | undefined
   setSelf: (ref: RefObject<HTMLDivElement | null>) => void
 
-  /* State handlers */
   winVisualState: WindowStates
   setWinVisualState: (newState: WindowStates) => void
 
@@ -67,25 +65,4 @@ export type WindowStore = {
   WIN_MIN_HEIGHT: number
   setWIN_MIN_WIDTH: (w: number) => void
   setWIN_MIN_HEIGHT: (h: number) => void
-
-  /* Logic handlers */
-  openWindow: () => void
-  closeWindow: () => void
-
-  maximizeWindow: () => void
-  demaximizeWindow: () => void
-
-  dockWindowRight: () => void
-  dockWindowLeft: () => void
-
-  dockWindowTop: () => void
-  dockWindowBottom: () => void
-
-  dockWindowBottomRight: () => void
-  dockWindowTopRight: () => void
-
-  dockWindowBottomLeft: () => void
-  dockWindowTopLeft: () => void
-
-
 }

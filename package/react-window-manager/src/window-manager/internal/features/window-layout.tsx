@@ -2,10 +2,11 @@ import { useCursorState } from '../states/cursor-state'
 import { useEffect, useRef, useState } from 'react'
 import { Coord } from '../../model/window-types'
 import { iconWinMinimize, iconWinDemaximize, iconWinMaximize } from '../assets/svg-win-icons'
-import { bringTargetWindowToFront } from '../shared/bulk-actions'
 import ResizingControls from './resizing/resizing-controls'
 import { windowRegistry } from '../../registration/window-store-factory'
-import { getWSRect, isBelowBreakPoint, useWorkspaceState } from '../states/workspace-state'
+import { getWSRect, isBelowBreakPoint, useWorkspaceState } from '../../workspace-state'
+import { stackApi } from './stack/stack-api'
+import { dockApi } from './docking/docking-api'
 
 export type WindowLayoutProps = {
   children: React.ReactNode
@@ -53,13 +54,6 @@ export default function WindowLayout({
 
     winWidth,
     winHeight,
-
-    closeWindow,
-    maximizeWindow,
-    demaximizeWindow,
-
-    dockWindowRight,
-    dockWindowLeft,
   } = windowRegistry[winId]()
 
   const [dragClickOffset, setDragClickOffset] = useState<Coord>({
@@ -70,11 +64,11 @@ export default function WindowLayout({
   useEffect(() => {
     setSelf(windowRef)
 
-    if (isBelowBreakPoint(responsiveBreak)) maximizeWindow()
-    else if (defaultDock === 'left') dockWindowLeft()
-    else if (defaultDock === 'right') dockWindowRight()
-    else if (defaultDock === 'full') maximizeWindow()
-    else demaximizeWindow()
+    if (isBelowBreakPoint(responsiveBreak)) dockApi.maximizeWindow(winId)
+    else if (defaultDock === 'left') dockApi.dockWindowLeft(winId)
+    else if (defaultDock === 'right') dockApi.dockWindowRight(winId)
+    else if (defaultDock === 'full') dockApi.maximizeWindow(winId)
+    else dockApi.demaximizeWindow(winId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setSelf, windowRef, resetFlag])
 
@@ -82,7 +76,7 @@ export default function WindowLayout({
     if (isBelowBreakPoint(responsiveBreak)) return
     if (!isDragging) return
 
-    if (winVisualState === 'maximized') demaximizeWindow()
+    if (winVisualState === 'maximized') dockApi.demaximizeWindow(winId)
 
     const wSpace = getWSRect()
 
@@ -105,21 +99,24 @@ export default function WindowLayout({
     winVisualState === 'maximized' ? (
       <button
         className={`block hover:bg-gray-100 hover:bg-opacity-20 px-5 h-full`}
-        onClick={demaximizeWindow}
+        onClick={() => dockApi.demaximizeWindow(winId)}
       >
         {iconWinDemaximize(style?.navControlsColor)}
       </button>
     ) : (
       <button
         className={`block hover:bg-gray-100 hover:bg-opacity-20 px-5 h-full`}
-        onClick={maximizeWindow}
+        onClick={() => dockApi.maximizeWindow(winId)}
       >
         {iconWinMaximize(style?.navControlsColor)}
       </button>
     )
 
   const minimizeControl = (
-    <button className="hover:bg-red-500 hover:bg-opacity-20 px-5 h-full" onClick={closeWindow}>
+    <button
+      className="hover:bg-red-500 hover:bg-opacity-20 px-5 h-full"
+      onClick={() => dockApi.closeWindow(winId)}
+    >
       {iconWinMinimize(style?.navControlsColor)}
     </button>
   )
@@ -130,7 +127,7 @@ export default function WindowLayout({
         id={windowId}
         ref={windowRef}
         className={`fixed bg-white shadow-lg border border-zinc-600 rounded-sm overflow-hidden`}
-        onMouseDown={() => bringTargetWindowToFront(windowId)}
+        onMouseDown={() => stackApi.bringTargetWindowToFront(windowId)}
         onMouseUp={() => {
           handleNavbarDrag(false)
         }}
@@ -169,7 +166,7 @@ export default function WindowLayout({
 
           <div
             onMouseDown={() => handleNavbarDrag(true)}
-            onDoubleClick={maximizeWindow}
+            onDoubleClick={() => dockApi.maximizeWindow(winId)}
             className="grow min-w-8 h-8 px-2 text-white flex items-center text-sm"
           ></div>
 
