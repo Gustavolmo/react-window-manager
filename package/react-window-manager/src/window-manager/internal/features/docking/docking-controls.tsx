@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { windowRegistry } from '../../../registration/window-store-factory'
-import { useWorkspaceState } from '../../../workspace-state'
+import { useWorkspaceState } from '../workspace/workspace-state'
 import { dockApi } from './docking-api'
 
 export default function DockingControls() {
+  const [isHovering, setIsHovering] = useState(false)
+
   const { activeWindowId } = useWorkspaceState()
   const { isDragging } = windowRegistry[activeWindowId]()
-
-  const [isHovering, setIsHovering] = useState(false)
 
   const cornerDockControl = (
     <div className={`flex xl:p-0 shrink-0 gap-0.5`}>

@@ -28,4 +28,10 @@ export const stackApi = {
 
     return openWnidowCount
   },
+
+  resetStack: () => {
+    for (const key of Object.keys(windowRegistry)) {
+      windowRegistry[key].getState().reset()
+    }
+  },
 }

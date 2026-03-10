@@ -3,7 +3,10 @@ import { RefObject } from 'react'
 import { Coord, ResizeState, WindowApi, WindowStates, WindowStore } from '../model/window-types'
 import WindowLayout, { WindowLayoutProps } from '../internal/features/window-layout'
 import WindowButton, { WindowButtonProps } from '../internal/features/window-button'
-import { useWorkspaceState, useWorkspaceState as ws } from '../workspace-state'
+import {
+  useWorkspaceState,
+  useWorkspaceState as ws,
+} from '../internal/features/workspace/workspace-state'
 
 const windownMinWidth = 232
 const windownMinHeight = 128

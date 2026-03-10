@@ -1,8 +1,13 @@
 import { useEffect, useRef } from 'react'
-import { isBelowBreakPoint, ResponsiveSizes, useWorkspaceState } from './workspace-state'
+import {
+  ResponsiveSizes,
+  useWorkspaceState,
+} from './internal/features/workspace/workspace-state'
 import DockingControls from './internal/features/docking/docking-controls'
-import { eventsComponents } from './internal/features/events/events-api'
 import { resizeApi } from './internal/features/resizing/resizing-api'
+import { CursorMoveListener } from './internal/features/cursor/cursor-move-listener'
+import { ViewPortResizeListener } from './internal/features/view-port/view-port-resize-listener'
+import { wsApi } from './internal/features/workspace/workspace-api'
 
 type Props = {
   children: React.ReactNode
@@ -39,10 +44,10 @@ export default function WorkspaceLayout({ children, className, responsiveBreak =
       onMouseUp={resizeApi.stopAllDragAndResize}
       className={className ? className : 'fixed overflow-hidden h-full w-full touch-none'}
     >
-      <eventsComponents.onWindowResizeReset />
-      <eventsComponents.onCursorCoordinates />
+      <ViewPortResizeListener />
+      <CursorMoveListener />
       <div className=" w-full h-full relative overflow-hidden">
-        {!isBelowBreakPoint(responsiveBreak) && <DockingControls />}
+        {!wsApi.isBelowBreakPoint() && <DockingControls />}
         {children}
       </div>
     </section>

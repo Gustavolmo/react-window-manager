@@ -1,12 +1,13 @@
-import { useCursorState } from '../states/cursor-state'
+import { useCursorState } from './cursor/cursor-state'
 import { useEffect, useRef, useState } from 'react'
 import { Coord } from '../../model/window-types'
-import { iconWinMinimize, iconWinDemaximize, iconWinMaximize } from '../assets/svg-win-icons'
+import { IconWinMinimize, IconWinDemaximize, IconWinMaximize } from '../assets/svg-win-icons'
 import ResizingControls from './resizing/resizing-controls'
 import { windowRegistry } from '../../registration/window-store-factory'
-import { getWSRect, isBelowBreakPoint, useWorkspaceState } from '../../workspace-state'
+import { useWorkspaceState } from './workspace/workspace-state'
 import { stackApi } from './stack/stack-api'
 import { dockApi } from './docking/docking-api'
+import { wsApi } from './workspace/workspace-api'
 
 export type WindowLayoutProps = {
   children: React.ReactNode
@@ -31,7 +32,6 @@ export default function WindowLayout({
   defaultDock,
   style,
 }: WindowLayoutProps) {
-  const { responsiveBreak } = useWorkspaceState()
   const { x, y } = useCursorState()
   const windowRef = useRef<HTMLDivElement>(null)
   const {
@@ -57,14 +57,14 @@ export default function WindowLayout({
   } = windowRegistry[winId]()
 
   const [dragClickOffset, setDragClickOffset] = useState<Coord>({
-    pointX: getWSRect().left,
-    pointY: getWSRect().top,
+    pointX: wsApi.getRect().left,
+    pointY: wsApi.getRect().top,
   })
 
   useEffect(() => {
     setSelf(windowRef)
 
-    if (isBelowBreakPoint(responsiveBreak)) dockApi.maximizeWindow(winId)
+    if (wsApi.isBelowBreakPoint()) dockApi.maximizeWindow(winId)
     else if (defaultDock === 'left') dockApi.dockWindowLeft(winId)
     else if (defaultDock === 'right') dockApi.dockWindowRight(winId)
     else if (defaultDock === 'full') dockApi.maximizeWindow(winId)
@@ -73,12 +73,12 @@ export default function WindowLayout({
   }, [setSelf, windowRef, resetFlag])
 
   useEffect(() => {
-    if (isBelowBreakPoint(responsiveBreak)) return
+    if (wsApi.isBelowBreakPoint()) return
     if (!isDragging) return
 
     if (winVisualState === 'maximized') dockApi.demaximizeWindow(winId)
 
-    const wSpace = getWSRect()
+    const wSpace = wsApi.getRect()
 
     let adjustedX = x - dragClickOffset.pointX
     if (x > wSpace.right || x < wSpace.left) adjustedX = winCoord.pointX
@@ -101,14 +101,14 @@ export default function WindowLayout({
         className={`block hover:bg-gray-100 hover:bg-opacity-20 px-5 h-full`}
         onClick={() => dockApi.demaximizeWindow(winId)}
       >
-        {iconWinDemaximize(style?.navControlsColor)}
+        <IconWinDemaximize color={style?.navControlsColor} />
       </button>
     ) : (
       <button
         className={`block hover:bg-gray-100 hover:bg-opacity-20 px-5 h-full`}
         onClick={() => dockApi.maximizeWindow(winId)}
       >
-        {iconWinMaximize(style?.navControlsColor)}
+        <IconWinMaximize color={style?.navControlsColor} />
       </button>
     )
 
@@ -117,7 +117,7 @@ export default function WindowLayout({
       className="hover:bg-red-500 hover:bg-opacity-20 px-5 h-full"
       onClick={() => dockApi.closeWindow(winId)}
     >
-      {iconWinMinimize(style?.navControlsColor)}
+      <IconWinMinimize color={style?.navControlsColor} />
     </button>
   )
 
@@ -143,8 +143,8 @@ export default function WindowLayout({
           transition: 'transform 0.2s ease-in-out, opacity 0.3s ease-in-out',
           opacity: isWindowClosed ? 0 : 1,
           transform: isWindowClosed
-            ? `translate(${getWSRect().innerWidth / 2 - winCoord.pointX - winWidth / 2}px,
-              ${getWSRect().innerHeight - winCoord.pointY - winHeight / 2}px) scale(0.02)`
+            ? `translate(${wsApi.getRect().innerWidth / 2 - winCoord.pointX - winWidth / 2}px,
+              ${wsApi.getRect().innerHeight - winCoord.pointY - winHeight / 2}px) scale(0.02)`
             : '',
         }}
       >
@@ -170,13 +170,11 @@ export default function WindowLayout({
             className="grow min-w-8 h-8 px-2 text-white flex items-center text-sm"
           ></div>
 
-          {!isBelowBreakPoint(responsiveBreak) && maximizeControl}
+          {!wsApi.isBelowBreakPoint() && maximizeControl}
           {minimizeControl}
         </nav>
 
-        {!isBelowBreakPoint(responsiveBreak) && (
-          <ResizingControls winId={winId} windowRef={windowRef} />
-        )}
+        {!wsApi.isBelowBreakPoint() && <ResizingControls winId={winId} />}
 
         {/* Offset the navbar => 'h-[calc(100%-32px)]' */}
         <div className={`relative w-full h-[calc(100%-32px)] overflow-auto`}>{children}</div>

@@ -1,7 +1,7 @@
 import './index.css'
 
 export { default as WorkspaceLayout } from './window-manager/workspace-layout'
-export * from './window-manager/workspace-state'
+export * from './window-manager/internal/features/workspace/workspace-state'
 
 export * from './window-manager/registration/window-store-factory'
 
