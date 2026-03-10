@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { dockApi } from '../docking/docking-api'
 import { wsApi } from '../workspace/workspace-api'
-import { windowRegistry } from '../../../registration/window-store-factory'
+import { windowRegistry } from '../../../registration/window-registry'
 import { Coord } from '../../../model/window-types'
 import { useCursorState } from '../cursor/cursor-state'
 

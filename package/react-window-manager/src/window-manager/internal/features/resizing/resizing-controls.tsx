@@ -1,7 +1,7 @@
 import { ResizeState } from '../../../model/window-types'
 import { useCursorState } from '../cursor/cursor-state'
 import { useEffect } from 'react'
-import { windowRegistry } from '../../../registration/window-store-factory'
+import { windowRegistry } from '../../../registration/window-registry'
 import { resizeApi } from './resizing-api'
 import { gridApi } from '../grid/grid-api'
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { IconWinMinimize, IconWinDemaximize, IconWinMaximize } from '../assets/svg-win-icons'
 import ResizingControls from './resizing/resizing-controls'
-import { windowRegistry } from '../../registration/window-store-factory'
+import { windowRegistry } from '../../registration/window-registry'
 import { stackApi } from './stack/stack-api'
 import { dockApi } from './docking/docking-api'
 import { wsApi } from './workspace/workspace-api'

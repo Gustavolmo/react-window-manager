@@ -1,4 +1,4 @@
-import { windowRegistry } from '../../registration/window-store-factory'
+import { windowRegistry } from '../../registration/window-registry'
 import { dockApi } from './docking/docking-api'
 import { stackApi } from './stack/stack-api'
 

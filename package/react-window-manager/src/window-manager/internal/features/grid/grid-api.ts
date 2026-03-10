@@ -1,4 +1,4 @@
-import { windowRegistry } from '../../../registration/window-store-factory'
+import { windowRegistry } from '../../../registration/window-registry'
 import { stackApi } from '../stack/stack-api'
 
 export const gridApi = {

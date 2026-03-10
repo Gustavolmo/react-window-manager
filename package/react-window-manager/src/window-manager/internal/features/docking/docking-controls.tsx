@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { windowRegistry } from '../../../registration/window-store-factory'
+import { windowRegistry } from '../../../registration/window-registry'
 import { useWorkspaceState } from '../workspace/workspace-state'
 import { dockApi } from './docking-api'
 

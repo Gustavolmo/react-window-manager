@@ -1,4 +1,4 @@
-import { windowRegistry } from '../../../registration/window-store-factory'
+import { windowRegistry } from '../../../registration/window-registry'
 
 export const stackApi = {
   bringTargetWindowToFront: (targetId: string) => {
