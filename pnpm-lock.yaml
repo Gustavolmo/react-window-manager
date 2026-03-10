@@ -11,8 +11,8 @@ importers:
   frontend:
     dependencies:
       '@gustavolmo/react-window-manager':
-        specifier: latest
-        version: 0.3.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: 0.3.1
+        version: 0.3.1(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       lucide-react:
         specifier: ^0.575.0
         version: 0.575.0(react@19.2.4)
@@ -515,8 +515,8 @@ packages:
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@gustavolmo/react-window-manager@0.3.0':
-    resolution: {integrity: sha512-VbEQvjntZP3Pc4Uj148uZ3A5VQxf/Ap02qmu/HqTTlvrz97jIhq9IGhQbMoXINcJDgkYQWG4wAJlSNQ9hgt16g==}
+  '@gustavolmo/react-window-manager@0.3.1':
+    resolution: {integrity: sha512-JgRkCCBujJmBdndi+xJLg5LbDveCIx7pRpUO0UIbFS5BxIxCT/SPjGqR6Z1eaTcdVZWtpyQewJdgQ4bF16ZiNw==}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
@@ -1987,7 +1987,7 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
-  '@gustavolmo/react-window-manager@0.3.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@gustavolmo/react-window-manager@0.3.1(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)

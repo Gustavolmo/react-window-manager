@@ -31,9 +31,9 @@ export const wsApi = {
   },
 
   isBelowBreakPoint: (): boolean => {
-    const wSpace = wsApi.getRect()
+    const wsRect = wsApi.getRect()
     const breakPoint = useWorkspaceState.getState().responsiveBreak
-    return wSpace.innerWidth < responsiveBreakInPx(breakPoint)
+    return wsRect.innerWidth < responsiveBreakInPx(breakPoint)
   },
 }
 
