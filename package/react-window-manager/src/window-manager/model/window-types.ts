@@ -3,26 +3,16 @@ import { WindowLayoutProps } from '../internal/features/window-layout'
 import { WindowButtonProps } from '../internal/features/window-button'
 import { StoreApi, UseBoundStore } from 'zustand'
 
+export type ResizeState = false | 's' | 'e' | 'n' | 'w' | 'se' | 'sw' | 'ne' | 'nw'
 export type WindowStates = 'maximized' | 'demaximized'
 export type Coord = { pointX: number; pointY: number }
 
-export type WindowApi = {
+export type WindowRegistration = {
   id: string
   store: UseBoundStore<StoreApi<WindowStore>>
   Window: (props: Omit<WindowLayoutProps, 'winId'>) => JSX.Element
   Button: (props: Omit<WindowButtonProps, 'winId'>) => JSX.Element
 }
-
-export type ResizeState =
-  | false
-  | 'bottom-height'
-  | 'right-width'
-  | 'top-height'
-  | 'left-width'
-  | 'bottom-right-all'
-  | 'bottom-left-all'
-  | 'top-right-all'
-  | 'top-left-all'
 
 export type WindowStore = {
   windowId: string
@@ -59,7 +49,7 @@ export type WindowStore = {
 
   winHeight: number
   setWinHeight: (newWinHeight: number) => void
- 
+
   /* constants */
   WIN_MIN_WIDTH: number
   WIN_MIN_HEIGHT: number

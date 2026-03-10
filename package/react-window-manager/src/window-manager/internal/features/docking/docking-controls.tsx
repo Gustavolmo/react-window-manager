@@ -79,6 +79,7 @@ export default function DockingControls() {
     </span>
   )
 
+  /** @Note could easily add a drop on area to dock feature */
   return (
     <div
       className={`

@@ -1,6 +1,4 @@
-import { useCursorState } from './cursor/cursor-state'
-import { useEffect, useRef, useState } from 'react'
-import { Coord } from '../../model/window-types'
+import { useEffect, useRef } from 'react'
 import { IconWinMinimize, IconWinDemaximize, IconWinMaximize } from '../assets/svg-win-icons'
 import ResizingControls from './resizing/resizing-controls'
 import { windowRegistry } from '../../registration/window-store-factory'

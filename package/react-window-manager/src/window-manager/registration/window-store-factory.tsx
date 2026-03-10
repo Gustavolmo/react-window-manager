@@ -1,12 +1,15 @@
 import { create, StoreApi, UseBoundStore } from 'zustand'
 import { RefObject } from 'react'
-import { Coord, ResizeState, WindowApi, WindowStates, WindowStore } from '../model/window-types'
+import {
+  Coord,
+  ResizeState,
+  WindowRegistration,
+  WindowStates,
+  WindowStore,
+} from '../model/window-types'
 import WindowLayout, { WindowLayoutProps } from '../internal/features/window-layout'
 import WindowButton, { WindowButtonProps } from '../internal/features/window-button'
-import {
-  useWorkspaceState,
-  useWorkspaceState as ws,
-} from '../internal/features/workspace/workspace-state'
+import { useWorkspaceState } from '../internal/features/workspace/workspace-state'
 
 const windownMinWidth = 232
 const windownMinHeight = 128
@@ -22,7 +25,7 @@ export const windowRegistry: Record<string, UseBoundStore<StoreApi<WindowStore>>
  * `window` JSX component representing an interactive window
  * @return
  * `button` JSX component that control this window */
-export const createWindowStore = (): WindowApi => {
+export const createWindowStore = (): WindowRegistration => {
   const zIndexAtLaunch = Object.keys(windowRegistry).length + 1
   const windowInstanceId = `react-dynamic-window-instance${Object.keys(windowRegistry).length}`
 

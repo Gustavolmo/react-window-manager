@@ -43,7 +43,7 @@ const orchestrationGridResize = (winId: string) => {
       remoteWinStartX !== thisWinStartX
     /*
      * thisWin right edge <::::> remoteWin left edge || remoteWin is stacked */
-    if (currentResize === 'right-width') {
+    if (currentResize === 'e') {
       const isEdgeAlignedOnXAxis = Math.abs(thisWinEndX - remoteWinStartX) <= tolerance
       const isOverlapOnYAxis = thisWinStartY <= remoteWinEndY && thisWinEndY >= remoteWinStartY
 
@@ -51,7 +51,7 @@ const orchestrationGridResize = (winId: string) => {
         ? isEdgeAlignedOnXAxis
         : isEdgeAlignedOnXAxis && isOverlapOnYAxis
       if (isEdgeResize) {
-        remoteWin.setResizeAction('left-width')
+        remoteWin.setResizeAction('w')
       }
 
       const isRemoteOnSameLane =
@@ -65,13 +65,13 @@ const orchestrationGridResize = (winId: string) => {
         ? isRemoteOnSameLane && isRemoteOutside
         : isRemoteOnSameLane && isRemoteEdgeConnected
       if (isStackResize) {
-        remoteWin.setResizeAction('right-width')
+        remoteWin.setResizeAction('e')
       }
     }
 
     /*
      * thisWin left edge <::::> remoteWin right edge || remoteWin is stacked */
-    if (currentResize === 'left-width') {
+    if (currentResize === 'w') {
       const isEdgeAlignedOnXAxis = Math.abs(thisWinStartX - remoteWinEndX) <= tolerance
       const isOverlapOnYAxis = thisWinStartY <= remoteWinEndY && thisWinEndY >= remoteWinStartY
 
@@ -79,7 +79,7 @@ const orchestrationGridResize = (winId: string) => {
         ? isEdgeAlignedOnXAxis
         : isEdgeAlignedOnXAxis && isOverlapOnYAxis
       if (isEdgeResize) {
-        remoteWin.setResizeAction('right-width')
+        remoteWin.setResizeAction('e')
       }
 
       const isRemoteOnSameLane =
@@ -93,13 +93,13 @@ const orchestrationGridResize = (winId: string) => {
         ? isRemoteOnSameLane && isRemoteOutside
         : isRemoteOnSameLane && isRemoteEdgeConnected
       if (isStackResize) {
-        remoteWin.setResizeAction('left-width')
+        remoteWin.setResizeAction('w')
       }
     }
 
     /*
      * thisWin top edge <::::> remoteWin bottom edge || remoteWin is stacked */
-    if (currentResize === 'top-height') {
+    if (currentResize === 'n') {
       const isEdgeAlignedOnYAxis = Math.abs(thisWinStartY - remoteWinEndY) <= tolerance
       const isOverlapOnXAxis = thisWinStartX <= remoteWinEndX && thisWinEndX >= remoteWinStartX
 
@@ -107,7 +107,7 @@ const orchestrationGridResize = (winId: string) => {
         ? isEdgeAlignedOnYAxis
         : isEdgeAlignedOnYAxis && isOverlapOnXAxis
       if (isEdgeResize) {
-        remoteWin.setResizeAction('bottom-height')
+        remoteWin.setResizeAction('s')
       }
 
       const isRemoteOnSameLane =
@@ -121,13 +121,13 @@ const orchestrationGridResize = (winId: string) => {
         ? isRemoteOnSameLane && isRemoteOutside
         : isRemoteOnSameLane && isRemoteEdgeConnected
       if (isStackResize) {
-        remoteWin.setResizeAction('top-height')
+        remoteWin.setResizeAction('n')
       }
     }
 
     /*
      * thisWin bottom edge <::::> remoteWin top edge || remoteWin is stacked */
-    if (currentResize === 'bottom-height') {
+    if (currentResize === 's') {
       const isEdgeAlignedOnYAxis = Math.abs(thisWinEndY - remoteWinStartY) <= tolerance
       const isOverlapOnXAxis = thisWinStartX <= remoteWinEndX && thisWinEndX >= remoteWinStartX
 
@@ -135,7 +135,7 @@ const orchestrationGridResize = (winId: string) => {
         ? isEdgeAlignedOnYAxis
         : isEdgeAlignedOnYAxis && isOverlapOnXAxis
       if (isEdgeResize) {
-        remoteWin.setResizeAction('top-height')
+        remoteWin.setResizeAction('n')
       }
 
       const isRemoteOnSameLane =
@@ -149,7 +149,7 @@ const orchestrationGridResize = (winId: string) => {
         ? isRemoteOnSameLane && isRemoteOutside
         : isRemoteOnSameLane && isRemoteEdgeConnected
       if (isStackResize) {
-        remoteWin.setResizeAction('bottom-height')
+        remoteWin.setResizeAction('s')
       }
     }
   }

@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 import {
-  ResponsiveSizes,
   useWorkspaceState,
 } from './internal/features/workspace/workspace-state'
 import DockingControls from './internal/features/docking/docking-controls'
@@ -8,6 +7,7 @@ import { resizeApi } from './internal/features/resizing/resizing-api'
 import { CursorMoveListener } from './internal/features/cursor/cursor-move-listener'
 import { ViewPortResizeListener } from './internal/features/view-port/view-port-resize-listener'
 import { wsApi } from './internal/features/workspace/workspace-api'
+import { ResponsiveSizes } from './model/workspace-types'
 
 type Props = {
   children: React.ReactNode

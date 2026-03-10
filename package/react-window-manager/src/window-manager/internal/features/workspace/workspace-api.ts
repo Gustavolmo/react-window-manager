@@ -1,15 +1,5 @@
-import { ResponsiveSizes, useWorkspaceState } from './workspace-state'
-
-export type WorkspaceRect = {
-  top: number
-  left: number
-  innerHeight: number
-  innerWidth: number
-  bottom: number
-  right: number
-  centerX: number
-  centerY: number
-}
+import { ResponsiveSizes, WorkspaceRect } from '../../../model/workspace-types'
+import { useWorkspaceState } from './workspace-state'
 
 export const wsApi = {
   getRect: (): WorkspaceRect => {

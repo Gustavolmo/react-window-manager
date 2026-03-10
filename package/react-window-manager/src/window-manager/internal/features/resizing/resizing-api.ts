@@ -1,6 +1,6 @@
 import { ResizeState, WindowStore } from '../../../model/window-types'
+import { WorkspaceRect } from '../../../model/workspace-types'
 import { windowRegistry } from '../../../registration/window-store-factory'
-import { WorkspaceRect } from '../workspace/workspace-state'
 import { useCursorState } from '../cursor/cursor-state'
 import { wsApi } from '../workspace/workspace-api'
 
@@ -12,7 +12,6 @@ type ResizeContext = {
   y: number
 }
 
-// IN PROGRESS
 export const resizeApi = {
   stopAllDragAndResize: () => {
     for (const key of Object.keys(windowRegistry)) {
@@ -32,35 +31,35 @@ export const resizeApi = {
     ctx.win.setWinVisualState('demaximized')
 
     switch (ctx.win.resizeAction) {
-      case 'bottom-height':
+      case 's':
         privateApi.resizeBottomWinHeight(ctx)
         break
 
-      case 'top-height':
+      case 'n':
         privateApi.resizeTopWinHeight(ctx)
         break
 
-      case 'right-width':
+      case 'e':
         privateApi.resizeRightWinWidth(ctx)
         break
 
-      case 'left-width':
+      case 'w':
         privateApi.resizeLeftWinWidth(ctx)
         break
 
-      case 'bottom-right-all':
+      case 'se':
         privateApi.resizeRightBottomWidthAndHeight(ctx)
         break
 
-      case 'bottom-left-all':
+      case 'sw':
         privateApi.resizeLeftBottomWidthAndHeight(ctx)
         break
 
-      case 'top-right-all':
+      case 'ne':
         privateApi.resizeRightTopWidthAndHeight(ctx)
         break
 
-      case 'top-left-all':
+      case 'nw':
         privateApi.resizeLeftTopWidthAndHeight(ctx)
         break
     }

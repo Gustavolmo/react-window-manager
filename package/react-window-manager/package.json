@@ -35,14 +35,18 @@
     "eslint": "^9.19.0"
   },
   "scripts": {
+    "clean": "rimraf dist",
     "build": "tsup",
     "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
     "build:css": "tailwindcss -c tailwind.config.js -i ./src/index.css -o ./dist/index.css --minify",
-    "clean": "rimraf dist",
+    "build:all": "pnpm run clean && pnpm run build && pnpm run build:types && pnpm run build:css",
+
     "dev": "pnpm run dev:js & pnpm run dev:css",
     "dev:js": "tsup --watch",
     "dev:css": "tailwindcss -c tailwind.config.js -i ./src/index.css -o ./dist/index.css --watch",
     "lint": "eslint src --ext .ts,.tsx",
+    
+    "prepublishOnly": "pnpm run build:all",
     "publish": "npm publish --access public"
   }
 }
