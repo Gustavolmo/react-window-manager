@@ -31,7 +31,7 @@ export default function WorkspaceLayout({ children, className, responsiveBreak =
 
   useEffect(() => {
     setRef(workspaceRef.current)
-  }, [])
+  }, [workspaceRef])
 
   useEffect(() => {
     setResponsiveBreak(responsiveBreak)

@@ -15,7 +15,6 @@ export default function ResizingControls({ winId }: Props) {
 
   useEffect(() => {
     resizeApi.dispatchResizeAction(winId)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resizeAction, x, y])
 
   const handleResizeClick = (resizeAction: ResizeState) => {

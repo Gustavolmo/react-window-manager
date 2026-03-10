@@ -81,8 +81,9 @@ export default function DockingControls() {
 
   /** @Note could easily add a drop on area to dock feature */
   return (
-    <div
-      className={`
+    <>
+      <div
+        className={`
         ${
           isDragging
             ? isHovering
@@ -93,8 +94,9 @@ export default function DockingControls() {
         transition-all duration-500
         absolute z-50 flex items-center justify-center 
         w-full mx-auto pointer-events-none`}
-    >
-      {windowDockPannel}
-    </div>
+      >
+        {windowDockPannel}
+      </div>
+    </>
   )
 }

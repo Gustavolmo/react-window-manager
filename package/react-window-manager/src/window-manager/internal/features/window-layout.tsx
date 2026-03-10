@@ -65,15 +65,13 @@ export default function WindowLayout({
 
   useEffect(() => {
     setSelf(windowRef)
+  }, [setSelf, windowRef])
 
-    if (wsApi.isBelowBreakPoint()) {
-      dockApi.maximizeWindow(winId)
-      return
-    }
-
-    dockingRoutes[defaultDock](winId)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setSelf, windowRef, resetFlag, wsRef])
+  useEffect(() => {
+    /* Initialization is dependent on the workspace */
+    if (wsApi.isBelowBreakPoint()) dockApi.maximizeWindow(winId)
+    else dockingRoutes[defaultDock](winId)
+  }, [wsRef, resetFlag])
 
   const dockingRoutes: Record<DockPosition, (winId: string) => void> = {
     right: dockApi.dockWindowRight,
