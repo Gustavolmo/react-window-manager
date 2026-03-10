@@ -1,20 +1,20 @@
-import { RefObject } from 'react'
+import { JSX, RefObject } from 'react'
+import { WindowLayoutProps } from '../internal/features/window-layout'
+import { WindowButtonProps } from '../internal/features/window-button'
+import { StoreApi, UseBoundStore } from 'zustand'
 
+export type ResizeState = false | 's' | 'e' | 'n' | 'w' | 'se' | 'sw' | 'ne' | 'nw'
 export type WindowStates = 'maximized' | 'demaximized'
 export type Coord = { pointX: number; pointY: number }
-export type ResizeState =
-  | false
-  | 'bottom-height'
-  | 'right-width'
-  | 'top-height'
-  | 'left-width'
-  | 'bottom-right-all'
-  | 'bottom-left-all'
-  | 'top-right-all'
-  | 'top-left-all'
+
+export type WindowRegistration = {
+  id: string
+  store: UseBoundStore<StoreApi<WindowStore>>
+  Window: (props: Omit<WindowLayoutProps, 'winId'>) => JSX.Element
+  Button: (props: Omit<WindowButtonProps, 'winId'>) => JSX.Element
+}
 
 export type WindowStore = {
-  /* Self */
   windowId: string
 
   isActive: boolean
@@ -29,15 +29,11 @@ export type WindowStore = {
   self: RefObject<HTMLDivElement | null> | undefined
   setSelf: (ref: RefObject<HTMLDivElement | null>) => void
 
-  /* State handlers */
   winVisualState: WindowStates
   setWinVisualState: (newState: WindowStates) => void
 
-  isWinMinimized: boolean
-  setIsWinMinimized: (isMini: boolean) => void
-
-  dragClickOffset: Coord
-  setDragClickOffset: (newCoord: Coord) => void
+  isWindowClosed: boolean
+  setisWindowClosed: (isMini: boolean) => void
 
   isDragging: boolean
   setIsDragging: (updatedIsDragging: boolean) => void
@@ -45,35 +41,14 @@ export type WindowStore = {
   winCoord: Coord
   setWinCoord: (newWinCoord: Coord) => void
 
-  isResizing: ResizeState
-  setIsResizing: (updatedIsResizing: ResizeState) => void
+  resizeAction: ResizeState
+  setResizeAction: (updatedIsResizing: ResizeState) => void
 
   winWidth: number
   setWinWidth: (newWinWidth: number) => void
 
   winHeight: number
   setWinHeight: (newWinHeight: number) => void
-
-  /* Logic handlers */
-  stopDragAndResize: () => void
-
-  openWindow: () => void
-  minimizeWindow: () => void
-
-  maximizeWindow: () => void
-  demaximizeWindow: () => void
-
-  dockWindowRight: () => void
-  dockWindowLeft: () => void
-
-  dockWindowTop: () => void
-  dockWindowBottom: () => void
-
-  dockWindowBottomRight: () => void
-  dockWindowTopRight: () => void
-
-  dockWindowBottomLeft: () => void
-  dockWindowTopLeft: () => void
 
   /* constants */
   WIN_MIN_WIDTH: number

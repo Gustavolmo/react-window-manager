@@ -1,97 +1,85 @@
 import { CodeXml, Github, Linkedin } from 'lucide-react'
 import ReadMe from '../components/read-me'
-import {
-  createWindowStore,
-  WindowButton,
-  WindowLayout,
-  WorkspaceLayout,
-} from '@gustavolmo/react-window-manager'
+import { createWindowStore, WorkspaceLayout } from '@gustavolmo/react-window-manager'
 
-const bottomOffsetPx = 48
-const readMe = createWindowStore('read-me', bottomOffsetPx)
-const test_1 = createWindowStore('test_1-window', bottomOffsetPx)
-const test_2 = createWindowStore('test_2-window', bottomOffsetPx)
-const test_3 = createWindowStore('test_3-window', bottomOffsetPx)
-
-const test_4 = createWindowStore('test_4-window', bottomOffsetPx)
-const test_5 = createWindowStore('test_5-window', bottomOffsetPx)
-const test_6 = createWindowStore('test_6-window', bottomOffsetPx)
-const test_7 = createWindowStore('test_7-window', bottomOffsetPx)
+const readMe = createWindowStore()
+const test_1 = createWindowStore()
+const test_2 = createWindowStore()
+const test_3 = createWindowStore()
+const test_4 = createWindowStore()
+const test_5 = createWindowStore()
+const test_6 = createWindowStore()
+const test_7 = createWindowStore()
 
 export default function Home() {
   return (
-    <>
-      <WorkspaceLayout>
+    <section className="fixed w-full h-full flex flex-col p-10">
+      <WorkspaceLayout className="h-full w-full grow">
         <div className="p-8 w-full h-full flex flex-col items-center mb-32 desktop-background">
           <h1 className="font-mono w-full text-white text-2xl uppercase tracking-[0.4em] mb-0 block opacity-50 max-w-xl text-center">
             React Window Manager
           </h1>
         </div>
 
-        <WindowLayout
-          responsiveBreak={'sm'}
-          useWindowStore={readMe}
-          windowName={<CodeXml className="text-zinc-400" />}
-        >
+        <readMe.Window windowName={<CodeXml className="text-zinc-400" />}>
           <ReadMe />
-        </WindowLayout>
+        </readMe.Window>
 
-        <WindowLayout useWindowStore={test_1} windowName={'test_1'}>
+        <test_1.Window windowName={'test_1'}>
           <p>test_1</p>
-        </WindowLayout>
+        </test_1.Window>
 
-        <WindowLayout useWindowStore={test_2} windowName={'test_2'}>
+        <test_2.Window windowName={'test_2'}>
           <p>test_2</p>
-        </WindowLayout>
+        </test_2.Window>
 
-        <WindowLayout useWindowStore={test_3} windowName={'test_3'}>
+        <test_3.Window windowName={'test_3'}>
           <p>test_3</p>
-        </WindowLayout>
-        
-        <WindowLayout useWindowStore={test_4} windowName={'test_4'}>
+        </test_3.Window>
+
+        <test_4.Window windowName={'test_4'}>
           <p>test_4</p>
-        </WindowLayout>
+        </test_4.Window>
 
-        <WindowLayout useWindowStore={test_5} windowName={'test_5'}>
+        <test_5.Window windowName={'test_5'}>
           <p>test_5</p>
-        </WindowLayout>
+        </test_5.Window>
 
-        <WindowLayout useWindowStore={test_6} windowName={'test_6'}>
+        <test_6.Window windowName={'test_6'}>
           <p>test_6</p>
-        </WindowLayout>
-        <WindowLayout useWindowStore={test_7} windowName={'test_7'}>
+        </test_6.Window>
+        <test_7.Window windowName={'test_7'}>
           <p>test_7</p>
-        </WindowLayout>
+        </test_7.Window>
       </WorkspaceLayout>
 
-      <nav className="fixed bottom-0 left-0 w-full h-12 bg-neutral-900 flex gap-2 py-2 px-4 justify-between z-50">
-        <div className="flex gap-2 items-center overflow-y-auto">
-          <WindowButton useWindowStore={readMe} className="px-2 py-0 rounded-md">
+      <nav className="w-full h-12 bg-neutral-900 flex gap-2 py-2 px-4 justify-between z-50">
+        <div className="flex gap-2 items-center overflow-x-auto overflow-y-hidden">
+          <readMe.Button className="px-2 py-0 rounded-md">
             <CodeXml className="text-zinc-400 hover:text-zinc-50" />
-          </WindowButton>
-          <WindowButton useWindowStore={test_1} className="px-2 py-0 rounded-md">
+          </readMe.Button>
+          <test_1.Button className="px-2 py-0 rounded-md">
             <p className="text-zinc-400 hover:text-zinc-50">test_1</p>
-          </WindowButton>
-          <WindowButton useWindowStore={test_2} className="px-2 py-0 rounded-md">
+          </test_1.Button>
+          <test_2.Button className="px-2 py-0 rounded-md">
             <p className="text-zinc-400 hover:text-zinc-50">test_2</p>
-          </WindowButton>
-          <WindowButton useWindowStore={test_3} className="px-2 py-0 rounded-md">
+          </test_2.Button>
+          <test_3.Button className="px-2 py-0 rounded-md">
             <p className="text-zinc-400 hover:text-zinc-50">test_3</p>
-          </WindowButton>
+          </test_3.Button>
 
-          <WindowButton useWindowStore={test_4} className="px-2 py-0 rounded-md">
+          <test_4.Button className="px-2 py-0 rounded-md">
             <p className="text-zinc-400 hover:text-zinc-50">test_4</p>
-          </WindowButton>
-          <WindowButton useWindowStore={test_5} className="px-2 py-0 rounded-md">
+          </test_4.Button>
+          <test_5.Button className="px-2 py-0 rounded-md">
             <p className="text-zinc-400 hover:text-zinc-50">test_5</p>
-          </WindowButton>
-          <WindowButton useWindowStore={test_6} className="px-2 py-0 rounded-md">
+          </test_5.Button>
+          <test_6.Button className="px-2 py-0 rounded-md">
             <p className="text-zinc-400 hover:text-zinc-50">test_6</p>
-          </WindowButton>
-          <WindowButton useWindowStore={test_7} className="px-2 py-0 rounded-md">
+          </test_6.Button>
+          <test_7.Button className="px-2 py-0 rounded-md">
             <p className="text-zinc-400 hover:text-zinc-50">test_7</p>
-          </WindowButton>
-
+          </test_7.Button>
         </div>
 
         <div className="flex gap-4 items-center">
@@ -103,6 +91,6 @@ export default function Home() {
           </a>
         </div>
       </nav>
-    </>
+    </section>
   )
 }

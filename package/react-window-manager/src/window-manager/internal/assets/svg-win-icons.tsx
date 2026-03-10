@@ -1,4 +1,8 @@
-export function iconWinMaximize(color?: string) {
+type Props = {
+  color?: string
+}
+
+export function IconWinMaximize({color}: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -20,7 +24,7 @@ export function iconWinMaximize(color?: string) {
   )
 }
 
-export function iconWinDemaximize(color?: string) {
+export function IconWinDemaximize({color}: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +46,7 @@ export function iconWinDemaximize(color?: string) {
   )
 }
 
-export function iconWinMinimize(color?: string) {
+export function IconWinMinimize({color}: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

@@ -1,65 +1,34 @@
-import { useEffect, useState } from 'react'
-import { StoreApi, UseBoundStore } from 'zustand'
-import { WindowStore } from '../window-types'
+import { useState } from 'react'
+import { windowRegistry } from '../../../registration/window-store-factory'
+import { useWorkspaceState } from '../workspace/workspace-state'
+import { dockApi } from './docking-api'
 
-type Props = {
-  useWindowStore: UseBoundStore<StoreApi<WindowStore>>
-}
-
-export default function DockingControls({ useWindowStore }: Props) {
-  const {
-    isDragging,
-
-    dockWindowRight,
-    dockWindowLeft,
-
-    dockWindowBottom,
-    dockWindowTop,
-
-    dockWindowTopLeft,
-    dockWindowBottomLeft,
-    dockWindowTopRight,
-    dockWindowBottomRight,
-  } = useWindowStore()
-
-  const [isVisible, setIsVisible] = useState(false)
+export default function DockingControls() {
   const [isHovering, setIsHovering] = useState(false)
-  useEffect(() => {
-    let dealy: ReturnType<typeof setTimeout>
 
-    if (isDragging) {
-      dealy = setTimeout(() => {
-        setIsVisible(true)
-      }, 100)
-    } else {
-      setIsVisible(false)
-    }
-
-    return () => clearTimeout(dealy)
-  }, [isDragging])
+  const { activeWindowId } = useWorkspaceState()
+  const { isDragging } = windowRegistry[activeWindowId]()
 
   const cornerDockControl = (
     <div className={`flex xl:p-0 shrink-0 gap-0.5`}>
-      {/* LEFT SIDE */}
       <div className="flex flex-col justify-center gap-0.5">
         <button
           className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-10 h-6 rounded-sm"
-          onMouseUp={dockWindowTopLeft}
+          onMouseUp={() => dockApi.dockWindowTopLeft(activeWindowId)}
         ></button>
         <button
           className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-10 h-6 rounded-sm"
-          onMouseUp={dockWindowBottomLeft}
+          onMouseUp={() => dockApi.dockWindowBottomLeft(activeWindowId)}
         ></button>
       </div>
-      {/* RIGHT SIDE */}
       <div className="flex flex-col justify-center gap-0.5">
         <button
           className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-10 h-6 rounded-sm"
-          onMouseUp={dockWindowTopRight}
+          onMouseUp={() => dockApi.dockWindowTopRight(activeWindowId)}
         ></button>
         <button
           className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-10 h-6 rounded-sm"
-          onMouseUp={dockWindowBottomRight}
+          onMouseUp={() => dockApi.dockWindowBottomRight(activeWindowId)}
         ></button>
       </div>
     </div>
@@ -69,11 +38,11 @@ export default function DockingControls({ useWindowStore }: Props) {
     <div className={`flex shrink-0 items-center gap-0.5`}>
       <button
         className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-8 h-12 rounded-sm"
-        onMouseUp={dockWindowLeft}
+        onMouseUp={() => dockApi.dockWindowLeft(activeWindowId)}
       ></button>
       <button
         className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-8 h-12 rounded-sm"
-        onMouseUp={dockWindowRight}
+        onMouseUp={() => dockApi.dockWindowRight(activeWindowId)}
       ></button>
     </div>
   )
@@ -82,18 +51,18 @@ export default function DockingControls({ useWindowStore }: Props) {
     <div className={`flex flex-col shrink-0 items-center gap-0.5`}>
       <button
         className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-14 h-6 rounded-sm"
-        onMouseUp={dockWindowTop}
+        onMouseUp={() => dockApi.dockWindowTop(activeWindowId)}
       ></button>
       <button
         className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-14 h-6 rounded-sm"
-        onMouseUp={dockWindowBottom}
+        onMouseUp={() => dockApi.dockWindowBottom(activeWindowId)}
       ></button>
     </div>
   )
 
   const windowDockPannel = (
     <span
-      className="pointer-events-auto px-4 pb-4"
+      className="pointer-events-auto px-4 pb-2"
       onMouseOver={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
@@ -110,11 +79,12 @@ export default function DockingControls({ useWindowStore }: Props) {
     </span>
   )
 
+  /** @Note could easily add a drop on area to dock feature */
   return (
     <div
       className={`
         ${
-          isVisible
+          isDragging
             ? isHovering
               ? 'top-0 opacity-50'
               : 'top-[-68px] opacity-80'
