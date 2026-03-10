@@ -10,7 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@gustavolmo/react-window-manager": "latest",
+    "@gustavolmo/react-window-manager": "0.3.1",
     "lucide-react": "^0.575.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -6,6 +6,7 @@ import { stackApi } from './stack/stack-api'
 import { dockApi } from './docking/docking-api'
 import { wsApi } from './workspace/workspace-api'
 import DragHandle from './drag/drag-handle'
+import { useWorkspaceState } from './workspace/workspace-state'
 
 type DockPosition =
   | 'right'
@@ -42,6 +43,7 @@ export default function WindowLayout({
   defaultDock = 'default',
   style,
 }: WindowLayoutProps) {
+  const { ref: wsRef } = useWorkspaceState()
   const windowRef = useRef<HTMLDivElement>(null)
   const {
     windowId,
@@ -71,7 +73,7 @@ export default function WindowLayout({
 
     dockingRoutes[defaultDock](winId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setSelf, windowRef, resetFlag])
+  }, [setSelf, windowRef, resetFlag, wsRef])
 
   const dockingRoutes: Record<DockPosition, (winId: string) => void> = {
     right: dockApi.dockWindowRight,
