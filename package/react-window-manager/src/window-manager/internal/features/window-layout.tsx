@@ -43,7 +43,7 @@ export default function WindowLayout({
   defaultDock = 'default',
   style,
 }: WindowLayoutProps) {
-  const { wsElement, wsRect } = useWorkspaceState()
+  const { wsElement, wsRect, isBelowBreakPoint } = useWorkspaceState()
   const windowRef = useRef<HTMLDivElement>(null)
   const {
     windowId,
@@ -68,7 +68,7 @@ export default function WindowLayout({
   }, [setWinElement, windowRef.current])
 
   useEffect(() => {
-    if (wsApi.isBelowBreakPoint()) {
+    if (isBelowBreakPoint()) {
       dockApi.maximizeWindow(winId)
     } else {
       dockingRoutes[defaultDock](winId)
@@ -157,11 +157,11 @@ export default function WindowLayout({
 
           <DragHandle winId={winId} />
 
-          {!wsApi.isBelowBreakPoint() && maximizeControl}
+          {!isBelowBreakPoint() && maximizeControl}
           {closeControl}
         </nav>
 
-        {!wsApi.isBelowBreakPoint() && <ResizingControls winId={winId} />}
+        {!isBelowBreakPoint() && <ResizingControls winId={winId} />}
 
         {/* Offset the navbar => 'h-[calc(100%-32px)]' */}
         <div className={`relative w-full h-[calc(100%-32px)] overflow-auto`}>{children}</div>

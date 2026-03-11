@@ -20,6 +20,7 @@ export type WorkspaceStore = {
 
   responsiveBreak: ResponsiveSizes
   setResponsiveBreak: (breakPoint: ResponsiveSizes) => void
+  isBelowBreakPoint: () => boolean
 
   wsRect: WorkspaceRect
   setWsRect: (rect: WorkspaceRect) => void

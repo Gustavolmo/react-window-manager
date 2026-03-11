@@ -12,7 +12,7 @@ type Props = {
 
 export default function DragHandle({ winId }: Props) {
   const { x, y } = useCursorState()
-  const { wsRect } = useWorkspaceState()
+  const { wsRect, isBelowBreakPoint } = useWorkspaceState()
   const { winVisualState, isDragging, winCoord, setWinCoord, setIsDragging } =
     windowRegistry[winId]()
 
@@ -22,7 +22,7 @@ export default function DragHandle({ winId }: Props) {
   })
 
   useEffect(() => {
-    if (wsApi.isBelowBreakPoint()) return
+    if (isBelowBreakPoint()) return
     if (!isDragging) return
 
     if (winVisualState === 'maximized') dockApi.demaximizeWindow(winId)

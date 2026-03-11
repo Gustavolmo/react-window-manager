@@ -29,29 +29,5 @@ export const wsApi = {
       },
     })
   },
-
-  isBelowBreakPoint: (): boolean => {
-    const wsRect = useWorkspaceState.getState().wsRect
-    const breakPoint = useWorkspaceState.getState().responsiveBreak
-    return wsRect.innerWidth < responsiveBreakInPx(breakPoint)
-  },
 }
 
-const responsiveBreakInPx = (breakPoint: ResponsiveSizes): number => {
-  switch (breakPoint) {
-    case 'sm':
-      return 640
-    case 'md':
-      return 768
-    case 'lg':
-      return 1024
-    case 'xl':
-      return 1280
-    case 'never':
-      return 0
-    case 'always':
-      return Infinity
-    default:
-      return breakPoint
-  }
-}

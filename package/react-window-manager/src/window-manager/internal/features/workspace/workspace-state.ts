@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { ResponsiveSizes, WorkspaceRect, WorkspaceStore } from '../../../model/workspace-types'
 
-export const useWorkspaceState = create<WorkspaceStore>((set) => ({
+export const useWorkspaceState = create<WorkspaceStore>((set, get) => ({
   wsElement: null,
   setWsElement: (el: HTMLElement | null) => set({ wsElement: el }),
 
@@ -9,6 +9,7 @@ export const useWorkspaceState = create<WorkspaceStore>((set) => ({
   setActiveWindowId: (newId: string) => set({ activeWindowId: newId }),
 
   responsiveBreak: 'sm',
+  isBelowBreakPoint: () => get().wsRect.innerWidth < responsiveBreakInPx(get().responsiveBreak),
   setResponsiveBreak: (breakPoint: ResponsiveSizes) => set({ responsiveBreak: breakPoint }),
 
   wsRect: {
@@ -23,3 +24,22 @@ export const useWorkspaceState = create<WorkspaceStore>((set) => ({
   },
   setWsRect: (rect: WorkspaceRect) => set({ wsRect: rect }),
 }))
+
+const responsiveBreakInPx = (breakPoint: ResponsiveSizes): number => {
+  switch (breakPoint) {
+    case 'sm':
+      return 640
+    case 'md':
+      return 768
+    case 'lg':
+      return 1024
+    case 'xl':
+      return 1280
+    case 'never':
+      return 0
+    case 'always':
+      return Infinity
+    default:
+      return breakPoint
+  }
+}
