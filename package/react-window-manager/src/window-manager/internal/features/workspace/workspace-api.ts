@@ -3,7 +3,7 @@ import { useWorkspaceState } from './workspace-state'
 
 export const wsApi = {
   updateWsRect: () => {
-    const rect = useWorkspaceState.getState().self?.getBoundingClientRect()
+    const rect = useWorkspaceState.getState().wsElement?.getBoundingClientRect()
 
     const top = rect?.top ?? 0
     const left = rect?.left ?? 0

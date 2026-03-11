@@ -177,7 +177,7 @@ const privateApi = {
 
 const getDependencies = (winId: string): ResizeContext => {
   const win = windowRegistry[winId].getState()
-  const winBox = win.self?.current?.getBoundingClientRect()
+  const winBox = win.winElement?.getBoundingClientRect()
   const wsRect = useWorkspaceState.getState().wsRect
   const { x, y } = useCursorState.getState()
 

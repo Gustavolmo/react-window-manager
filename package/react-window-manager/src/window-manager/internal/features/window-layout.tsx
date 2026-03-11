@@ -43,13 +43,13 @@ export default function WindowLayout({
   defaultDock = 'default',
   style,
 }: WindowLayoutProps) {
-  const { self: wsSelf, wsRect } = useWorkspaceState()
+  const { wsElement, wsRect } = useWorkspaceState()
   const windowRef = useRef<HTMLDivElement>(null)
   const {
     windowId,
     zIndex,
     isActive,
-    setSelf,
+    setWinElement,
 
     resetFlag,
 
@@ -64,8 +64,8 @@ export default function WindowLayout({
   } = windowRegistry[winId]()
 
   useEffect(() => {
-    setSelf(windowRef)
-  }, [setSelf, windowRef])
+    setWinElement(windowRef.current)
+  }, [setWinElement, windowRef.current])
 
   useEffect(() => {
     if (wsApi.isBelowBreakPoint()) {
@@ -73,8 +73,8 @@ export default function WindowLayout({
     } else {
       dockingRoutes[defaultDock](winId)
     }
-    /* Initialization is dependent on the workspace (wsSelf) being mounted */
-  }, [wsSelf, resetFlag])
+    /* Initialization is dependent on the workspace (wsElement) being mounted */
+  }, [wsElement, resetFlag])
 
   const dockingRoutes: Record<DockPosition, (winId: string) => void> = {
     right: dockApi.dockWindowRight,

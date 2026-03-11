@@ -30,8 +30,8 @@ export const createWindowStore = (): WindowRegistration => {
   const storeInstance = create<WindowStore>((set, get) => ({
     windowId: windowInstanceId,
 
-    self: undefined,
-    setSelf: (ref: RefObject<HTMLDivElement | null>) => set({ self: ref }),
+    winElement: undefined,
+    setWinElement: (ref: HTMLDivElement | null) => set({ winElement: ref }),
 
     WIN_MIN_WIDTH: windownMinWidth,
     setWIN_MIN_WIDTH: (w: number) => set({ WIN_MIN_WIDTH: w }),

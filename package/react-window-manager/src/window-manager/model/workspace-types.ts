@@ -12,8 +12,8 @@ export type WorkspaceRect = {
 }
 
 export type WorkspaceStore = {
-  self: HTMLElement | null
-  setSelf: (newRef: HTMLElement | null) => void
+  wsElement: HTMLElement | null
+  setWsElement: (newRef: HTMLElement | null) => void
 
   activeWindowId: string
   setActiveWindowId: (newId: string) => void

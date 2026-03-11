@@ -2,8 +2,8 @@ import { create } from 'zustand'
 import { ResponsiveSizes, WorkspaceRect, WorkspaceStore } from '../../../model/workspace-types'
 
 export const useWorkspaceState = create<WorkspaceStore>((set) => ({
-  self: null,
-  setSelf: (newRef: HTMLElement | null) => set({ self: newRef }),
+  wsElement: null,
+  setWsElement: (el: HTMLElement | null) => set({ wsElement: el }),
 
   activeWindowId: 'react-dynamic-window-instance0',
   setActiveWindowId: (newId: string) => set({ activeWindowId: newId }),

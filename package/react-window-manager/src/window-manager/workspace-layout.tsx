@@ -25,11 +25,11 @@ type Props = {
 
 export default function WorkspaceLayout({ children, className, responsiveBreak }: Props) {
   const workspaceRef = useRef<HTMLElement | null>(null)
-  const { setSelf, setResponsiveBreak, self } = useWorkspaceState()
+  const { setWsElement, setResponsiveBreak, wsElement } = useWorkspaceState()
 
   useEffect(() => {
-    setSelf(workspaceRef.current)
-  }, [self])
+    setWsElement(workspaceRef.current)
+  }, [wsElement])
 
   useEffect(() => {
     if (responsiveBreak) setResponsiveBreak(responsiveBreak)

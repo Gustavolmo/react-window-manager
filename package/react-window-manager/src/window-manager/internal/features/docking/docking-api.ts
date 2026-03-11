@@ -112,10 +112,10 @@ export const dockApi = {
 
   openWindow: (winId: string) => {
     const winState = windowRegistry[winId].getState()
-    const winRef = winState.self
-    if (winState.isWindowClosed && winRef?.current) {
+    const winElement = winState.winElement
+    if (winState.isWindowClosed && winElement) {
       windowRegistry[winId].setState({ isWindowClosed: false })
-      winRef.current.style.transform = 'translate(0, 0) scale(1)'
+      winElement.style.transform = 'translate(0, 0) scale(1)'
     }
   },
 }

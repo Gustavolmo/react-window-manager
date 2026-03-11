@@ -4,10 +4,10 @@ import { wsApi } from './workspace-api'
 import { stackApi } from '../stack/stack-api'
 
 export default function WorkspaceResizeListener() {
-  const { self } = useWorkspaceState()
+  const { wsElement } = useWorkspaceState()
 
   useEffect(() => {
-    if (!self) return
+    if (!wsElement) return
 
     const onResize = () => {
       wsApi.updateWsRect()
@@ -17,9 +17,9 @@ export default function WorkspaceResizeListener() {
     onResize()
     const observer = new ResizeObserver(onResize)
 
-    observer.observe(self)
+    observer.observe(wsElement)
     return () => observer.disconnect()
-  }, [self])
+  }, [wsElement])
 
   return <></>
 }
