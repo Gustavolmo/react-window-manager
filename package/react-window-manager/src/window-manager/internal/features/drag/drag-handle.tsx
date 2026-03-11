@@ -4,6 +4,7 @@ import { wsApi } from '../workspace/workspace-api'
 import { windowRegistry } from '../../../registration/window-registry'
 import { Coord } from '../../../model/window-types'
 import { useCursorState } from '../cursor/cursor-state'
+import { useWorkspaceState } from '../workspace/workspace-state'
 
 type Props = {
   winId: string
@@ -11,12 +12,13 @@ type Props = {
 
 export default function DragHandle({ winId }: Props) {
   const { x, y } = useCursorState()
+  const { wsRect } = useWorkspaceState()
   const { winVisualState, isDragging, winCoord, setWinCoord, setIsDragging } =
     windowRegistry[winId]()
 
   const [dragClickOffset, setDragClickOffset] = useState<Coord>({
-    pointX: wsApi.getRect().left,
-    pointY: wsApi.getRect().top,
+    pointX: wsRect.left,
+    pointY: wsRect.top,
   })
 
   useEffect(() => {
@@ -24,8 +26,6 @@ export default function DragHandle({ winId }: Props) {
     if (!isDragging) return
 
     if (winVisualState === 'maximized') dockApi.demaximizeWindow(winId)
-
-    const wsRect = wsApi.getRect()
 
     let adjustedX = x - dragClickOffset.pointX
     if (x > wsRect.right || x < wsRect.left) adjustedX = winCoord.pointX

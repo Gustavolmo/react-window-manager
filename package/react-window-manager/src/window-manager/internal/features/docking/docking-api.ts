@@ -1,96 +1,107 @@
 import { windowRegistry } from '../../../registration/window-registry'
 import { wsApi } from '../workspace/workspace-api'
+import { useWorkspaceState } from '../workspace/workspace-state'
 
 export const dockApi = {
   dockWindowRight: (winId: string) => {
+    const wsRect = useWorkspaceState.getState().wsRect
     windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().centerX, pointY: wsApi.getRect().top },
-      winWidth: wsApi.getRect().innerWidth / 2,
-      winHeight: wsApi.getRect().innerHeight,
+      winCoord: { pointX: wsRect.centerX, pointY: wsRect.top },
+      winWidth: wsRect.innerWidth / 2,
+      winHeight: wsRect.innerHeight,
       winVisualState: 'demaximized',
     })
   },
 
   dockWindowLeft: (winId: string) => {
+    const wsRect = useWorkspaceState.getState().wsRect
     windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().left, pointY: wsApi.getRect().top },
-      winWidth: wsApi.getRect().innerWidth / 2,
-      winHeight: wsApi.getRect().innerHeight,
+      winCoord: { pointX: wsRect.left, pointY: wsRect.top },
+      winWidth: wsRect.innerWidth / 2,
+      winHeight: wsRect.innerHeight,
       winVisualState: 'demaximized',
     })
   },
 
   dockWindowTop: (winId: string) => {
+    const wsRect = useWorkspaceState.getState().wsRect
     windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().left, pointY: wsApi.getRect().top },
-      winWidth: wsApi.getRect().innerWidth,
-      winHeight: wsApi.getRect().innerHeight / 2,
+      winCoord: { pointX: wsRect.left, pointY: wsRect.top },
+      winWidth: wsRect.innerWidth,
+      winHeight: wsRect.innerHeight / 2,
       winVisualState: 'demaximized',
     })
   },
 
   dockWindowBottom: (winId: string) => {
+    const wsRect = useWorkspaceState.getState().wsRect
     windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().left, pointY: wsApi.getRect().centerY },
-      winWidth: wsApi.getRect().innerWidth,
-      winHeight: wsApi.getRect().innerHeight / 2,
+      winCoord: { pointX: wsRect.left, pointY: wsRect.centerY },
+      winWidth: wsRect.innerWidth,
+      winHeight: wsRect.innerHeight / 2,
       winVisualState: 'demaximized',
     })
   },
 
   dockWindowBottomRight: (winId: string) => {
+    const wsRect = useWorkspaceState.getState().wsRect
     windowRegistry[winId].setState({
       winCoord: {
-        pointX: wsApi.getRect().centerX,
-        pointY: wsApi.getRect().centerY,
+        pointX: wsRect.centerX,
+        pointY: wsRect.centerY,
       },
-      winWidth: wsApi.getRect().innerWidth / 2,
-      winHeight: wsApi.getRect().innerHeight / 2,
+      winWidth: wsRect.innerWidth / 2,
+      winHeight: wsRect.innerHeight / 2,
       winVisualState: 'demaximized',
     })
   },
 
   dockWindowTopRight: (winId: string) => {
+    const wsRect = useWorkspaceState.getState().wsRect
     windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().centerX, pointY: wsApi.getRect().top },
-      winWidth: wsApi.getRect().innerWidth / 2,
-      winHeight: wsApi.getRect().innerHeight / 2,
+      winCoord: { pointX: wsRect.centerX, pointY: wsRect.top },
+      winWidth: wsRect.innerWidth / 2,
+      winHeight: wsRect.innerHeight / 2,
       winVisualState: 'demaximized',
     })
   },
 
   dockWindowBottomLeft: (winId: string) => {
+    const wsRect = useWorkspaceState.getState().wsRect
     windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().left, pointY: wsApi.getRect().centerY },
-      winWidth: wsApi.getRect().innerWidth / 2,
-      winHeight: wsApi.getRect().innerHeight / 2,
+      winCoord: { pointX: wsRect.left, pointY: wsRect.centerY },
+      winWidth: wsRect.innerWidth / 2,
+      winHeight: wsRect.innerHeight / 2,
       winVisualState: 'demaximized',
     })
   },
 
   dockWindowTopLeft: (winId: string) => {
+    const wsRect = useWorkspaceState.getState().wsRect
     windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().left, pointY: wsApi.getRect().top },
-      winWidth: wsApi.getRect().innerWidth / 2,
-      winHeight: wsApi.getRect().innerHeight / 2,
+      winCoord: { pointX: wsRect.left, pointY: wsRect.top },
+      winWidth: wsRect.innerWidth / 2,
+      winHeight: wsRect.innerHeight / 2,
       winVisualState: 'demaximized',
     })
   },
 
   maximizeWindow: (winId: string) => {
+    const wsRect = useWorkspaceState.getState().wsRect
     windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().left, pointY: wsApi.getRect().top },
-      winHeight: wsApi.getRect().innerHeight,
-      winWidth: wsApi.getRect().innerWidth,
+      winCoord: { pointX: wsRect.left, pointY: wsRect.top },
+      winHeight: wsRect.innerHeight,
+      winWidth: wsRect.innerWidth,
       winVisualState: 'maximized',
     })
   },
 
   demaximizeWindow: (winId: string) => {
+    const wsRect = useWorkspaceState.getState().wsRect
     windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().left + 16, pointY: wsApi.getRect().top + 16 },
-      winWidth: wsApi.getRect().innerWidth * 0.95,
-      winHeight: wsApi.getRect().innerHeight * 0.75,
+      winCoord: { pointX: wsRect.left + 16, pointY: wsRect.top + 16 },
+      winWidth: wsRect.innerWidth * 0.95,
+      winHeight: wsRect.innerHeight * 0.75,
       winVisualState: 'demaximized',
     })
   },

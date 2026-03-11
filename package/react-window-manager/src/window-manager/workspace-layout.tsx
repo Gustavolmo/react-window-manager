@@ -1,13 +1,11 @@
 import { useEffect, useRef } from 'react'
-import {
-  useWorkspaceState,
-} from './internal/features/workspace/workspace-state'
+import { useWorkspaceState } from './internal/features/workspace/workspace-state'
 import DockingControls from './internal/features/docking/docking-controls'
 import { resizeApi } from './internal/features/resizing/resizing-api'
 import { CursorMoveListener } from './internal/features/cursor/cursor-move-listener'
-import { ViewPortResizeListener } from './internal/features/view-port/view-port-resize-listener'
 import { wsApi } from './internal/features/workspace/workspace-api'
 import { ResponsiveSizes } from './model/workspace-types'
+import WorkspaceResizeListener from './internal/features/workspace/workspace-resize-listener'
 
 type Props = {
   children: React.ReactNode
@@ -25,16 +23,16 @@ type Props = {
   responsiveBreak?: ResponsiveSizes
 }
 
-export default function WorkspaceLayout({ children, className, responsiveBreak = 'sm' }: Props) {
+export default function WorkspaceLayout({ children, className, responsiveBreak }: Props) {
   const workspaceRef = useRef<HTMLElement | null>(null)
-  const { setRef, setResponsiveBreak } = useWorkspaceState()
+  const { setSelf, setResponsiveBreak, self } = useWorkspaceState()
 
   useEffect(() => {
-    setRef(workspaceRef.current)
-  }, [workspaceRef])
+    setSelf(workspaceRef.current)
+  }, [self])
 
   useEffect(() => {
-    setResponsiveBreak(responsiveBreak)
+    if (responsiveBreak) setResponsiveBreak(responsiveBreak)
   }, [responsiveBreak])
 
   return (
@@ -44,7 +42,7 @@ export default function WorkspaceLayout({ children, className, responsiveBreak =
       onMouseUp={resizeApi.stopAllDragAndResize}
       className={className ? className : 'fixed overflow-hidden h-full w-full touch-none'}
     >
-      <ViewPortResizeListener />
+      <WorkspaceResizeListener />
       <CursorMoveListener />
       <div className=" w-full h-full relative overflow-hidden">
         {!wsApi.isBelowBreakPoint() && <DockingControls />}

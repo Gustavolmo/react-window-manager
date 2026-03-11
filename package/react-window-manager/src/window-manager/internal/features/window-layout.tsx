@@ -43,7 +43,7 @@ export default function WindowLayout({
   defaultDock = 'default',
   style,
 }: WindowLayoutProps) {
-  const { ref: wsRef } = useWorkspaceState()
+  const { self: wsSelf, wsRect } = useWorkspaceState()
   const windowRef = useRef<HTMLDivElement>(null)
   const {
     windowId,
@@ -68,10 +68,13 @@ export default function WindowLayout({
   }, [setSelf, windowRef])
 
   useEffect(() => {
-    /* Initialization is dependent on the workspace */
-    if (wsApi.isBelowBreakPoint()) dockApi.maximizeWindow(winId)
-    else dockingRoutes[defaultDock](winId)
-  }, [wsRef, resetFlag])
+    if (wsApi.isBelowBreakPoint()) {
+      dockApi.maximizeWindow(winId)
+    } else {
+      dockingRoutes[defaultDock](winId)
+    }
+    /* Initialization is dependent on the workspace (wsSelf) being mounted */
+  }, [wsSelf, resetFlag])
 
   const dockingRoutes: Record<DockPosition, (winId: string) => void> = {
     right: dockApi.dockWindowRight,
@@ -131,8 +134,8 @@ export default function WindowLayout({
           transition: 'transform 0.2s ease-in-out, opacity 0.3s ease-in-out',
           opacity: isWindowClosed ? 0 : 1,
           transform: isWindowClosed
-            ? `translate(${wsApi.getRect().innerWidth / 2 - winCoord.pointX - winWidth / 2}px,
-              ${wsApi.getRect().innerHeight - winCoord.pointY - winHeight / 2}px) scale(0.02)`
+            ? `translate(${wsRect.innerWidth / 2 - winCoord.pointX - winWidth / 2}px,
+              ${wsRect.innerHeight - winCoord.pointY - winHeight / 2}px) scale(0.02)`
             : '',
         }}
       >

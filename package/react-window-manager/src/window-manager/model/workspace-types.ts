@@ -12,12 +12,15 @@ export type WorkspaceRect = {
 }
 
 export type WorkspaceStore = {
-  ref: HTMLElement | null
-  setRef: (newRef: HTMLElement | null) => void
+  self: HTMLElement | null
+  setSelf: (newRef: HTMLElement | null) => void
 
   activeWindowId: string
   setActiveWindowId: (newId: string) => void
 
   responsiveBreak: ResponsiveSizes
   setResponsiveBreak: (breakPoint: ResponsiveSizes) => void
+
+  wsRect: WorkspaceRect
+  setWsRect: (rect: WorkspaceRect) => void
 }

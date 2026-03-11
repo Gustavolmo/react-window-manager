@@ -1,9 +1,9 @@
-import { ResponsiveSizes, WorkspaceRect } from '../../../model/workspace-types'
+import { ResponsiveSizes } from '../../../model/workspace-types'
 import { useWorkspaceState } from './workspace-state'
 
 export const wsApi = {
-  getRect: (): WorkspaceRect => {
-    const rect = useWorkspaceState.getState().ref?.getBoundingClientRect()
+  updateWsRect: () => {
+    const rect = useWorkspaceState.getState().self?.getBoundingClientRect()
 
     const top = rect?.top ?? 0
     const left = rect?.left ?? 0
@@ -16,22 +16,22 @@ export const wsApi = {
     const centerX = left + innerWidth / 2
     const centerY = top + innerHeight / 2
 
-    const wsWindow = {
-      top: top,
-      left: left,
-      innerHeight: innerHeight,
-      innerWidth: innerWidth,
-      bottom: bottom,
-      right: right,
-      centerX: centerX,
-      centerY: centerY,
-    }
-
-    return wsWindow
+    useWorkspaceState.setState({
+      wsRect: {
+        top: top,
+        left: left,
+        innerHeight: innerHeight,
+        innerWidth: innerWidth,
+        bottom: bottom,
+        right: right,
+        centerX: centerX,
+        centerY: centerY,
+      },
+    })
   },
 
   isBelowBreakPoint: (): boolean => {
-    const wsRect = wsApi.getRect()
+    const wsRect = useWorkspaceState.getState().wsRect
     const breakPoint = useWorkspaceState.getState().responsiveBreak
     return wsRect.innerWidth < responsiveBreakInPx(breakPoint)
   },
