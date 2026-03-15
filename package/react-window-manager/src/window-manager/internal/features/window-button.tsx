@@ -1,6 +1,5 @@
 import { windowRegistry } from '../../registration/window-registry'
-import { dockApi } from './docking/docking-api'
-import { stackApi } from './stack/stack-api'
+import { focusApi } from './focus/focus-api'
 
 export type WindowButtonProps = {
   children: React.ReactNode
@@ -22,14 +21,11 @@ export default function WindowButton({
   const { isWindowClosed, windowId, isActive } = windowRegistry[winId]()
 
   const handleOpenCloseWin = () => {
-    if (isWindowClosed) {
-      stackApi.bringTargetWindowToFront(windowId)
-      dockApi.openWindow(winId)
-      return
+    if (!isWindowClosed && isActive) {
+      focusApi.closeWindowAndRefocus(windowId)
+    } else {
+      focusApi.bringWindowToFocus(windowId)
     }
-
-    if (isActive) dockApi.closeWindow(winId)
-    stackApi.bringTargetWindowToFront(windowId)
   }
 
   return (

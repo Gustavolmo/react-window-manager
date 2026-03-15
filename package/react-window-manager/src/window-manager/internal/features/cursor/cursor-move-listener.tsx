@@ -5,7 +5,7 @@ export function CursorMoveListener() {
   const { setX, setY } = useCursorState()
 
   useEffect(() => {
-    const handleWindowPosition = (e: MouseEvent) => {
+    const handleWindowPosition = (e: PointerEvent) => {
       e.preventDefault()
       setX(e.clientX)
       setY(e.clientY)

@@ -37,8 +37,8 @@ export default function WorkspaceLayout({ children, className, responsiveBreak }
   return (
     <section
       ref={workspaceRef}
-      onMouseLeave={resizeApi.stopAllDragAndResize}
-      onMouseUp={resizeApi.stopAllDragAndResize}
+      onPointerLeave={resizeApi.stopAllDragAndResize}
+      onPointerUp={resizeApi.stopAllDragAndResize}
       className={className ? className : 'fixed overflow-hidden h-full w-full touch-none'}
     >
       <WorkspaceResizeListener />

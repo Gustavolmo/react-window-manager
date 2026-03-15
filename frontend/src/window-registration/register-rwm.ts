@@ -1,5 +1,5 @@
 import { createWindowStore } from '@gustavolmo/react-window-manager'
 
-export const install = createWindowStore()
-export const apiReferece = createWindowStore()
-export const usage = createWindowStore()
+export const installWin = createWindowStore()
+export const apiRefereceWin = createWindowStore()
+export const usageWin = createWindowStore()

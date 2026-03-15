@@ -7,6 +7,7 @@ import { dockApi } from './docking/docking-api'
 import { wsApi } from './workspace/workspace-api'
 import DragHandle from './drag/drag-handle'
 import { useWorkspaceState } from './workspace/workspace-state'
+import { focusApi } from './focus/focus-api'
 
 type DockPosition =
   | 'right'
@@ -109,7 +110,7 @@ export default function WindowLayout({
   const closeControl = (
     <button
       className="hover:bg-red-500 hover:bg-opacity-20 px-5 h-full"
-      onClick={() => dockApi.closeWindow(winId)}
+      onClick={() => focusApi.closeWindowAndRefocus(winId)}
     >
       <IconWinMinimize color={style?.navControlsColor} />
     </button>
@@ -121,7 +122,7 @@ export default function WindowLayout({
         id={windowId}
         ref={windowRef}
         className={`fixed bg-white shadow-lg border border-zinc-600 rounded-sm overflow-hidden`}
-        onMouseDown={() => stackApi.bringTargetWindowToFront(windowId)}
+        onPointerDown={() => focusApi.bringWindowToFocus(windowId)}
         style={{
           backgroundColor: style?.windowBackgroundColor,
           top: `${winCoord.pointY}px`,
@@ -147,11 +148,11 @@ export default function WindowLayout({
             h-[32px] w-full flex items-center bg-neutral-800
             ${isActive ? 'brightness-100 opacity-100' : 'brightness-75 opacity-80'}`}
         >
-          <div className="w-fit shrink-0 h-8 px-2 text-white flex items-center text-sm truncate">
+          <div className="w-fit shrink h-8 px-2 text-white flex items-center text-sm truncate min-w-0">
             {windowName}
           </div>
 
-          <div className="h-8 px-2 text-white flex items-center text-sm truncate">
+          <div className="h-8 px-2 text-white flex items-center text-sm truncate min-w-0">
             {navbarChildren}
           </div>
 

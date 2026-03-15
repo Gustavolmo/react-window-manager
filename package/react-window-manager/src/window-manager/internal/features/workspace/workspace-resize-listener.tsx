@@ -11,7 +11,7 @@ export default function WorkspaceResizeListener() {
 
     const onResize = () => {
       wsApi.updateWsRect()
-      stackApi.resetStack() // Reset should not be needed once we figure out how to maintain proportions
+      stackApi.resetStack() // FIND ME: Reset should not be needed once we figure out how to maintain proportions
     }
 
     onResize()
