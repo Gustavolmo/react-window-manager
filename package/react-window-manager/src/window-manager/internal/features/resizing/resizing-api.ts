@@ -1,8 +1,8 @@
 import { ResizeState, WindowStore } from '../../../model/window-types'
 import { WorkspaceRect } from '../../../model/workspace-types'
-import { windowRegistry } from '../../../registration/window-store-factory'
+import { windowRegistry } from '../../../registration/window-registry'
 import { useCursorState } from '../cursor/cursor-state'
-import { wsApi } from '../workspace/workspace-api'
+import { useWorkspaceState } from '../workspace/workspace-state'
 
 type ResizeContext = {
   wsRect: WorkspaceRect
@@ -176,9 +176,9 @@ const privateApi = {
 }
 
 const getDependencies = (winId: string): ResizeContext => {
-  const wsRect = wsApi.getRect()
   const win = windowRegistry[winId].getState()
-  const winBox = win.self?.current?.getBoundingClientRect()
+  const winBox = win.winElement?.getBoundingClientRect()
+  const wsRect = useWorkspaceState.getState().wsRect
   const { x, y } = useCursorState.getState()
 
   return { wsRect, win, winBox, x, y }

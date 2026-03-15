@@ -10,12 +10,10 @@ import {
 import WindowLayout, { WindowLayoutProps } from '../internal/features/window-layout'
 import WindowButton, { WindowButtonProps } from '../internal/features/window-button'
 import { useWorkspaceState } from '../internal/features/workspace/workspace-state'
+import { windowRegistry } from './window-registry'
 
 const windownMinWidth = 232
 const windownMinHeight = 128
-
-/** @howToUse use the syntax `windowRegistry[<winId>]()` to access a store */
-export const windowRegistry: Record<string, UseBoundStore<StoreApi<WindowStore>>> = {}
 
 /**
  * @return `id` auto generated id at the root of the window component.`id` can be used in `windowRegistry` to access the state store associated to this window instnace
@@ -32,8 +30,8 @@ export const createWindowStore = (): WindowRegistration => {
   const storeInstance = create<WindowStore>((set, get) => ({
     windowId: windowInstanceId,
 
-    self: undefined,
-    setSelf: (ref: RefObject<HTMLDivElement | null>) => set({ self: ref }),
+    winElement: undefined,
+    setWinElement: (ref: HTMLDivElement | null) => set({ winElement: ref }),
 
     WIN_MIN_WIDTH: windownMinWidth,
     setWIN_MIN_WIDTH: (w: number) => set({ WIN_MIN_WIDTH: w }),

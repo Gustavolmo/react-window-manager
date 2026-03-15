@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { dockApi } from '../docking/docking-api'
-import { wsApi } from '../workspace/workspace-api'
-import { windowRegistry } from '../../../registration/window-store-factory'
+import { windowRegistry } from '../../../registration/window-registry'
 import { Coord } from '../../../model/window-types'
 import { useCursorState } from '../cursor/cursor-state'
+import { useWorkspaceState } from '../workspace/workspace-state'
 
 type Props = {
   winId: string
@@ -11,21 +11,20 @@ type Props = {
 
 export default function DragHandle({ winId }: Props) {
   const { x, y } = useCursorState()
+  const { wsRect, isBelowBreakPoint } = useWorkspaceState()
   const { winVisualState, isDragging, winCoord, setWinCoord, setIsDragging } =
     windowRegistry[winId]()
 
   const [dragClickOffset, setDragClickOffset] = useState<Coord>({
-    pointX: wsApi.getRect().left,
-    pointY: wsApi.getRect().top,
+    pointX: wsRect.left,
+    pointY: wsRect.top,
   })
 
   useEffect(() => {
-    if (wsApi.isBelowBreakPoint()) return
+    if (isBelowBreakPoint()) return
     if (!isDragging) return
 
     if (winVisualState === 'maximized') dockApi.demaximizeWindow(winId)
-
-    const wsRect = wsApi.getRect()
 
     let adjustedX = x - dragClickOffset.pointX
     if (x > wsRect.right || x < wsRect.left) adjustedX = winCoord.pointX
@@ -44,10 +43,10 @@ export default function DragHandle({ winId }: Props) {
 
   return (
     <div
-      onMouseDown={() => startDrag(true)}
-      onMouseUp={() => startDrag(false)}
+      onPointerDown={() => startDrag(true)}
+      onPointerUp={() => startDrag(false)}
       onDoubleClick={() => dockApi.maximizeWindow(winId)}
-      className="grow min-w-8 h-8 px-2 text-white flex items-center text-sm bg-white bg-opacity-0 hover:bg-opacity-5 mix-blend-difference"
+      className="grow min-w-8 h-8 px-2 text-white flex items-center text-sm bg-white bg-opacity-0 hover:cursor-grab hover:bg-opacity-5 mix-blend-difference"
     ></div>
   )
 }

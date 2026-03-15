@@ -1,7 +1,7 @@
 import { ResizeState } from '../../../model/window-types'
 import { useCursorState } from '../cursor/cursor-state'
 import { useEffect } from 'react'
-import { windowRegistry } from '../../../registration/window-store-factory'
+import { windowRegistry } from '../../../registration/window-registry'
 import { resizeApi } from './resizing-api'
 import { gridApi } from '../grid/grid-api'
 
@@ -15,9 +15,9 @@ export default function ResizingControls({ winId }: Props) {
 
   useEffect(() => {
     resizeApi.dispatchResizeAction(winId)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resizeAction, x, y])
 
+  /* startResize vs stopResize */
   const handleResizeClick = (resizeAction: ResizeState) => {
     resizeApi.setResizeAction(winId, resizeAction)
     gridApi.orchestrateGridResize(winId)
@@ -26,8 +26,8 @@ export default function ResizingControls({ winId }: Props) {
   return (
     <>
       <span
-        onMouseUp={() => handleResizeClick(false)}
-        onMouseDown={() => handleResizeClick('e')}
+        onPointerUp={() => handleResizeClick(false)}
+        onPointerDown={() => handleResizeClick('e')}
         id="win-resize-right-width"
         className="fixed w-2 opacity-60 cursor-w-resize z-10"
         style={{
@@ -37,8 +37,8 @@ export default function ResizingControls({ winId }: Props) {
         }}
       ></span>
       <span
-        onMouseUp={() => handleResizeClick(false)}
-        onMouseDown={() => handleResizeClick('w')}
+        onPointerUp={() => handleResizeClick(false)}
+        onPointerDown={() => handleResizeClick('w')}
         id="win-resize-left-width"
         className="fixed w-2 opacity-60 cursor-w-resize z-10"
         style={{
@@ -48,8 +48,8 @@ export default function ResizingControls({ winId }: Props) {
         }}
       ></span>
       <span
-        onMouseUp={() => handleResizeClick(false)}
-        onMouseDown={() => handleResizeClick('s')}
+        onPointerUp={() => handleResizeClick(false)}
+        onPointerDown={() => handleResizeClick('s')}
         id="win-resize-bottom-height"
         className="fixed h-2 opacity-60 cursor-s-resize z-10"
         style={{
@@ -59,8 +59,8 @@ export default function ResizingControls({ winId }: Props) {
         }}
       ></span>
       <span
-        onMouseUp={() => handleResizeClick(false)}
-        onMouseDown={() => handleResizeClick('n')}
+        onPointerUp={() => handleResizeClick(false)}
+        onPointerDown={() => handleResizeClick('n')}
         id="win-resize-top-height"
         className="fixed h-2 opacity-60 cursor-s-resize z-10"
         style={{
@@ -70,8 +70,8 @@ export default function ResizingControls({ winId }: Props) {
         }}
       ></span>
       <span
-        onMouseUp={() => handleResizeClick(false)}
-        onMouseDown={() => handleResizeClick('se')}
+        onPointerUp={() => handleResizeClick(false)}
+        onPointerDown={() => handleResizeClick('se')}
         id="win-resize-bottom-right-all"
         className="fixed h-3 w-3 opacity-60 cursor-se-resize z-20"
         style={{
@@ -80,8 +80,8 @@ export default function ResizingControls({ winId }: Props) {
         }}
       ></span>
       <span
-        onMouseUp={() => handleResizeClick(false)}
-        onMouseDown={() => handleResizeClick('sw')}
+        onPointerUp={() => handleResizeClick(false)}
+        onPointerDown={() => handleResizeClick('sw')}
         id="win-resize-bottom-left-all"
         className="fixed h-3 w-3 opacity-60 cursor-sw-resize z-20"
         style={{
@@ -91,8 +91,8 @@ export default function ResizingControls({ winId }: Props) {
       ></span>
 
       <span
-        onMouseUp={() => handleResizeClick(false)}
-        onMouseDown={() => handleResizeClick('ne')}
+        onPointerUp={() => handleResizeClick(false)}
+        onPointerDown={() => handleResizeClick('ne')}
         id="win-resize-top-right-all"
         className="fixed h-3 w-3 opacity-60 cursor-ne-resize z-20"
         style={{
@@ -101,8 +101,8 @@ export default function ResizingControls({ winId }: Props) {
         }}
       ></span>
       <span
-        onMouseUp={() => handleResizeClick(false)}
-        onMouseDown={() => handleResizeClick('nw')}
+        onPointerUp={() => handleResizeClick(false)}
+        onPointerDown={() => handleResizeClick('nw')}
         id="win-resize-top-left-all"
         className="fixed h-3 w-3 opacity-60 cursor-nw-resize z-20"
         style={{

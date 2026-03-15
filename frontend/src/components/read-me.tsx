@@ -114,7 +114,7 @@ export default function ReadMe() {
 
         {/* Footer Info */}
         <footer className="mt-auto pt-8 pb-4 text-[10px] text-zinc-400 uppercase tracking-widest flex justify-between items-center">
-          <span>Last Updated: Feb 2026</span>
+          <span>Last Updated: Mar 2026</span>
           <div className="flex gap-4">
             <a
               target="_blank"
@@ -122,13 +122,6 @@ export default function ReadMe() {
               className="hover:text-zinc-900 transition-colors"
             >
               GitHub
-            </a>
-            <a
-              target="_blank"
-              href="https://www.linkedin.com/in/gustavo-l-m-de-oliveira-037243108/"
-              className="hover:text-zinc-900 transition-colors"
-            >
-              LinkedIn
             </a>
           </div>
         </footer>

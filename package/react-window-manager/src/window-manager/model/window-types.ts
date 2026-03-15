@@ -26,8 +26,8 @@ export type WindowStore = {
   zIndex: number
   setZIndex: (newIndex: number) => void
 
-  self: RefObject<HTMLDivElement | null> | undefined
-  setSelf: (ref: RefObject<HTMLDivElement | null>) => void
+  winElement: HTMLDivElement | null | undefined
+  setWinElement: (ref: HTMLDivElement | null) => void
 
   winVisualState: WindowStates
   setWinVisualState: (newState: WindowStates) => void

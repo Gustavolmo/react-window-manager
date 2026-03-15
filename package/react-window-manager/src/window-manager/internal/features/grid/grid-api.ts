@@ -1,5 +1,4 @@
-import { windowRegistry } from '../../../registration/window-store-factory'
-import { stackApi } from '../stack/stack-api'
+import { windowRegistry } from '../../../registration/window-registry'
 
 export const gridApi = {
   orchestrateGridResize: (winId: string) => orchestrationGridResize(winId),
@@ -15,7 +14,7 @@ export const gridApi = {
  * */
 const orchestrationGridResize = (winId: string) => {
   const tolerance = 4
-  const allowDistantResize = stackApi.getOpenedWindowCount() >= 3
+  const allowDistantResize = internal.getOpenedWindowCount() >= 3
   const thisWin = windowRegistry[winId].getState()
   const currentResize = thisWin.resizeAction
 
@@ -153,4 +152,14 @@ const orchestrationGridResize = (winId: string) => {
       }
     }
   }
+}
+
+const internal = {
+  getOpenedWindowCount: () => {
+    let openWnidowCount = 0
+    for (const key of Object.keys(windowRegistry))
+      if (!windowRegistry[key].getState().isWindowClosed) openWnidowCount++
+
+    return openWnidowCount
+  },
 }
