@@ -15,12 +15,6 @@ export type WorkspaceStore = {
   wsElement: HTMLElement | null
   setWsElement: (newRef: HTMLElement | null) => void
 
-  activeWindowId: string
-  setActiveWindowId: (newId: string) => void
-
-  wsRect: WorkspaceRect
-  setWsRect: (rect: WorkspaceRect) => void
-
   /**
    * Always relative to the WorkspaceLayout dimensions. Use `wsApi.setWsResponsiveBreak` to modify the value
    * @default 'sm'
@@ -33,4 +27,6 @@ export type WorkspaceStore = {
    * @param number set custom break point value in px */
   isBelowBreakPoint: boolean
   responsiveBreak: ResponsiveSizes
+  activeWindowId: string
+  wsRect: WorkspaceRect
 }

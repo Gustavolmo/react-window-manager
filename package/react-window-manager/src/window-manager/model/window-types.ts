@@ -15,44 +15,23 @@ export type WindowRegistration = {
 }
 
 export type WindowStore = {
+  setWinElement: (ref: HTMLDivElement | null) => void
+  winElement: HTMLDivElement | null | undefined
   windowId: string
-
-  isActive: boolean
-  setIsActive: (isActive: boolean) => void
-
   resetFlag: boolean
-  reset: () => void
 
   zIndex: number
-  setZIndex: (newIndex: number) => void
-
-  winElement: HTMLDivElement | null | undefined
-  setWinElement: (ref: HTMLDivElement | null) => void
-
-  winVisualState: WindowStates
-  setWinVisualState: (newState: WindowStates) => void
-
-  isWindowClosed: boolean
-  setisWindowClosed: (isMini: boolean) => void
-
-  isDragging: boolean
-  setIsDragging: (updatedIsDragging: boolean) => void
-
   winCoord: Coord
-  setWinCoord: (newWinCoord: Coord) => void
+  winVisualState: WindowStates
 
+  isActive: boolean
+  isDragging: boolean
+  isWindowClosed: boolean
   resizeAction: ResizeDirection
-  setResizeAction: (updatedIsResizing: ResizeDirection) => void
 
   winWidth: number
-  setWinWidth: (newWinWidth: number) => void
-
   winHeight: number
-  setWinHeight: (newWinHeight: number) => void
 
-  /* constants */
   WIN_MIN_WIDTH: number
   WIN_MIN_HEIGHT: number
-  setWIN_MIN_WIDTH: (w: number) => void
-  setWIN_MIN_HEIGHT: (h: number) => void
 }

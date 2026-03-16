@@ -27,14 +27,6 @@ export const rafResizeLoopResolver: RafResizeResolver = {
   },
 }
 
-const getRafResizeDependencies = (winId: string): ResizeContext => {
-  const win = windowRegistry[winId].getState()
-  const winBox = win.winElement?.getBoundingClientRect()
-  const wsRect = useWorkspaceState.getState().wsRect
-  const { x, y } = useCursorState.getState()
-  return { wsRect, win, winBox, x, y }
-}
-
 const resizeLoopResolver = {
   e: (resizeCtx: ResizeContext, commit: (patchStack: WindowMutation[]) => void) => {
     const { wsRect, win, winBox, x, y } = resizeCtx
@@ -204,4 +196,12 @@ const resizeLoopResolver = {
     resizeLoopResolver.e(resizeCtx, commit)
     resizeLoopResolver.n(resizeCtx, commit)
   },
+}
+
+const getRafResizeDependencies = (winId: string): ResizeContext => {
+  const win = windowRegistry[winId].getState()
+  const winBox = win.winElement?.getBoundingClientRect()
+  const wsRect = useWorkspaceState.getState().wsRect
+  const { x, y } = useCursorState.getState()
+  return { wsRect, win, winBox, x, y }
 }

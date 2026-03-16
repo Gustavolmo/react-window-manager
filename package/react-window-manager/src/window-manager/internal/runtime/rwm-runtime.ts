@@ -18,6 +18,14 @@ import { ResizeCommandResolver, ResizeCommands } from './resize-resolver/resize-
 import { RafResizeCommands, rafResizeLoopResolver } from './resize-resolver/resize-loop'
 import { ResponsiveSizes, WorkspaceStore } from '../../model/workspace-types'
 
+/* 
+  SUBSYSTEM
+  - POLICY?
+  - CTX?
+  - STAGING
+  - COMMIT
+  */
+
 type rwmMessage =
   | { targetWinId: string; subsystem: 'DOCK'; cmd: DockCommands; ctx?: undefined }
   | { targetWinId: string; subsystem: 'DRAG'; cmd: DragCommands; ctx?: undefined }
@@ -26,13 +34,6 @@ type rwmMessage =
   | { targetWinId?: string; subsystem: 'STACK'; cmd: StackCommands; ctx?: undefined }
   | { targetWinId?: string; subsystem: 'WORKSPACE'; cmd: WorkspaceCommands; ctx?: ResponsiveSizes }
 
-/* 
-  SUBSYSTEM
-  - POLICY?
-  - CTX?
-  - STAGING
-  - COMMIT
-  */
 export const rwmRuntime = {
   dispatch: ({ subsystem, cmd, targetWinId, ctx }: rwmMessage): void => {
     switch (subsystem) {
@@ -76,12 +77,6 @@ type rafMessage =
   | { targetWinId: string; subsystem: 'RAF_DRAG'; cmd: RafDragCommands }
   | { targetWinId: string; subsystem: 'RAF_RESIZE'; cmd: RafResizeCommands }
 
-/* 
-    SUBSYSTEM
-    - POLICY?
-    - CTX?
-    - LOOP & COMMIT
-    */
 export const rafRuntime = {
   dispatch: ({ subsystem, cmd, targetWinId }: rafMessage): void => {
     switch (subsystem) {

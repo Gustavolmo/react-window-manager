@@ -1,13 +1,13 @@
 import { create } from 'zustand'
-import { WorkspaceRect, WorkspaceStore } from '../../../model/workspace-types'
+import { WorkspaceStore } from '../../../model/workspace-types'
 
 export const useWorkspaceState = create<WorkspaceStore>((set, get) => ({
   wsElement: null,
   setWsElement: (el: HTMLElement | null) => set({ wsElement: el }),
 
+  responsiveBreak: 'sm',
+  isBelowBreakPoint: false,
   activeWindowId: 'react-dynamic-window-instance0',
-  setActiveWindowId: (newId: string) => set({ activeWindowId: newId }),
-
   wsRect: {
     top: 0,
     left: 0,
@@ -18,8 +18,4 @@ export const useWorkspaceState = create<WorkspaceStore>((set, get) => ({
     centerX: 0,
     centerY: 0,
   },
-  setWsRect: (rect: WorkspaceRect) => set({ wsRect: rect }),
-
-  responsiveBreak: 'sm',
-  isBelowBreakPoint: false
 }))
