@@ -3,6 +3,7 @@ import { WindowLayoutProps } from '../internal/features/window-layout'
 import { WindowButtonProps } from '../internal/features/window-button'
 import { StoreApi, UseBoundStore } from 'zustand'
 
+export type WindowRegistry = Record<string, UseBoundStore<StoreApi<WindowStore>>>
 export type ResizeDirection = false | 's' | 'e' | 'n' | 'w' | 'se' | 'sw' | 'ne' | 'nw'
 export type WindowStates = 'maximized' | 'demaximized'
 export type Coord = { pointX: number; pointY: number }

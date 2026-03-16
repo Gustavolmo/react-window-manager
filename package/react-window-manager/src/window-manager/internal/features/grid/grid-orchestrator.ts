@@ -126,6 +126,7 @@ const resizeCase = {
       resizeApi.startResize(d.remoteId, 'w')
     }
   },
+
   whenDragginNorth: (d: resizeCaseDependencies) => {
     const isEdgeAlignedOnYAxis = Math.abs(d.thisWinStartY - d.remoteWinEndY) <= tolerance
     const isOverlapOnXAxis =

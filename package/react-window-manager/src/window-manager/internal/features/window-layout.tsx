@@ -146,7 +146,7 @@ export default function WindowLayout({
             h-[32px] w-full flex items-center bg-neutral-800
             ${isActive ? 'brightness-100 opacity-100' : 'brightness-75 opacity-80'}`}
         >
-          <div className="w-fit shrink h-8 px-2 text-white flex items-center text-sm truncate min-w-0">
+          <div className="shrink h-8 px-2 text-white flex items-center text-sm truncate min-w-0">
             {windowName}
           </div>
 

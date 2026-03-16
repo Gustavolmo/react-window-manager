@@ -5,11 +5,13 @@ import { wsApi } from './internal/features/workspace/workspace-api'
 import { useWorkspaceState } from './internal/features/workspace/workspace-state'
 import { windowRegistry } from './registration/window-registry'
 
+const { updateWsRect, ...publicWsApi } = wsApi;
+
 const rwm = {
   dockApi: dockApi,
   focusApi: focusApi,
   stackApi: stackApi,
-  workspaceApi: { setWsResponsiveBreak: wsApi.setWsResponsiveBreak },
+  workspaceApi: publicWsApi,
   worskpaceState: useWorkspaceState,
   windowRegistry: windowRegistry,
 }
