@@ -1,4 +1,4 @@
-import { rwmRuntime } from '../../runtime/runtime'
+import { rwmRuntime } from '../../runtime/rwm-runtime'
 
 export const stackApi = {
   resetStack: () => {

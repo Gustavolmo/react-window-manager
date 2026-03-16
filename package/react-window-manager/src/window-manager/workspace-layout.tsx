@@ -5,6 +5,7 @@ import { resizeApi } from './internal/features/resizing/resizing-api'
 import { CursorMoveListener } from './internal/features/cursor/cursor-move-listener'
 import { ResponsiveSizes } from './model/workspace-types'
 import WorkspaceResizeListener from './internal/features/workspace/workspace-resize-listener'
+import { dragApi } from './internal/features/drag/drag-api'
 
 type Props = {
   children: React.ReactNode
@@ -24,7 +25,8 @@ type Props = {
 
 export default function WorkspaceLayout({ children, className, responsiveBreak }: Props) {
   const workspaceRef = useRef<HTMLElement | null>(null)
-  const { setWsElement, setResponsiveBreak, wsElement, isBelowBreakPoint } = useWorkspaceState()
+  const { setWsElement, setResponsiveBreak, wsElement, isBelowBreakPoint, activeWindowId } =
+    useWorkspaceState()
 
   useEffect(() => {
     setWsElement(workspaceRef.current)
@@ -34,11 +36,16 @@ export default function WorkspaceLayout({ children, className, responsiveBreak }
     if (responsiveBreak) setResponsiveBreak(responsiveBreak)
   }, [responsiveBreak])
 
+  const stopDisabledDragAndResize = () => {
+    dragApi.stopDrag(activeWindowId)
+    resizeApi.stopResize(activeWindowId)
+  }
+
   return (
     <section
       ref={workspaceRef}
-      onPointerLeave={resizeApi.stopAllDragAndResize}
-      onPointerUp={resizeApi.stopAllDragAndResize}
+      onPointerLeave={stopDisabledDragAndResize}
+      onPointerUp={stopDisabledDragAndResize}
       className={className ? className : 'fixed overflow-hidden h-full w-full touch-none'}
     >
       <WorkspaceResizeListener />

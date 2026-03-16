@@ -1,7 +1,7 @@
 import { windowRegistry } from '../../../registration/window-registry'
 
 export const gridApi = {
-  orchestrateGridResize: (winId: string) => orchestrationGridResize(winId),
+  orchestrateGridResize: (winId: string) => orchestrateGridResize(winId),
 }
 
 /**
@@ -12,7 +12,8 @@ export const gridApi = {
  * - needs a stop if the other window stops moving
  * - stack should detect alignment
  * */
-const orchestrationGridResize = (winId: string) => {
+const orchestrateGridResize = (winId: string) => {
+  console.log('GRID')
   const tolerance = 4
   const allowDistantResize = internal.getOpenedWindowCount() >= 3
   const thisWin = windowRegistry[winId].getState()

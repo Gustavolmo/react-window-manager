@@ -2,7 +2,7 @@ import { create, StoreApi, UseBoundStore } from 'zustand'
 import { RefObject } from 'react'
 import {
   Coord,
-  ResizeState,
+  ResizeDirection,
   WindowRegistration,
   WindowStates,
   WindowStore,
@@ -68,7 +68,8 @@ export const createWindowStore = (): WindowRegistration => {
     setWinHeight: (newWinHeight: number) => set({ winHeight: newWinHeight }),
 
     resizeAction: false,
-    setResizeAction: (updatedIsResizing: ResizeState) => set({ resizeAction: updatedIsResizing }),
+    setResizeAction: (updatedIsResizing: ResizeDirection) =>
+      set({ resizeAction: updatedIsResizing }),
 
     isDragging: false,
     setIsDragging: (updatedIsDragging: boolean) => set({ isDragging: updatedIsDragging }),

@@ -1,9 +1,9 @@
-import { JSX, RefObject } from 'react'
+import { JSX } from 'react'
 import { WindowLayoutProps } from '../internal/features/window-layout'
 import { WindowButtonProps } from '../internal/features/window-button'
 import { StoreApi, UseBoundStore } from 'zustand'
 
-export type ResizeState = false | 's' | 'e' | 'n' | 'w' | 'se' | 'sw' | 'ne' | 'nw'
+export type ResizeDirection = false | 's' | 'e' | 'n' | 'w' | 'se' | 'sw' | 'ne' | 'nw'
 export type WindowStates = 'maximized' | 'demaximized'
 export type Coord = { pointX: number; pointY: number }
 
@@ -41,8 +41,8 @@ export type WindowStore = {
   winCoord: Coord
   setWinCoord: (newWinCoord: Coord) => void
 
-  resizeAction: ResizeState
-  setResizeAction: (updatedIsResizing: ResizeState) => void
+  resizeAction: ResizeDirection
+  setResizeAction: (updatedIsResizing: ResizeDirection) => void
 
   winWidth: number
   setWinWidth: (newWinWidth: number) => void
