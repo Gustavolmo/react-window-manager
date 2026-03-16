@@ -1,22 +1,14 @@
-import { ResizeDirection, WindowStore } from "../../../model/window-types"
-import { WorkspaceRect } from "../../../model/workspace-types"
-import { WindowMutation } from "../rwm-runtime"
-
-export type ResizeContext = {
-  wsRect: WorkspaceRect
-  win: WindowStore
-  winBox: DOMRect | undefined
-  x: number
-  y: number
-}
+import { ResizeDirection } from '../../../model/window-types'
+import { windowRegistry } from '../../../registration/window-registry'
+import { WindowMutation } from '../rwm-runtime'
 
 export type ResizeCommands = 'ENABLE_RESIZE' | 'DISABLE_RESIZE'
 
 type ResizeResolver = Record<
   ResizeCommands,
-  (targetWinId: string, direction: ResizeDirection) => WindowMutation[]
+  (targetWinId: string, ctx: ResizeDirection) => WindowMutation[]
 >
-export const ResizeCommandResolver: ResizeResolver = {
+export const resizeCommandResolver: ResizeResolver = {
   ENABLE_RESIZE: (targetWinId: string, direction: ResizeDirection) => {
     return [
       {
@@ -28,14 +20,16 @@ export const ResizeCommandResolver: ResizeResolver = {
       },
     ]
   },
-  DISABLE_RESIZE: (targetWinId: string) => {
-    return [
-      {
-        winId: targetWinId,
+  DISABLE_RESIZE: (_: string) => {
+    const patch: WindowMutation[] = []
+    for (const key of Object.keys(windowRegistry))
+      patch.push({
+        winId: key,
         patch: {
           resizeAction: false,
         },
-      },
-    ]
+      })
+
+    return patch
   },
 }

@@ -7,6 +7,7 @@ export const useWorkspaceState = create<WorkspaceStore>((set, get) => ({
 
   responsiveBreak: 'sm',
   isBelowBreakPoint: false,
+  isGridEnabled: true,
   activeWindowId: 'react-dynamic-window-instance0',
   wsRect: {
     top: 0,

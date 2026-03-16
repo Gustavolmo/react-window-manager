@@ -1,7 +1,7 @@
 import { ResizeDirection } from '../../../model/window-types'
 import { windowRegistry } from '../../../registration/window-registry'
 import { resizeApi } from './resizing-api'
-import { gridApi } from '../grid/grid-api'
+import { gridOrchestrator } from '../grid/grid-orchestrator'
 
 type Props = {
   winId: string
@@ -12,8 +12,9 @@ export default function ResizingControls({ winId }: Props) {
 
   const startResize = (direction: ResizeDirection) => {
     resizeApi.startResize(winId, direction)
-    gridApi.orchestrateGridResize(winId)
+    gridOrchestrator.attachGridBehavior(winId)
   }
+
   const stopResize = () => {
     resizeApi.stopResize(winId)
   }

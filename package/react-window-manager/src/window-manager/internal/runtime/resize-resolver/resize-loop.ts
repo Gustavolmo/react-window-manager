@@ -1,8 +1,9 @@
+import { WindowStore } from '../../../model/window-types'
+import { WorkspaceRect } from '../../../model/workspace-types'
 import { windowRegistry } from '../../../registration/window-registry'
 import { useCursorState } from '../../features/cursor/cursor-state'
 import { useWorkspaceState } from '../../features/workspace/workspace-state'
 import { WindowMutation } from '../rwm-runtime'
-import { ResizeContext } from './resize-commands'
 
 export type RafResizeCommands = 'LOOP_RESIZE'
 type RafResizeResolver = Record<
@@ -22,14 +23,14 @@ export const rafResizeLoopResolver: RafResizeResolver = {
       throw new Error(`LOOP_RESIZE called with null window element for winId: ${targetWinId}`)
 
     requestAnimationFrame(() =>
-      resizeLoopResolver[resizeDirection](getRafResizeDependencies(targetWinId), commitCb)
+      resizer[resizeDirection](getRafResizeDependencies(targetWinId), commitCb)
     )
   },
 }
 
-const resizeLoopResolver = {
-  e: (resizeCtx: ResizeContext, commit: (patchStack: WindowMutation[]) => void) => {
-    const { wsRect, win, winBox, x, y } = resizeCtx
+const resizer = {
+  e: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
+    const { wsRect, win, winBox, x, y } = resizeDep
     if (!win.resizeAction) return
     if (!winBox) return
 
@@ -46,13 +47,11 @@ const resizeLoopResolver = {
       ])
     }
 
-    requestAnimationFrame(() =>
-      resizeLoopResolver.e(getRafResizeDependencies(win.windowId), commit)
-    )
+    requestAnimationFrame(() => resizer.e(getRafResizeDependencies(win.windowId), commit))
   },
 
-  w: (resizeCtx: ResizeContext, commit: (patchStack: WindowMutation[]) => void) => {
-    const { wsRect, win, winBox, x, y } = resizeCtx
+  w: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
+    const { wsRect, win, winBox, x, y } = resizeDep
     if (!win.resizeAction) return
     if (!winBox) return
 
@@ -72,13 +71,11 @@ const resizeLoopResolver = {
       ])
     }
 
-    requestAnimationFrame(() =>
-      resizeLoopResolver.w(getRafResizeDependencies(win.windowId), commit)
-    )
+    requestAnimationFrame(() => resizer.w(getRafResizeDependencies(win.windowId), commit))
   },
 
-  n: (resizeCtx: ResizeContext, commit: (patchStack: WindowMutation[]) => void) => {
-    const { wsRect, win, winBox, x, y } = resizeCtx
+  n: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
+    const { wsRect, win, winBox, x, y } = resizeDep
     if (!win.resizeAction) return
     if (!winBox) return
 
@@ -98,13 +95,11 @@ const resizeLoopResolver = {
       ])
     }
 
-    requestAnimationFrame(() =>
-      resizeLoopResolver.n(getRafResizeDependencies(win.windowId), commit)
-    )
+    requestAnimationFrame(() => resizer.n(getRafResizeDependencies(win.windowId), commit))
   },
 
-  s: (resizeCtx: ResizeContext, commit: (patchStack: WindowMutation[]) => void) => {
-    const { wsRect, win, winBox, x, y } = resizeCtx
+  s: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
+    const { wsRect, win, winBox, x, y } = resizeDep
     if (!win.resizeAction) return
     if (!winBox) return
 
@@ -123,13 +118,11 @@ const resizeLoopResolver = {
       ])
     }
 
-    requestAnimationFrame(() =>
-      resizeLoopResolver.s(getRafResizeDependencies(win.windowId), commit)
-    )
+    requestAnimationFrame(() => resizer.s(getRafResizeDependencies(win.windowId), commit))
   },
 
-  nw: (resizeCtx: ResizeContext, commit: (patchStack: WindowMutation[]) => void) => {
-    const { wsRect, win, winBox, x, y } = resizeCtx
+  nw: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
+    const { wsRect, win, winBox, x, y } = resizeDep
     if (!win.resizeAction) return
     if (!winBox) return
 
@@ -137,9 +130,7 @@ const resizeLoopResolver = {
     const cursorOutOfBoundsX = x > wsRect.right || x < wsRect.left
     const isCursorOutOfBounds = cursorOutOfBoundsY || cursorOutOfBoundsX
     if (isCursorOutOfBounds) {
-      requestAnimationFrame(() =>
-        resizeLoopResolver.nw(getRafResizeDependencies(win.windowId), commit)
-      )
+      requestAnimationFrame(() => resizer.nw(getRafResizeDependencies(win.windowId), commit))
     }
 
     const minWinHeight = winBox.bottom - y <= win.WIN_MIN_HEIGHT
@@ -177,28 +168,34 @@ const resizeLoopResolver = {
 
     commit(stagedChagnes)
 
-    requestAnimationFrame(() =>
-      resizeLoopResolver.nw(getRafResizeDependencies(win.windowId), commit)
-    )
+    requestAnimationFrame(() => resizer.nw(getRafResizeDependencies(win.windowId), commit))
   },
 
-  se: (resizeCtx: ResizeContext, commit: (patchStack: WindowMutation[]) => void) => {
-    resizeLoopResolver.e(resizeCtx, commit)
-    resizeLoopResolver.s(resizeCtx, commit)
+  se: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
+    resizer.e(resizeDep, commit)
+    resizer.s(resizeDep, commit)
   },
 
-  sw: (resizeCtx: ResizeContext, commit: (patchStack: WindowMutation[]) => void) => {
-    resizeLoopResolver.w(resizeCtx, commit)
-    resizeLoopResolver.s(resizeCtx, commit)
+  sw: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
+    resizer.w(resizeDep, commit)
+    resizer.s(resizeDep, commit)
   },
 
-  ne: (resizeCtx: ResizeContext, commit: (patchStack: WindowMutation[]) => void) => {
-    resizeLoopResolver.e(resizeCtx, commit)
-    resizeLoopResolver.n(resizeCtx, commit)
+  ne: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
+    resizer.e(resizeDep, commit)
+    resizer.n(resizeDep, commit)
   },
 }
 
-const getRafResizeDependencies = (winId: string): ResizeContext => {
+type ResizeDep = {
+  wsRect: WorkspaceRect
+  win: WindowStore
+  winBox: DOMRect | undefined
+  x: number
+  y: number
+}
+
+const getRafResizeDependencies = (winId: string): ResizeDep => {
   const win = windowRegistry[winId].getState()
   const winBox = win.winElement?.getBoundingClientRect()
   const wsRect = useWorkspaceState.getState().wsRect

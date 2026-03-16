@@ -7,14 +7,14 @@ import {
   getDockDependencies,
 } from './dock-resolver/dock-commands'
 import { rafDragLoopResolver, RafDragCommands } from './drag-resolver/drag-loop'
-import { DragCommandResolver, DragCommands, isDragAllowed } from './drag-resolver/drag-commands'
-import { FocusCommandResolver, FocusCommands } from './focus-resolver/focus-commands'
+import { dragCommandResolver, DragCommands, isDragAllowed } from './drag-resolver/drag-commands'
+import { focusCommandResolver, FocusCommands } from './focus-resolver/focus-commands'
 import { stackCommandResolver, StackCommands } from './stack-resolver/stack-commands'
 import {
   workspaceCommandResolver,
   WorkspaceCommands,
 } from './workspace-resolver/workspace-commands'
-import { ResizeCommandResolver, ResizeCommands } from './resize-resolver/resize-commands'
+import { resizeCommandResolver, ResizeCommands } from './resize-resolver/resize-commands'
 import { RafResizeCommands, rafResizeLoopResolver } from './resize-resolver/resize-loop'
 import { ResponsiveSizes, WorkspaceStore } from '../../model/workspace-types'
 
@@ -44,7 +44,7 @@ export const rwmRuntime = {
       }
       case 'DRAG': {
         if (!isDragAllowed()) return
-        const stagedChanges = DragCommandResolver[cmd](targetWinId)
+        const stagedChanges = dragCommandResolver[cmd](targetWinId)
         commitToWindow(stagedChanges)
         break
       }
@@ -55,7 +55,7 @@ export const rwmRuntime = {
         break
       }
       case 'RESIZE': {
-        const stagedChanges = ResizeCommandResolver[cmd](targetWinId, ctx)
+        const stagedChanges = resizeCommandResolver[cmd](targetWinId, ctx)
         commitToWindow(stagedChanges)
         break
       }
@@ -65,7 +65,7 @@ export const rwmRuntime = {
         break
       }
       case 'FOCUS': {
-        const stagedChanges = FocusCommandResolver[cmd](targetWinId)
+        const stagedChanges = focusCommandResolver[cmd](targetWinId)
         commitBatch(stagedChanges)
         break
       }
@@ -76,6 +76,7 @@ export const rwmRuntime = {
 type rafMessage =
   | { targetWinId: string; subsystem: 'RAF_DRAG'; cmd: RafDragCommands }
   | { targetWinId: string; subsystem: 'RAF_RESIZE'; cmd: RafResizeCommands }
+  // | { targetWinId: string; subsystem: 'RAF_GRID_ORCHESTRATION'; cmd: RafResizeCommands }
 
 export const rafRuntime = {
   dispatch: ({ subsystem, cmd, targetWinId }: rafMessage): void => {

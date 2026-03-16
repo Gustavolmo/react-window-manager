@@ -1,12 +1,12 @@
-import { WindowStore } from "../../../model/window-types"
-import { windowRegistry } from "../../../registration/window-registry"
-import { useWorkspaceState } from "../../features/workspace/workspace-state"
-import { WindowMutation } from "../rwm-runtime"
+import { WindowStore } from '../../../model/window-types'
+import { windowRegistry } from '../../../registration/window-registry'
+import { useWorkspaceState } from '../../features/workspace/workspace-state'
+import { WindowMutation } from '../rwm-runtime'
 
 export type DragCommands = 'ENABLE_DRAG' | 'DISABLE_DRAG'
 
 type DragResolver = Record<DragCommands, (targetWinId: string) => WindowMutation[]>
-export const DragCommandResolver: DragResolver = {
+export const dragCommandResolver: DragResolver = {
   ENABLE_DRAG: (targetWinId: string) => {
     const { wsRect } = useWorkspaceState.getState()
     const { winVisualState } = windowRegistry[targetWinId].getState()

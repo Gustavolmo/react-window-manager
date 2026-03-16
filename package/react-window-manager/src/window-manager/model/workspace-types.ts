@@ -26,6 +26,7 @@ export type WorkspaceStore = {
    * @param always always uses mobile format
    * @param number set custom break point value in px */
   isBelowBreakPoint: boolean
+  isGridEnabled: boolean
   responsiveBreak: ResponsiveSizes
   activeWindowId: string
   wsRect: WorkspaceRect

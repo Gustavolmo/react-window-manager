@@ -1,10 +1,10 @@
-import { windowRegistry } from "../../../registration/window-registry"
-import { BatchMutation, WindowMutation, WorkspaceMutation } from "../rwm-runtime"
+import { windowRegistry } from '../../../registration/window-registry'
+import { BatchMutation, WindowMutation, WorkspaceMutation } from '../rwm-runtime'
 
 export type FocusCommands = 'FOCUS_WINDOW' | 'CLOSE_WINDOW_AND_REFOCUS'
 
 type FocusResolver = Record<FocusCommands, (targetWinId: string) => BatchMutation>
-export const FocusCommandResolver: FocusResolver = {
+export const focusCommandResolver: FocusResolver = {
   FOCUS_WINDOW: (targetWinId: string) => {
     const targetWin = windowRegistry[targetWinId].getState()
     if (targetWin.isActive && !targetWin.isWindowClosed) return { win: [], ws: {} }
