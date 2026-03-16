@@ -1,8 +1,8 @@
-import { windowRegistry } from "../../../registration/window-registry"
-import { useCursorState } from "../../features/cursor/cursor-state"
-import { useWorkspaceState } from "../../features/workspace/workspace-state"
-import { WindowMutation } from "../rwm-runtime"
-import { ResizeContext } from "./resize-commands"
+import { windowRegistry } from '../../../registration/window-registry'
+import { useCursorState } from '../../features/cursor/cursor-state'
+import { useWorkspaceState } from '../../features/workspace/workspace-state'
+import { WindowMutation } from '../rwm-runtime'
+import { ResizeContext } from './resize-commands'
 
 export type RafResizeCommands = 'LOOP_RESIZE'
 type RafResizeResolver = Record<
@@ -19,7 +19,7 @@ export const rafResizeLoopResolver: RafResizeResolver = {
 
     const winElementBox = dep.winBox
     if (!winElementBox)
-      throw new Error(`LOOP_RESIZE called with null window element: ${targetWinId}`)
+      throw new Error(`LOOP_RESIZE called with null window element for winId: ${targetWinId}`)
 
     requestAnimationFrame(() =>
       resizeLoopResolver[resizeDirection](getRafResizeDependencies(targetWinId), commitCb)

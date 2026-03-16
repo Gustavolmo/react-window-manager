@@ -6,7 +6,6 @@ export const focusApi = {
       targetWinId: targetId,
       subsystem: 'FOCUS',
       cmd: 'FOCUS_WINDOW',
-      ctx: null,
     })
   },
 
@@ -15,7 +14,6 @@ export const focusApi = {
       targetWinId: targetId,
       subsystem: 'FOCUS',
       cmd: 'CLOSE_WINDOW_AND_REFOCUS',
-      ctx: null,
     })
   },
 }

@@ -16,15 +16,15 @@ import {
 } from './workspace-resolver/workspace-commands'
 import { ResizeCommandResolver, ResizeCommands } from './resize-resolver/resize-commands'
 import { RafResizeCommands, rafResizeLoopResolver } from './resize-resolver/resize-loop'
-import { WorkspaceStore } from '../../model/workspace-types'
+import { ResponsiveSizes, WorkspaceStore } from '../../model/workspace-types'
 
-type runtimeMessage =
-  | { targetWinId: string; subsystem: 'DOCK'; cmd: DockCommands; ctx: null }
-  | { targetWinId: string; subsystem: 'DRAG'; cmd: DragCommands; ctx: null }
-  | { targetWinId: string; subsystem: 'FOCUS'; cmd: FocusCommands; ctx: null }
+type rwmMessage =
+  | { targetWinId: string; subsystem: 'DOCK'; cmd: DockCommands; ctx?: undefined }
+  | { targetWinId: string; subsystem: 'DRAG'; cmd: DragCommands; ctx?: undefined }
+  | { targetWinId: string; subsystem: 'FOCUS'; cmd: FocusCommands; ctx?: undefined }
   | { targetWinId: string; subsystem: 'RESIZE'; cmd: ResizeCommands; ctx: ResizeDirection }
-  | { targetWinId?: string; subsystem: 'STACK'; cmd: StackCommands; ctx: null }
-  | { targetWinId?: string; subsystem: 'WORKSPACE'; cmd: WorkspaceCommands; ctx: null }
+  | { targetWinId?: string; subsystem: 'STACK'; cmd: StackCommands; ctx?: undefined }
+  | { targetWinId?: string; subsystem: 'WORKSPACE'; cmd: WorkspaceCommands; ctx?: ResponsiveSizes }
 
 /* 
   SUBSYSTEM
@@ -34,10 +34,10 @@ type runtimeMessage =
   - COMMIT
   */
 export const rwmRuntime = {
-  dispatch: ({ subsystem, cmd, targetWinId, ctx }: runtimeMessage): void => {
+  dispatch: ({ subsystem, cmd, targetWinId, ctx }: rwmMessage): void => {
     switch (subsystem) {
       case 'WORKSPACE': {
-        const stagedChanges = workspaceCommandResolver[cmd](targetWinId)
+        const stagedChanges = workspaceCommandResolver[cmd](targetWinId, ctx)
         commitToWorkspace(stagedChanges)
         break
       }
@@ -86,6 +86,7 @@ export const rafRuntime = {
   dispatch: ({ subsystem, cmd, targetWinId }: rafMessage): void => {
     switch (subsystem) {
       case 'RAF_DRAG': {
+        if (!isDragAllowed()) return
         rafDragLoopResolver[cmd](targetWinId, commitToWindow)
         break
       }

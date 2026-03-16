@@ -42,5 +42,5 @@ export const DragCommandResolver: DragResolver = {
 }
 
 export const isDragAllowed = (): boolean => {
-  return !useWorkspaceState.getState().isBelowBreakPoint()
+  return !useWorkspaceState.getState().isBelowBreakPoint
 }

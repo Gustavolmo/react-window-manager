@@ -6,7 +6,6 @@ export const dockApi = {
       targetWinId: winId,
       subsystem: 'DOCK',
       cmd: 'DOCK_WINDOW_RIGHT',
-      ctx: null,
     }),
 
   dockWindowLeft: (winId: string) =>
@@ -14,7 +13,6 @@ export const dockApi = {
       targetWinId: winId,
       subsystem: 'DOCK',
       cmd: 'DOCK_WINDOW_LEFT',
-      ctx: null,
     }),
 
   dockWindowTop: (winId: string) =>
@@ -22,7 +20,6 @@ export const dockApi = {
       targetWinId: winId,
       subsystem: 'DOCK',
       cmd: 'DOCK_WINDOW_TOP',
-      ctx: null,
     }),
 
   dockWindowBottom: (winId: string) =>
@@ -30,7 +27,6 @@ export const dockApi = {
       targetWinId: winId,
       subsystem: 'DOCK',
       cmd: 'DOCK_WINDOW_BOTTOM',
-      ctx: null,
     }),
 
   dockWindowBottomRight: (winId: string) =>
@@ -38,7 +34,6 @@ export const dockApi = {
       targetWinId: winId,
       subsystem: 'DOCK',
       cmd: 'DOCK_WINDOW_BOTTOM_RIGHT',
-      ctx: null,
     }),
 
   dockWindowTopRight: (winId: string) =>
@@ -46,7 +41,6 @@ export const dockApi = {
       targetWinId: winId,
       subsystem: 'DOCK',
       cmd: 'DOCK_WINDOW_TOP_RIGHT',
-      ctx: null,
     }),
 
   dockWindowBottomLeft: (winId: string) =>
@@ -54,7 +48,6 @@ export const dockApi = {
       targetWinId: winId,
       subsystem: 'DOCK',
       cmd: 'DOCK_WINDOW_BOTTOM_LEFT',
-      ctx: null,
     }),
 
   dockWindowTopLeft: (winId: string) =>
@@ -62,7 +55,6 @@ export const dockApi = {
       targetWinId: winId,
       subsystem: 'DOCK',
       cmd: 'DOCK_WINDOW_TOP_LEFT',
-      ctx: null,
     }),
 
   maximizeWindow: (winId: string) =>
@@ -70,7 +62,6 @@ export const dockApi = {
       targetWinId: winId,
       subsystem: 'DOCK',
       cmd: 'MAXIMIZE_WINDOW',
-      ctx: null,
     }),
 
   demaximizeWindow: (winId: string) =>
@@ -78,6 +69,5 @@ export const dockApi = {
       targetWinId: winId,
       subsystem: 'DOCK',
       cmd: 'DEMAXIMIZE_WINDOW',
-      ctx: null,
     }),
 }
