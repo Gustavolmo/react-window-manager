@@ -1,6 +1,6 @@
-import { WorkspaceRect } from "../../../model/workspace-types"
-import { useWorkspaceState } from "../../features/workspace/workspace-state"
-import { WindowMutation } from "../rwm-runtime"
+import { WorkspaceRect } from '../../../model/workspace-types'
+import { useWorkspaceState } from '../../features/workspace/workspace-state'
+import { WindowMutation } from '../rwm-runtime'
 
 export type DockCommands =
   | 'DOCK_WINDOW_RIGHT'
@@ -13,6 +13,7 @@ export type DockCommands =
   | 'DOCK_WINDOW_TOP_LEFT'
   | 'MAXIMIZE_WINDOW'
   | 'DEMAXIMIZE_WINDOW'
+
 type DockResolver = Record<
   DockCommands,
   (targetWinId: string, wsRect: WorkspaceRect) => WindowMutation[]

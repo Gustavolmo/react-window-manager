@@ -1,5 +1,3 @@
-export type ResponsiveSizes = 'sm' | 'md' | 'lg' | 'xl' | 'never' | 'always' | number
-
 export type WorkspaceRect = {
   top: number
   left: number
@@ -10,6 +8,8 @@ export type WorkspaceRect = {
   centerX: number
   centerY: number
 }
+
+export type ResponsiveSizes = 'sm' | 'md' | 'lg' | 'xl' | 'never' | 'always' | number
 
 export type WorkspaceStore = {
   wsElement: HTMLElement | null

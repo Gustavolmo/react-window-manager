@@ -76,7 +76,6 @@ export const rwmRuntime = {
 type rafMessage =
   | { targetWinId: string; subsystem: 'RAF_DRAG'; cmd: RafDragCommands }
   | { targetWinId: string; subsystem: 'RAF_RESIZE'; cmd: RafResizeCommands }
-  // | { targetWinId: string; subsystem: 'RAF_GRID_ORCHESTRATION'; cmd: RafResizeCommands }
 
 export const rafRuntime = {
   dispatch: ({ subsystem, cmd, targetWinId }: rafMessage): void => {
@@ -96,17 +95,20 @@ export const rafRuntime = {
 
 export type BatchMutation = { ws: WorkspaceMutation; win: WindowMutation[] }
 function commitBatch({ win, ws }: BatchMutation) {
-  if (ws) useWorkspaceState.setState(ws)
-  if (win.length) win.forEach(({ winId, patch }) => windowRegistry[winId].setState(patch))
+  commitToWorkspace(ws)
+  commitToWindow(win)
 }
 
 export type WindowMutation = { winId: string; patch: Partial<WindowStore> }
 function commitToWindow(patchStack: WindowMutation[]) {
-  if (patchStack.length)
-    patchStack.forEach(({ winId, patch }) => windowRegistry[winId].setState(patch))
+  patchStack.forEach(({ winId, patch }) => {
+    windowRegistry[winId].setState(patch)
+  })
 }
 
 export type WorkspaceMutation = Partial<WorkspaceStore>
 function commitToWorkspace(patch: WorkspaceMutation) {
-  if (patch) useWorkspaceState.setState(patch)
+  if (patch) {
+    useWorkspaceState.setState(patch)
+  }
 }

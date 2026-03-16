@@ -1,5 +1,5 @@
 import { dockApi } from './internal/features/docking/docking-api'
-import { resizeApi } from './internal/features/resizing/resizing-api'
+import { focusApi } from './internal/features/focus/focus-api'
 import { stackApi } from './internal/features/stack/stack-api'
 import { wsApi } from './internal/features/workspace/workspace-api'
 import { useWorkspaceState } from './internal/features/workspace/workspace-state'
@@ -7,9 +7,9 @@ import { windowRegistry } from './registration/window-registry'
 
 const rwm = {
   dockApi: dockApi,
-  resizeApi: resizeApi,
+  focusApi: focusApi,
   stackApi: stackApi,
-  workspaceApi: wsApi,
+  workspaceApi: { setWsResponsiveBreak: wsApi.setWsResponsiveBreak },
   worskpaceState: useWorkspaceState,
   windowRegistry: windowRegistry,
 }

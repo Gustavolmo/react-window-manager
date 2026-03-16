@@ -5,7 +5,6 @@ import { WindowMutation } from '../rwm-runtime'
 
 export type RafDragCommands = 'LOOP_DRAG'
 
-type PointerOffset = { left: number; top: number }
 type RafDragResolver = Record<
   RafDragCommands,
   (targetWinId: string, commitCb: (patchStack: WindowMutation[]) => void) => void
@@ -27,6 +26,7 @@ export const rafDragLoopResolver: RafDragResolver = {
   },
 }
 
+type PointerOffset = { left: number; top: number }
 const dragLoop = (
   targetWinId: string,
   pointerOffset: PointerOffset,
