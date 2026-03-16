@@ -1,6 +1,7 @@
-import {  WindowStore } from '../../model/window-types'
+import { WindowStore } from '../../model/window-types'
 import { WorkspaceStore } from '../../model/workspace-types'
 import { windowRegistry } from '../../registration/window-registry'
+import { useCursorState } from '../features/cursor/cursor-state'
 import { useWorkspaceState } from '../features/workspace/workspace-state'
 
 export type DispatchMessage =
@@ -8,8 +9,8 @@ export type DispatchMessage =
   | { targetWinId?: string; subsystem: 'WORKSPACE'; cmd: WorkspaceCommands }
   | { targetWinId: string; subsystem: 'FOCUS'; cmd: FocusCommands }
   | { targetWinId?: string; subsystem: 'STACK'; cmd: StackCommands }
-//   | { targetWinId: string; subsystem: 'CURSOR'; cmd: CursorCommands }
-//   | { targetWinId: string; subsystem: 'DRAG'; cmd: DragCommands }
+  | { targetWinId: string; subsystem: 'DRAG'; cmd: DragCommands }
+
 //   | { targetWinId: string; subsystem: 'GRID'; cmd: GridCommands }
 //   | { targetWinId: string; subsystem: 'RESIZE'; cmd: ResizeCommands }
 
@@ -19,6 +20,11 @@ export const rwmRuntime = {
       case 'WORKSPACE': {
         const stagedChanges = workspaceCommandResolver[cmd](targetWinId)
         commitToWorkspace(stagedChanges)
+        break
+      }
+      case 'DRAG': {
+        const stagedChanges = DragCommandResolver[cmd](targetWinId)
+        commitToWindow(stagedChanges)
         break
       }
       case 'DOCK': {
@@ -34,6 +40,20 @@ export const rwmRuntime = {
       case 'FOCUS': {
         const stagedChanges = FocusCommandResolver[cmd](targetWinId)
         commitBatch(stagedChanges)
+        break
+      }
+    }
+  },
+}
+
+export type DispatchAnimation = { targetWinId: string; subsystem: 'RAF_DRAG'; cmd: RafDragCommands }
+// | { targetWinId: string; subsystem: 'RAF_RESIZE'; cmd: RafResizeCommands }
+
+export const rafAnimation = {
+  dispatch: ({ subsystem, cmd, targetWinId }: DispatchAnimation): void => {
+    switch (subsystem) {
+      case 'RAF_DRAG': {
+        rafDragCommandResolver[cmd](targetWinId, commitToWindow)
         break
       }
     }
@@ -59,10 +79,113 @@ function commitToWorkspace(patch: WorkspaceMutation) {
 }
 
 /* ==========
+ * RESIZE
+ * ==========
+ */
+
+/* ==========
+ * RAF_RESIZE
+ * ==========
+ */
+
+/* ==========
+ * GRID - maybe an orchestrator, not a runtime
+ * ==========
+ */
+
+/* ==========
+ * RAF_DRAG
+ * ==========
+ */
+type RafDragCommands = 'LOOP_DRAG'
+type RafResolver = Record<
+  RafDragCommands,
+  (targetWinId: string, commitCb: (patchStack: WindowMutation[]) => void) => void
+>
+const rafDragCommandResolver: RafResolver = {
+  LOOP_DRAG: (targetWinId: string, commit: (patchStack: WindowMutation[]) => void) => {
+    const { x, y } = useCursorState.getState()
+    const { winCoord, isDragging, windowId } = windowRegistry[targetWinId].getState()
+
+    if (!isDragging)
+      throw new Error(`INIT_DRAG_LOOP called with disabled animation for winId: ${windowId}`)
+
+    const pointerOffset = {
+      left: x - winCoord.pointX,
+      top: y - winCoord.pointY,
+    }
+
+    const dragLoop = () => {
+      const { winCoord, isDragging } = windowRegistry[targetWinId].getState()
+      const { wsRect } = useWorkspaceState.getState()
+      const { x, y } = useCursorState.getState()
+      if (!isDragging) return
+
+      let adjustedX = x - pointerOffset.left
+      if (x > wsRect.right || x < wsRect.left) adjustedX = winCoord.pointX
+      let adjustedY = y - pointerOffset.top
+      if (y > wsRect.bottom || y < wsRect.top) adjustedY = winCoord.pointY
+
+      if (adjustedX !== winCoord.pointX || adjustedY !== winCoord.pointY) {
+        commit([
+          {
+            winId: targetWinId,
+            patch: { winCoord: { pointX: adjustedX, pointY: adjustedY } },
+          },
+        ])
+      }
+
+      requestAnimationFrame(dragLoop)
+    }
+
+    requestAnimationFrame(dragLoop)
+  },
+}
+
+/* ==========
+ * DRAG
+ * ==========
+ */
+type DragCommands = 'ENABLE_DRAG' | 'DISABLE_DRAG'
+type DragResolver = Record<DragCommands, (targetWinId: string) => WindowMutation[]>
+const DragCommandResolver: DragResolver = {
+  ENABLE_DRAG: (targetWinId: string) => {
+    const { wsRect } = useWorkspaceState.getState()
+    const patch: Partial<WindowStore> =
+      windowRegistry[targetWinId].getState().winVisualState === 'maximized'
+        ? {
+            winCoord: { pointX: wsRect.left + 16, pointY: wsRect.top + 16 },
+            winWidth: wsRect.innerWidth * 0.95,
+            winHeight: wsRect.innerHeight * 0.75,
+            winVisualState: 'demaximized',
+            isDragging: true,
+          }
+        : { isDragging: true }
+
+    return [
+      {
+        winId: targetWinId,
+        patch: patch,
+      },
+    ]
+  },
+  DISABLE_DRAG: (targetWinId: string) => {
+    return [
+      {
+        winId: targetWinId,
+        patch: {
+          isDragging: false,
+        },
+      },
+    ]
+  },
+}
+
+/* ==========
  * FOCUS
  * ==========
  */
-type FocusCommands = 'FOCUS_WINDOW' | 'CLOSE_WINDOW_AND_REFOCUS' // | 'OPEN_WINDOW_AND_FOCUS' //
+type FocusCommands = 'FOCUS_WINDOW' | 'CLOSE_WINDOW_AND_REFOCUS'
 type FocusResolver = Record<FocusCommands, (targetWinId: string) => BatchMutation>
 const FocusCommandResolver: FocusResolver = {
   FOCUS_WINDOW: (targetWinId: string) => {
@@ -103,50 +226,46 @@ const FocusCommandResolver: FocusResolver = {
     }
   },
   CLOSE_WINDOW_AND_REFOCUS: (targetWinId: string) => {
-    if (windowRegistry[targetWinId].getState().isWindowClosed) {
-      return { win: [], ws: {} }
-    }
+    const isTargetWinClosed = windowRegistry[targetWinId].getState().isWindowClosed
+    if (isTargetWinClosed) return { win: [], ws: {} }
 
     let prevIndex = 0
-    let currHighestIndexWinId: string | undefined = undefined
+    let highestIndexWinId: string | undefined = undefined
 
     for (const key of Object.keys(windowRegistry)) {
       const { zIndex, windowId, isWindowClosed } = windowRegistry[key].getState()
       if (windowId === targetWinId) continue
       if (isWindowClosed) continue
 
-      zIndex > prevIndex
-        ? ((prevIndex = zIndex), (currHighestIndexWinId = windowId))
-        : (prevIndex = prevIndex)
-    }
-
-    console.log(prevIndex)
-    console.log(currHighestIndexWinId)
-
-    if (!currHighestIndexWinId)
-      return {
-        ws: {},
-        win: [
-          {
-            winId: targetWinId,
-            patch: { isActive: false, isWindowClosed: true },
-          },
-        ],
+      if (zIndex > prevIndex) {
+        prevIndex = zIndex
+        highestIndexWinId = windowId
       }
-
-    return {
-      ws: { activeWindowId: currHighestIndexWinId },
-      win: [
-        {
-          winId: currHighestIndexWinId,
-          patch: { isActive: true },
-        },
-        {
-          winId: targetWinId,
-          patch: { isActive: false, isWindowClosed: true },
-        },
-      ],
     }
+
+    return !highestIndexWinId
+      ? {
+          ws: {},
+          win: [
+            {
+              winId: targetWinId,
+              patch: { isActive: false, isWindowClosed: true },
+            },
+          ],
+        }
+      : {
+          ws: { activeWindowId: highestIndexWinId },
+          win: [
+            {
+              winId: highestIndexWinId,
+              patch: { isActive: true },
+            },
+            {
+              winId: targetWinId,
+              patch: { isActive: false, isWindowClosed: true },
+            },
+          ],
+        }
   },
 }
 
@@ -154,7 +273,7 @@ const FocusCommandResolver: FocusResolver = {
  * WORKSPACE
  * ==========
  */
-type WorkspaceCommands = 'UPDATE_WORKSPACE_RECT' | 'SET_ACTIVE_WIN_ID'
+type WorkspaceCommands = 'UPDATE_WORKSPACE_RECT'
 type WorkspaceResolver = Record<WorkspaceCommands, (targetWinId?: string) => WorkspaceMutation>
 const workspaceCommandResolver: WorkspaceResolver = {
   UPDATE_WORKSPACE_RECT: (_?: string) => {
@@ -181,12 +300,6 @@ const workspaceCommandResolver: WorkspaceResolver = {
       },
     }
   },
-
-  SET_ACTIVE_WIN_ID: (targetWinId?: string) => {
-    return {
-      activeWindowId: targetWinId,
-    }
-  },
 }
 
 /* ==========
@@ -204,8 +317,6 @@ type DockCommands =
   | 'DOCK_WINDOW_TOP_LEFT'
   | 'MAXIMIZE_WINDOW'
   | 'DEMAXIMIZE_WINDOW'
-// | 'CLOSE_WINDOW'
-// | 'OPEN_WINDOW'
 type DockResolver = Record<DockCommands, (targetWinId: string) => WindowMutation[]>
 const dockCommandResolver: DockResolver = {
   DOCK_WINDOW_RIGHT: (targetWinId: string) => {
@@ -377,18 +488,3 @@ const stackCommandResolver: StackResolver = {
     return batchUpdate
   },
 }
-
-/* ==========
- * RESIZE
- * ==========
- */
-
-/* ==========
- * DRAG
- * ==========
- */
-
-/* ==========
- * CURSOR
- * ==========
- */

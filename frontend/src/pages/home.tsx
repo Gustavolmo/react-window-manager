@@ -17,7 +17,7 @@ export default function Home() {
           </h1>
         </div>
 
-        <installWin.Window windowName={'Install ' + installWin.id}>
+        <installWin.Window windowName={'Install'} navbarChildren={installWin.id}>
           <ReadMe />
         </installWin.Window>
 
