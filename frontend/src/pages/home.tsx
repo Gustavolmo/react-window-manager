@@ -1,7 +1,15 @@
 import { ArrowDownToLine, CodeXml, Github, Unplug } from 'lucide-react'
 import ReadMe from '../components/read-me'
 import { WorkspaceLayout } from '@gustavolmo/react-window-manager'
-import { apiRefereceWin, usageWin, installWin } from '../window-registration/register-rwm'
+import {
+  apiRefereceWin,
+  usageWin,
+  installWin,
+  test_1,
+  test_2,
+  test_3,
+  test_4,
+} from '../window-registration/register-rwm'
 
 export default function Home() {
   const { isActive: installActive } = installWin.store()
@@ -28,6 +36,11 @@ export default function Home() {
         <usageWin.Window windowName={'Usage ' + usageWin.id}>
           <p>Usage</p>
         </usageWin.Window>
+
+        <test_1.Window windowName="test_1">test_1</test_1.Window>
+        <test_2.Window windowName="test_2">test_2</test_2.Window>
+        <test_3.Window windowName="test_3">test_3</test_3.Window>
+        <test_4.Window windowName="test_4">test_4</test_4.Window>
       </WorkspaceLayout>
 
       <nav className="w-full h-12 bg-neutral-900 flex gap-2 px-4 justify-between z-50">
@@ -60,6 +73,11 @@ export default function Home() {
               <Unplug className="h-4 w-4" /> Api
             </p>
           </apiRefereceWin.Button>
+
+          <test_1.Button className='text-zinc-400 px-2'>test_1</test_1.Button>
+          <test_2.Button className='text-zinc-400 px-2'>test_2</test_2.Button>
+          <test_3.Button className='text-zinc-400 px-2'>test_3</test_3.Button>
+          <test_4.Button className='text-zinc-400 px-2'>test_4</test_4.Button>
         </div>
 
         <div className="flex gap-4 items-center">

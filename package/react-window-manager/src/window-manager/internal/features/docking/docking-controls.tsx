@@ -79,6 +79,7 @@ export default function DockingControls() {
     </span>
   )
 
+  // FIND ME
   /** @Note could easily add a 'drop on area to dock' feature */
   if (isBelowBreakPoint) return;
   if (!isDockPannelEnabled) return;

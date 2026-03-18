@@ -73,7 +73,7 @@ export default function WindowLayout({
       dockingRoutes[defaultDock](winId)
     }
     /* Initialization is dependent on the workspace (wsElement) being mounted */
-  }, [wsElement, resetFlag])
+  }, [wsElement, resetFlag]) // FIND ME: reset flag is anti-pattern
 
   const dockingRoutes: Record<DockPosition, (winId: string) => void> = {
     right: dockApi.dockWindowRight,

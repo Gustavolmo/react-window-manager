@@ -12,7 +12,7 @@ export default function ResizingControls({ winId }: Props) {
 
   const startResize = (direction: ResizeDirection) => {
     resizeApi.startResize(winId, direction)
-    gridOrchestrator.attachGridBehavior(winId)
+    gridOrchestrator.attachAdjacentGridBehavior(winId)
   }
 
   const stopResize = () => {
