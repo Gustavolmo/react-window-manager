@@ -25,19 +25,26 @@ export default function Home() {
           </h1>
         </div>
 
-        <installWin.Window windowName={'Install'} navbarChildren={installWin.id}>
+        <installWin.Window
+          windowName={'Install'}
+          defaultDock="top-right"
+          navbarChildren={installWin.id}
+        >
           <ReadMe />
         </installWin.Window>
 
-        <apiRefereceWin.Window windowName={'Api ' + apiRefereceWin.id}>
+        <apiRefereceWin.Window windowName={'Api ' + apiRefereceWin.id} defaultDock="top-left">
           <p>Api</p>
         </apiRefereceWin.Window>
 
-        <usageWin.Window windowName={'Usage ' + usageWin.id}>
+        <usageWin.Window windowName={'Usage ' + usageWin.id} defaultDock="bottom-right">
           <p>Usage</p>
         </usageWin.Window>
 
-        <test_1.Window windowName="test_1">test_1</test_1.Window>
+        <test_1.Window windowName="test_1" defaultDock="bottom-left">
+          test_1
+        </test_1.Window>
+        
         <test_2.Window windowName="test_2">test_2</test_2.Window>
         <test_3.Window windowName="test_3">test_3</test_3.Window>
         <test_4.Window windowName="test_4">test_4</test_4.Window>
@@ -74,10 +81,10 @@ export default function Home() {
             </p>
           </apiRefereceWin.Button>
 
-          <test_1.Button className='text-zinc-400 px-2'>test_1</test_1.Button>
-          <test_2.Button className='text-zinc-400 px-2'>test_2</test_2.Button>
-          <test_3.Button className='text-zinc-400 px-2'>test_3</test_3.Button>
-          <test_4.Button className='text-zinc-400 px-2'>test_4</test_4.Button>
+          <test_1.Button className="text-zinc-400 px-2">test_1</test_1.Button>
+          <test_2.Button className="text-zinc-400 px-2">test_2</test_2.Button>
+          <test_3.Button className="text-zinc-400 px-2">test_3</test_3.Button>
+          <test_4.Button className="text-zinc-400 px-2">test_4</test_4.Button>
         </div>
 
         <div className="flex gap-4 items-center">

@@ -2,13 +2,14 @@ import { ResizeDirection } from '../../../model/window-types'
 import { windowRegistry } from '../../../registration/window-registry'
 import { resizeApi } from './resizing-api'
 import { gridOrchestrator } from '../grid/grid-orchestrator'
+import { useWorkspaceState } from '../workspace/workspace-state'
 
 type Props = {
   winId: string
 }
 
 export default function ResizingControls({ winId }: Props) {
-  const { winCoord, winWidth, winHeight } = windowRegistry[winId]()
+  const { winCoord, winWidth, winHeight, resizeAction } = windowRegistry[winId]()
 
   const startResize = (direction: ResizeDirection) => {
     resizeApi.startResize(winId, direction)
@@ -25,46 +26,54 @@ export default function ResizingControls({ winId }: Props) {
         onPointerUp={stopResize}
         onPointerDown={() => startResize('e')}
         id="win-resize-right-width"
-        className="fixed w-2 opacity-60 cursor-w-resize z-10"
+        className={`fixed w-2 ${resizeAction === 'e' ? 'opacity-50' : ''} opacity-0 mix-blend-difference cursor-w-resize z-10 flex-col flex justify-center items-center overflow-hidden`}
         style={{
           top: `${winCoord.pointY}px`,
           left: `${winCoord.pointX + winWidth - 4}px`,
           height: `${winHeight}px`,
         }}
-      ></span>
+      >
+        <div className={`w-1 h-full bg-zinc-50`}></div>
+      </span>
       <span
         onPointerUp={stopResize}
         onPointerDown={() => startResize('w')}
         id="win-resize-left-width"
-        className="fixed w-2 opacity-60 cursor-w-resize z-10"
+        className={`fixed w-2 ${resizeAction === 'w' ? 'opacity-50' : ''} opacity-0 mix-blend-difference cursor-w-resize z-10 flex-col flex justify-center items-center`}
         style={{
           top: `${winCoord.pointY}px`,
           left: `${winCoord.pointX - 4}px`,
           height: `${winHeight}px`,
         }}
-      ></span>
+      >
+        <div className={`w-1 h-full bg-zinc-50`}></div>
+      </span>
       <span
         onPointerUp={stopResize}
         onPointerDown={() => startResize('s')}
         id="win-resize-bottom-height"
-        className="fixed h-2 opacity-60 cursor-s-resize z-10"
+        className={`fixed h-2 ${resizeAction === 's' ? 'opacity-50' : ''} opacity-0 mix-blend-difference cursor-s-resize z-10 flex justify-center items-center`}
         style={{
-          top: `${winCoord.pointY + winHeight - 6}px`,
+          top: `${winCoord.pointY + winHeight - 4}px`,
           left: `${winCoord.pointX}px`,
           width: `${winWidth}px`,
         }}
-      ></span>
+      >
+        <div className={`w-full h-1 bg-zinc-50`}></div>
+      </span>
       <span
         onPointerUp={stopResize}
         onPointerDown={() => startResize('n')}
         id="win-resize-top-height"
-        className="fixed h-2 opacity-60 cursor-s-resize z-10"
+        className={`fixed h-2 ${resizeAction === 'n' ? 'opacity-50' : ''} opacity-0 mix-blend-difference cursor-s-resize z-10 flex justify-center items-center`}
         style={{
-          top: `${winCoord.pointY - 6}px`,
+          top: `${winCoord.pointY - 4}px`,
           left: `${winCoord.pointX}px`,
           width: `${winWidth}px`,
         }}
-      ></span>
+      >
+        <div className={`w-full h-1 bg-zinc-50`}></div>
+      </span>
       <span
         onPointerUp={stopResize}
         onPointerDown={() => startResize('se')}
