@@ -3,6 +3,21 @@ import { WindowLayoutProps } from '../internal/features/window-layout'
 import { WindowButtonProps } from '../internal/features/window-button'
 import { StoreApi, UseBoundStore } from 'zustand'
 
+export type RwmWindowProps = Omit<WindowLayoutProps, 'winId'>
+export type RwmButtonProps = Omit<WindowButtonProps, 'winId'>
+
+export type DockPosition =
+  | 'right'
+  | 'left'
+  | 'full'
+  | 'top'
+  | 'bottom'
+  | 'top-right'
+  | 'top-left'
+  | 'bottom-right'
+  | 'bottom-left'
+  | 'default'
+
 export type WindowRegistry = Record<string, UseBoundStore<StoreApi<WindowStore>>>
 export type ResizeDirection = false | 's' | 'e' | 'n' | 'w' | 'se' | 'sw' | 'ne' | 'nw'
 export type WindowStates = 'maximized' | 'demaximized'
@@ -11,8 +26,8 @@ export type Coord = { pointX: number; pointY: number }
 export type WindowRegistration = {
   id: string
   store: UseBoundStore<StoreApi<WindowStore>>
-  Window: (props: Omit<WindowLayoutProps, 'winId'>) => JSX.Element
-  Button: (props: Omit<WindowButtonProps, 'winId'>) => JSX.Element
+  Window: (props: RwmWindowProps) => JSX.Element
+  Button: (props: RwmButtonProps) => JSX.Element
 }
 
 export type WindowStore = {

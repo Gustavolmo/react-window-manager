@@ -18,7 +18,7 @@ const rwm = {
    * Zustand hook, can be used to access the current state of the workspace by either
    * calling `const { <someState> } = worskpaceState()` inside a component or by calling
    * `worskpaceState.getState()` anywhere.
-   * 
+   *
    * @note
    * The hook also exposes the `setState()` method, however, this is highly discouraged. Prefer calling
    * the exposed apis in rwm for state mutation.
@@ -26,9 +26,13 @@ const rwm = {
   worskpaceState: useWorkspaceState,
 
   /**
-   * @howToUse
+   * @about
    * use the syntax `const { <someState> } = windowRegistry[<winId>]()` inside a component to access
    * the zustand hook or `windowRegistry[<winId>].getState()` to get the current state of a window anywhere
+   *
+   * @note
+   * Each hook also exposes the `setState()` method, however, this is highly discouraged. Prefer calling
+   * the exposed apis in rwm for state mutation.
    */
   windowRegistry: windowRegistry,
 }

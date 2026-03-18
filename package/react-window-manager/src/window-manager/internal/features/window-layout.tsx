@@ -6,24 +6,27 @@ import { dockApi } from './docking/docking-api'
 import DragHandle from './drag/drag-handle'
 import { useWorkspaceState } from './workspace/workspace-state'
 import { focusApi } from './focus/focus-api'
-
-type DockPosition =
-  | 'right'
-  | 'left'
-  | 'full'
-  | 'top'
-  | 'bottom'
-  | 'top-right'
-  | 'top-left'
-  | 'bottom-right'
-  | 'bottom-left'
-  | 'default'
+import { DockPosition } from '../../model/window-types'
 
 export type WindowLayoutProps = {
   children: React.ReactNode
   windowName: string | React.ReactNode
   winId: string
   navbarChildren?: React.ReactNode
+
+  /**
+   * @default  'deafult'
+   * @param `deafult` keeps the window near full width but detached from the workspace edges
+   * @param `full`
+   * @param `right`
+   * @param `left`
+   * @param `top`
+   * @param `bottom`
+   * @param `top-right`
+   * @param `top-left`
+   * @param `bottom-right`
+   * @param `bottom-left`
+   * */
   defaultDock?: DockPosition
 
   /** @note use CSS values such as hex or supported color names */

@@ -2,7 +2,6 @@ import { ResizeDirection } from '../../../model/window-types'
 import { windowRegistry } from '../../../registration/window-registry'
 import { resizeApi } from './resizing-api'
 import { gridOrchestrator } from '../grid/grid-orchestrator'
-import { useWorkspaceState } from '../workspace/workspace-state'
 
 type Props = {
   winId: string

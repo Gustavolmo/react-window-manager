@@ -1,7 +1,12 @@
 import { create } from 'zustand'
-import { WindowRegistration, WindowStore } from '../model/window-types'
-import WindowLayout, { WindowLayoutProps } from '../internal/features/window-layout'
-import WindowButton, { WindowButtonProps } from '../internal/features/window-button'
+import {
+  RwmButtonProps,
+  RwmWindowProps,
+  WindowRegistration,
+  WindowStore,
+} from '../model/window-types'
+import WindowLayout from '../internal/features/window-layout'
+import WindowButton from '../internal/features/window-button'
 import { windowRegistry } from './window-registry'
 
 const defaultMinWidth = 232
@@ -48,12 +53,8 @@ export const createWindowStore = (): WindowRegistration => {
 
     store: storeInstance,
 
-    Window: (props: Omit<WindowLayoutProps, 'winId'>) => (
-      <WindowLayout {...props} winId={windowInstanceId} />
-    ),
+    Window: (props: RwmWindowProps) => <WindowLayout {...props} winId={windowInstanceId} />,
 
-    Button: (props: Omit<WindowButtonProps, 'winId'>) => (
-      <WindowButton {...props} winId={windowInstanceId} />
-    ),
+    Button: (props: RwmButtonProps) => <WindowButton {...props} winId={windowInstanceId} />,
   }
 }

@@ -33,8 +33,6 @@ export const gridOrchestrator = {
 }
 
 const attachAdjacentGridBehavior = (winId: string, visited = new Set<string>()) => {
-  console.log('ORCHESTRATING WINDOW ->', winId)
-
   if (visited.has(winId)) return
   else visited.add(winId)
 
