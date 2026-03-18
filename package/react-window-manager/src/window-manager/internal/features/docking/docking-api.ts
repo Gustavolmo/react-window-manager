@@ -1,110 +1,73 @@
-import { windowRegistry } from '../../../registration/window-store-factory'
-import { wsApi } from '../workspace/workspace-api'
+import { rwmRuntime } from '../../runtime/rwm-runtime'
 
 export const dockApi = {
-  dockWindowRight: (winId: string) => {
-    windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().centerX, pointY: wsApi.getRect().top },
-      winWidth: wsApi.getRect().innerWidth / 2,
-      winHeight: wsApi.getRect().innerHeight,
-      winVisualState: 'demaximized',
-    })
-  },
+  dockWindowRight: (winId: string) =>
+    rwmRuntime.dispatch({
+      targetWinId: winId,
+      subsystem: 'DOCK',
+      cmd: 'DOCK_WINDOW_RIGHT',
+    }),
 
-  dockWindowLeft: (winId: string) => {
-    windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().left, pointY: wsApi.getRect().top },
-      winWidth: wsApi.getRect().innerWidth / 2,
-      winHeight: wsApi.getRect().innerHeight,
-      winVisualState: 'demaximized',
-    })
-  },
+  dockWindowLeft: (winId: string) =>
+    rwmRuntime.dispatch({
+      targetWinId: winId,
+      subsystem: 'DOCK',
+      cmd: 'DOCK_WINDOW_LEFT',
+    }),
 
-  dockWindowTop: (winId: string) => {
-    windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().left, pointY: wsApi.getRect().top },
-      winWidth: wsApi.getRect().innerWidth,
-      winHeight: wsApi.getRect().innerHeight / 2,
-      winVisualState: 'demaximized',
-    })
-  },
+  dockWindowTop: (winId: string) =>
+    rwmRuntime.dispatch({
+      targetWinId: winId,
+      subsystem: 'DOCK',
+      cmd: 'DOCK_WINDOW_TOP',
+    }),
 
-  dockWindowBottom: (winId: string) => {
-    windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().left, pointY: wsApi.getRect().centerY },
-      winWidth: wsApi.getRect().innerWidth,
-      winHeight: wsApi.getRect().innerHeight / 2,
-      winVisualState: 'demaximized',
-    })
-  },
+  dockWindowBottom: (winId: string) =>
+    rwmRuntime.dispatch({
+      targetWinId: winId,
+      subsystem: 'DOCK',
+      cmd: 'DOCK_WINDOW_BOTTOM',
+    }),
 
-  dockWindowBottomRight: (winId: string) => {
-    windowRegistry[winId].setState({
-      winCoord: {
-        pointX: wsApi.getRect().centerX,
-        pointY: wsApi.getRect().centerY,
-      },
-      winWidth: wsApi.getRect().innerWidth / 2,
-      winHeight: wsApi.getRect().innerHeight / 2,
-      winVisualState: 'demaximized',
-    })
-  },
+  dockWindowBottomRight: (winId: string) =>
+    rwmRuntime.dispatch({
+      targetWinId: winId,
+      subsystem: 'DOCK',
+      cmd: 'DOCK_WINDOW_BOTTOM_RIGHT',
+    }),
 
-  dockWindowTopRight: (winId: string) => {
-    windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().centerX, pointY: wsApi.getRect().top },
-      winWidth: wsApi.getRect().innerWidth / 2,
-      winHeight: wsApi.getRect().innerHeight / 2,
-      winVisualState: 'demaximized',
-    })
-  },
+  dockWindowTopRight: (winId: string) =>
+    rwmRuntime.dispatch({
+      targetWinId: winId,
+      subsystem: 'DOCK',
+      cmd: 'DOCK_WINDOW_TOP_RIGHT',
+    }),
 
-  dockWindowBottomLeft: (winId: string) => {
-    windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().left, pointY: wsApi.getRect().centerY },
-      winWidth: wsApi.getRect().innerWidth / 2,
-      winHeight: wsApi.getRect().innerHeight / 2,
-      winVisualState: 'demaximized',
-    })
-  },
+  dockWindowBottomLeft: (winId: string) =>
+    rwmRuntime.dispatch({
+      targetWinId: winId,
+      subsystem: 'DOCK',
+      cmd: 'DOCK_WINDOW_BOTTOM_LEFT',
+    }),
 
-  dockWindowTopLeft: (winId: string) => {
-    windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().left, pointY: wsApi.getRect().top },
-      winWidth: wsApi.getRect().innerWidth / 2,
-      winHeight: wsApi.getRect().innerHeight / 2,
-      winVisualState: 'demaximized',
-    })
-  },
+  dockWindowTopLeft: (winId: string) =>
+    rwmRuntime.dispatch({
+      targetWinId: winId,
+      subsystem: 'DOCK',
+      cmd: 'DOCK_WINDOW_TOP_LEFT',
+    }),
 
-  maximizeWindow: (winId: string) => {
-    windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().left, pointY: wsApi.getRect().top },
-      winHeight: wsApi.getRect().innerHeight,
-      winWidth: wsApi.getRect().innerWidth,
-      winVisualState: 'maximized',
-    })
-  },
+  maximizeWindow: (winId: string) =>
+    rwmRuntime.dispatch({
+      targetWinId: winId,
+      subsystem: 'DOCK',
+      cmd: 'MAXIMIZE_WINDOW',
+    }),
 
-  demaximizeWindow: (winId: string) => {
-    windowRegistry[winId].setState({
-      winCoord: { pointX: wsApi.getRect().left + 16, pointY: wsApi.getRect().top + 16 },
-      winWidth: wsApi.getRect().innerWidth * 0.95,
-      winHeight: wsApi.getRect().innerHeight * 0.75,
-      winVisualState: 'demaximized',
-    })
-  },
-
-  closeWindow: (winId: string) => {
-    windowRegistry[winId].setState({ isWindowClosed: true })
-  },
-
-  openWindow: (winId: string) => {
-    const winState = windowRegistry[winId].getState()
-    const winRef = winState.self
-    if (winState.isWindowClosed && winRef?.current) {
-      windowRegistry[winId].setState({ isWindowClosed: false })
-      winRef.current.style.transform = 'translate(0, 0) scale(1)'
-    }
-  },
+  demaximizeWindow: (winId: string) =>
+    rwmRuntime.dispatch({
+      targetWinId: winId,
+      subsystem: 'DOCK',
+      cmd: 'DEMAXIMIZE_WINDOW',
+    }),
 }

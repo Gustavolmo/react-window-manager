@@ -1,30 +1,32 @@
 import { useEffect, useRef } from 'react'
 import { IconWinMinimize, IconWinDemaximize, IconWinMaximize } from '../assets/svg-win-icons'
 import ResizingControls from './resizing/resizing-controls'
-import { windowRegistry } from '../../registration/window-store-factory'
-import { stackApi } from './stack/stack-api'
+import { windowRegistry } from '../../registration/window-registry'
 import { dockApi } from './docking/docking-api'
-import { wsApi } from './workspace/workspace-api'
 import DragHandle from './drag/drag-handle'
 import { useWorkspaceState } from './workspace/workspace-state'
-
-type DockPosition =
-  | 'right'
-  | 'left'
-  | 'full'
-  | 'top'
-  | 'bottom'
-  | 'top-right'
-  | 'top-left'
-  | 'bottom-right'
-  | 'bottom-left'
-  | 'default'
+import { focusApi } from './focus/focus-api'
+import { DockPosition } from '../../model/window-types'
 
 export type WindowLayoutProps = {
   children: React.ReactNode
   windowName: string | React.ReactNode
   winId: string
   navbarChildren?: React.ReactNode
+
+  /**
+   * @default  'deafult'
+   * @param `deafult` keeps the window near full width but detached from the workspace edges
+   * @param `full`
+   * @param `right`
+   * @param `left`
+   * @param `top`
+   * @param `bottom`
+   * @param `top-right`
+   * @param `top-left`
+   * @param `bottom-right`
+   * @param `bottom-left`
+   * */
   defaultDock?: DockPosition
 
   /** @note use CSS values such as hex or supported color names */
@@ -43,13 +45,13 @@ export default function WindowLayout({
   defaultDock = 'default',
   style,
 }: WindowLayoutProps) {
-  const { ref: wsRef } = useWorkspaceState()
+  const { wsElement, wsRect, isBelowBreakPoint } = useWorkspaceState()
   const windowRef = useRef<HTMLDivElement>(null)
   const {
     windowId,
     zIndex,
     isActive,
-    setSelf,
+    setWinElement,
 
     resetFlag,
 
@@ -64,16 +66,17 @@ export default function WindowLayout({
   } = windowRegistry[winId]()
 
   useEffect(() => {
-    setSelf(windowRef)
+    setWinElement(windowRef.current)
+  }, [setWinElement, windowRef.current])
 
-    if (wsApi.isBelowBreakPoint()) {
+  useEffect(() => {
+    if (isBelowBreakPoint) {
       dockApi.maximizeWindow(winId)
-      return
+    } else {
+      dockingRoutes[defaultDock](winId)
     }
-
-    dockingRoutes[defaultDock](winId)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setSelf, windowRef, resetFlag, wsRef])
+    /* Initialization is dependent on the workspace (wsElement) being mounted */
+  }, [wsElement, resetFlag]) // FIND ME: reset flag is anti-pattern
 
   const dockingRoutes: Record<DockPosition, (winId: string) => void> = {
     right: dockApi.dockWindowRight,
@@ -108,7 +111,7 @@ export default function WindowLayout({
   const closeControl = (
     <button
       className="hover:bg-red-500 hover:bg-opacity-20 px-5 h-full"
-      onClick={() => dockApi.closeWindow(winId)}
+      onClick={() => focusApi.closeWindowAndRefocus(winId)}
     >
       <IconWinMinimize color={style?.navControlsColor} />
     </button>
@@ -120,7 +123,7 @@ export default function WindowLayout({
         id={windowId}
         ref={windowRef}
         className={`fixed bg-white shadow-lg border border-zinc-600 rounded-sm overflow-hidden`}
-        onMouseDown={() => stackApi.bringTargetWindowToFront(windowId)}
+        onPointerDown={() => focusApi.bringWindowToFocus(windowId)}
         style={{
           backgroundColor: style?.windowBackgroundColor,
           top: `${winCoord.pointY}px`,
@@ -133,8 +136,8 @@ export default function WindowLayout({
           transition: 'transform 0.2s ease-in-out, opacity 0.3s ease-in-out',
           opacity: isWindowClosed ? 0 : 1,
           transform: isWindowClosed
-            ? `translate(${wsApi.getRect().innerWidth / 2 - winCoord.pointX - winWidth / 2}px,
-              ${wsApi.getRect().innerHeight - winCoord.pointY - winHeight / 2}px) scale(0.02)`
+            ? `translate(${wsRect.innerWidth / 2 - winCoord.pointX - winWidth / 2}px,
+              ${wsRect.innerHeight - winCoord.pointY - winHeight / 2}px) scale(0.02)`
             : '',
         }}
       >
@@ -146,21 +149,21 @@ export default function WindowLayout({
             h-[32px] w-full flex items-center bg-neutral-800
             ${isActive ? 'brightness-100 opacity-100' : 'brightness-75 opacity-80'}`}
         >
-          <div className="w-fit shrink-0 h-8 px-2 text-white flex items-center text-sm truncate">
+          <div className="shrink h-8 px-2 text-white flex items-center text-sm truncate min-w-0">
             {windowName}
           </div>
 
-          <div className="h-8 px-2 text-white flex items-center text-sm truncate">
+          <div className="h-8 px-2 text-white flex items-center text-sm truncate min-w-0">
             {navbarChildren}
           </div>
 
           <DragHandle winId={winId} />
 
-          {!wsApi.isBelowBreakPoint() && maximizeControl}
+          {!isBelowBreakPoint && maximizeControl}
           {closeControl}
         </nav>
 
-        {!wsApi.isBelowBreakPoint() && <ResizingControls winId={winId} />}
+        {<ResizingControls winId={winId} />}
 
         {/* Offset the navbar => 'h-[calc(100%-32px)]' */}
         <div className={`relative w-full h-[calc(100%-32px)] overflow-auto`}>{children}</div>

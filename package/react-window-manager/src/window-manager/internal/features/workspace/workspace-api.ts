@@ -1,57 +1,35 @@
-import { ResponsiveSizes, WorkspaceRect } from '../../../model/workspace-types'
-import { useWorkspaceState } from './workspace-state'
+import { ResponsiveSizes } from '../../../model/workspace-types'
+import { rwmRuntime } from '../../runtime/rwm-runtime'
+import { WorkspaceCtx } from '../../runtime/workspace-resolver/workspace-commands'
 
 export const wsApi = {
-  getRect: (): WorkspaceRect => {
-    const rect = useWorkspaceState.getState().ref?.getBoundingClientRect()
-
-    const top = rect?.top ?? 0
-    const left = rect?.left ?? 0
-    const innerHeight = rect?.height ?? 0
-    const innerWidth = rect?.width ?? 0
-
-    const bottom = top + innerHeight
-    const right = left + innerWidth
-
-    const centerX = left + innerWidth / 2
-    const centerY = top + innerHeight / 2
-
-    const wsWindow = {
-      top: top,
-      left: left,
-      innerHeight: innerHeight,
-      innerWidth: innerWidth,
-      bottom: bottom,
-      right: right,
-      centerX: centerX,
-      centerY: centerY,
-    }
-
-    return wsWindow
+  /**
+   * Always relative to the WorkspaceLayout dimensions. Use `wsApi.setWsResponsiveBreak` to modify the value
+   * @default 'sm'
+   * @param sm uses mobile format at 640px
+   * @param md uses mobile format at 768px
+   * @param lg uses mobile format at 1024px
+   * @param xl uses mobile format at 1280px
+   * @param never never uses mobile format
+   * @param always always uses mobile format
+   * @param number set custom break point value in px */
+  setWsResponsiveBreak: (breakPoint: ResponsiveSizes) => {
+    rwmRuntime.dispatch({
+      subsystem: 'WORKSPACE',
+      cmd: 'SET_RESPONSIVE_BREAK',
+      ctx: { responsiveBreak: breakPoint },
+    })
   },
 
-  isBelowBreakPoint: (): boolean => {
-    const wsRect = wsApi.getRect()
-    const breakPoint = useWorkspaceState.getState().responsiveBreak
-    return wsRect.innerWidth < responsiveBreakInPx(breakPoint)
+  setWsFeatures: ({ isDockPannelEnabled = true, isGridEnabled = true }: WorkspaceCtx) => {
+    rwmRuntime.dispatch({
+      subsystem: 'WORKSPACE',
+      cmd: 'SET_WORKSPACE_FEATURES',
+      ctx: { isDockPannelEnabled: isDockPannelEnabled, isGridEnabled: isGridEnabled },
+    })
   },
-}
 
-const responsiveBreakInPx = (breakPoint: ResponsiveSizes): number => {
-  switch (breakPoint) {
-    case 'sm':
-      return 640
-    case 'md':
-      return 768
-    case 'lg':
-      return 1024
-    case 'xl':
-      return 1280
-    case 'never':
-      return 0
-    case 'always':
-      return Infinity
-    default:
-      return breakPoint
-  }
+  updateWsRect: () => {
+    rwmRuntime.dispatch({ subsystem: 'WORKSPACE', cmd: 'UPDATE_WORKSPACE_RECT' })
+  },
 }

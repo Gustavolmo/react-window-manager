@@ -1,5 +1,3 @@
-export type ResponsiveSizes = 'sm' | 'md' | 'lg' | 'xl' | 'never' | 'always' | number
-
 export type WorkspaceRect = {
   top: number
   left: number
@@ -11,13 +9,27 @@ export type WorkspaceRect = {
   centerY: number
 }
 
+export type ResponsiveSizes = 'sm' | 'md' | 'lg' | 'xl' | 'never' | 'always' | number
+
 export type WorkspaceStore = {
-  ref: HTMLElement | null
-  setRef: (newRef: HTMLElement | null) => void
+  wsElement: HTMLElement | null
+  setWsElement: (newRef: HTMLElement | null) => void
 
-  activeWindowId: string
-  setActiveWindowId: (newId: string) => void
-
+  /**
+   * Always relative to the WorkspaceLayout dimensions. Use `wsApi.setWsResponsiveBreak` to modify the value
+   * @default 'sm'
+   * @param sm uses mobile format at 640px
+   * @param md uses mobile format at 768px
+   * @param lg uses mobile format at 1024px
+   * @param xl uses mobile format at 1280px
+   * @param never never uses mobile format
+   * @param always always uses mobile format
+   * @param number set custom break point value in px */
+  isBelowBreakPoint: boolean
+  isGridEnabled: boolean
+  isDockPannelEnabled: boolean
+  
   responsiveBreak: ResponsiveSizes
-  setResponsiveBreak: (breakPoint: ResponsiveSizes) => void
+  activeWindowId: string
+  wsRect: WorkspaceRect
 }

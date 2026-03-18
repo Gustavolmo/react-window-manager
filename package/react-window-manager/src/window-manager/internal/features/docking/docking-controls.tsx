@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { windowRegistry } from '../../../registration/window-store-factory'
+import { windowRegistry } from '../../../registration/window-registry'
 import { useWorkspaceState } from '../workspace/workspace-state'
 import { dockApi } from './docking-api'
 
 export default function DockingControls() {
   const [isHovering, setIsHovering] = useState(false)
 
-  const { activeWindowId } = useWorkspaceState()
+  const { activeWindowId, isDockPannelEnabled, isBelowBreakPoint } = useWorkspaceState()
   const { isDragging } = windowRegistry[activeWindowId]()
 
   const cornerDockControl = (
@@ -14,21 +14,21 @@ export default function DockingControls() {
       <div className="flex flex-col justify-center gap-0.5">
         <button
           className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-10 h-6 rounded-sm"
-          onMouseUp={() => dockApi.dockWindowTopLeft(activeWindowId)}
+          onPointerUp={() => dockApi.dockWindowTopLeft(activeWindowId)}
         ></button>
         <button
           className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-10 h-6 rounded-sm"
-          onMouseUp={() => dockApi.dockWindowBottomLeft(activeWindowId)}
+          onPointerUp={() => dockApi.dockWindowBottomLeft(activeWindowId)}
         ></button>
       </div>
       <div className="flex flex-col justify-center gap-0.5">
         <button
           className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-10 h-6 rounded-sm"
-          onMouseUp={() => dockApi.dockWindowTopRight(activeWindowId)}
+          onPointerUp={() => dockApi.dockWindowTopRight(activeWindowId)}
         ></button>
         <button
           className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-10 h-6 rounded-sm"
-          onMouseUp={() => dockApi.dockWindowBottomRight(activeWindowId)}
+          onPointerUp={() => dockApi.dockWindowBottomRight(activeWindowId)}
         ></button>
       </div>
     </div>
@@ -38,11 +38,11 @@ export default function DockingControls() {
     <div className={`flex shrink-0 items-center gap-0.5`}>
       <button
         className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-8 h-12 rounded-sm"
-        onMouseUp={() => dockApi.dockWindowLeft(activeWindowId)}
+        onPointerUp={() => dockApi.dockWindowLeft(activeWindowId)}
       ></button>
       <button
         className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-8 h-12 rounded-sm"
-        onMouseUp={() => dockApi.dockWindowRight(activeWindowId)}
+        onPointerUp={() => dockApi.dockWindowRight(activeWindowId)}
       ></button>
     </div>
   )
@@ -51,20 +51,20 @@ export default function DockingControls() {
     <div className={`flex flex-col shrink-0 items-center gap-0.5`}>
       <button
         className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-14 h-6 rounded-sm"
-        onMouseUp={() => dockApi.dockWindowTop(activeWindowId)}
+        onPointerUp={() => dockApi.dockWindowTop(activeWindowId)}
       ></button>
       <button
         className="hover:bg-zinc-300 border border-zinc-500 bg-zinc-600 w-14 h-6 rounded-sm"
-        onMouseUp={() => dockApi.dockWindowBottom(activeWindowId)}
+        onPointerUp={() => dockApi.dockWindowBottom(activeWindowId)}
       ></button>
     </div>
   )
 
   const windowDockPannel = (
     <span
-      className="pointer-events-auto px-4 pb-2"
-      onMouseOver={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+      className="pointer-events-auto px-4 pb-3"
+      onPointerOver={() => setIsHovering(true)}
+      onPointerLeave={() => setIsHovering(false)}
     >
       <section
         className={`
@@ -79,10 +79,14 @@ export default function DockingControls() {
     </span>
   )
 
-  /** @Note could easily add a drop on area to dock feature */
+  // FIND ME
+  /** @Note could easily add a 'drop on area to dock' feature */
+  if (isBelowBreakPoint) return;
+  if (!isDockPannelEnabled) return;
   return (
-    <div
-      className={`
+    <>
+      <div
+        className={`
         ${
           isDragging
             ? isHovering
@@ -93,8 +97,9 @@ export default function DockingControls() {
         transition-all duration-500
         absolute z-50 flex items-center justify-center 
         w-full mx-auto pointer-events-none`}
-    >
-      {windowDockPannel}
-    </div>
+      >
+        {windowDockPannel}
+      </div>
+    </>
   )
 }

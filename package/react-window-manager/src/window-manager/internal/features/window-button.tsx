@@ -1,35 +1,37 @@
-import { windowRegistry } from '../../registration/window-store-factory'
-import { dockApi } from './docking/docking-api'
-import { stackApi } from './stack/stack-api'
+import { windowRegistry } from '../../registration/window-registry'
+import { focusApi } from './focus/focus-api'
 
 export type WindowButtonProps = {
   children: React.ReactNode
   winId: string
   className?: string
-  /** @default 'brightness-[85%]' */
+
+  /** @default 'brightness-[85%] border-t-2 border-t-transparent' */
   isClosedClassName?: string
-  /** @default 'brightness-150' */
+
+  /** @default 'brightness-150 border-t-2 border-t-transparent' */
   isOpenClassName?: string
+
+  /** @default 'brightness-150 border-t-2 border-zinc-400 bg-zinc-50/10' */
+  isActiveClassName?: string
 }
 
 export default function WindowButton({
   children,
   winId,
   className,
-  isClosedClassName = 'brightness-[85%]',
-  isOpenClassName = 'brightness-150',
+  isClosedClassName = 'brightness-[85%] border-t-2 border-t-transparent',
+  isOpenClassName = 'brightness-150 border-t-2 border-t-transparent',
+  isActiveClassName = 'brightness-150 border-t-2 border-zinc-400 bg-zinc-50/10',
 }: WindowButtonProps) {
   const { isWindowClosed, windowId, isActive } = windowRegistry[winId]()
 
   const handleOpenCloseWin = () => {
-    if (isWindowClosed) {
-      stackApi.bringTargetWindowToFront(windowId)
-      dockApi.openWindow(winId)
-      return
+    if (!isWindowClosed && isActive) {
+      focusApi.closeWindowAndRefocus(windowId)
+    } else {
+      focusApi.bringWindowToFocus(windowId)
     }
-
-    if (isActive) dockApi.closeWindow(winId)
-    stackApi.bringTargetWindowToFront(windowId)
   }
 
   return (
@@ -38,7 +40,7 @@ export default function WindowButton({
       onClick={handleOpenCloseWin}
       className={`
         ${className} 
-        ${isWindowClosed ? isClosedClassName : isOpenClassName}`}
+        ${isWindowClosed ? isClosedClassName : isActive ? isActiveClassName : isOpenClassName}`}
     >
       {children}
     </button>
