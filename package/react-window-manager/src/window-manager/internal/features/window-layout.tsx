@@ -160,7 +160,7 @@ export default function WindowLayout({
           {closeControl}
         </nav>
 
-        {!isBelowBreakPoint && <ResizingControls winId={winId} />}
+        {<ResizingControls winId={winId} />}
 
         {/* Offset the navbar => 'h-[calc(100%-32px)]' */}
         <div className={`relative w-full h-[calc(100%-32px)] overflow-auto`}>{children}</div>

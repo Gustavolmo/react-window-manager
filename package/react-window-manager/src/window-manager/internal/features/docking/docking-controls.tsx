@@ -6,7 +6,7 @@ import { dockApi } from './docking-api'
 export default function DockingControls() {
   const [isHovering, setIsHovering] = useState(false)
 
-  const { activeWindowId } = useWorkspaceState()
+  const { activeWindowId, isDockPannelEnabled, isBelowBreakPoint } = useWorkspaceState()
   const { isDragging } = windowRegistry[activeWindowId]()
 
   const cornerDockControl = (
@@ -80,6 +80,8 @@ export default function DockingControls() {
   )
 
   /** @Note could easily add a 'drop on area to dock' feature */
+  if (isBelowBreakPoint) return;
+  if (!isDockPannelEnabled) return;
   return (
     <>
       <div

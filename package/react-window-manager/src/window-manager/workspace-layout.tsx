@@ -27,6 +27,7 @@ export default function WorkspaceLayout({ children, className }: Props) {
 
   return (
     <section
+      id="rwm-workspace-layout"
       ref={workspaceRef}
       onPointerLeave={disabledDragAndResize}
       onPointerUp={disabledDragAndResize}

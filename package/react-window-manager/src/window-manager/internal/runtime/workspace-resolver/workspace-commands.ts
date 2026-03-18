@@ -2,11 +2,20 @@ import { ResponsiveSizes } from '../../../model/workspace-types'
 import { useWorkspaceState } from '../../features/workspace/workspace-state'
 import { WorkspaceMutation } from '../rwm-runtime'
 
-export type WorkspaceCommands = 'UPDATE_WORKSPACE_RECT' | 'SET_RESPONSIVE_BREAK'
+export type WorkspaceCommands =
+  | 'UPDATE_WORKSPACE_RECT'
+  | 'SET_RESPONSIVE_BREAK'
+  | 'SET_WORKSPACE_FEATURES'
+
+export type WorkspaceCtx = {
+  responsiveBreak?: ResponsiveSizes
+  isDockPannelEnabled?: boolean
+  isGridEnabled?: boolean
+}
 
 type WorkspaceResolver = Record<
   WorkspaceCommands,
-  (targetWinId?: string, ctx?: ResponsiveSizes) => WorkspaceMutation
+  (targetWinId?: string, ctx?: WorkspaceCtx) => WorkspaceMutation
 >
 export const workspaceCommandResolver: WorkspaceResolver = {
   UPDATE_WORKSPACE_RECT: () => {
@@ -38,12 +47,22 @@ export const workspaceCommandResolver: WorkspaceResolver = {
     }
   },
 
-  SET_RESPONSIVE_BREAK: (_?: string, responsiveBreak?: ResponsiveSizes) => {
-    if (responsiveBreak === undefined || responsiveBreak === null)
+  SET_WORKSPACE_FEATURES: (_?: string, ctx?: WorkspaceCtx) => {
+    if (ctx?.isGridEnabled === undefined || ctx?.isDockPannelEnabled === undefined)
+      throw new Error(`SET_WORKSPACE_FEATURES called without a ctx value`)
+
+    return {
+      isGridEnabled: ctx.isGridEnabled,
+      isDockPannelEnabled: ctx.isDockPannelEnabled,
+    }
+  },
+
+  SET_RESPONSIVE_BREAK: (_?: string, ctx?: WorkspaceCtx) => {
+    if (ctx?.responsiveBreak === undefined || ctx?.responsiveBreak === null)
       throw new Error(`SET_RESPONSIVE_BREAK called without a ctx value`)
 
     return {
-      responsiveBreak: responsiveBreak,
+      responsiveBreak: ctx.responsiveBreak,
     }
   },
 }

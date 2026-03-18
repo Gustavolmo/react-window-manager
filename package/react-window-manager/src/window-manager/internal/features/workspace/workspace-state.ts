@@ -5,9 +5,11 @@ export const useWorkspaceState = create<WorkspaceStore>((set, get) => ({
   wsElement: null,
   setWsElement: (el: HTMLElement | null) => set({ wsElement: el }),
 
-  responsiveBreak: 'sm',
-  isBelowBreakPoint: false,
   isGridEnabled: true,
+  isDockPannelEnabled: true,
+  responsiveBreak: 'sm',
+  
+  isBelowBreakPoint: false,
   activeWindowId: 'react-dynamic-window-instance0',
   wsRect: {
     top: 0,

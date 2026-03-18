@@ -27,6 +27,8 @@ export type WorkspaceStore = {
    * @param number set custom break point value in px */
   isBelowBreakPoint: boolean
   isGridEnabled: boolean
+  isDockPannelEnabled: boolean
+  
   responsiveBreak: ResponsiveSizes
   activeWindowId: string
   wsRect: WorkspaceRect

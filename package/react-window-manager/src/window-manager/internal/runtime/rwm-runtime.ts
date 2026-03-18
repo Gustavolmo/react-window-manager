@@ -13,10 +13,11 @@ import { stackCommandResolver, StackCommands } from './stack-resolver/stack-comm
 import {
   workspaceCommandResolver,
   WorkspaceCommands,
+  WorkspaceCtx,
 } from './workspace-resolver/workspace-commands'
 import { resizeCommandResolver, ResizeCommands } from './resize-resolver/resize-commands'
 import { RafResizeCommands, rafResizeLoopResolver } from './resize-resolver/resize-loop'
-import { ResponsiveSizes, WorkspaceStore } from '../../model/workspace-types'
+import { WorkspaceStore } from '../../model/workspace-types'
 
 /* 
   SUBSYSTEM
@@ -32,7 +33,7 @@ type rwmMessage =
   | { targetWinId: string; subsystem: 'FOCUS'; cmd: FocusCommands; ctx?: undefined }
   | { targetWinId: string; subsystem: 'RESIZE'; cmd: ResizeCommands; ctx: ResizeDirection }
   | { targetWinId?: string; subsystem: 'STACK'; cmd: StackCommands; ctx?: undefined }
-  | { targetWinId?: string; subsystem: 'WORKSPACE'; cmd: WorkspaceCommands; ctx?: ResponsiveSizes }
+  | { targetWinId?: string; subsystem: 'WORKSPACE'; cmd: WorkspaceCommands; ctx?: WorkspaceCtx }
 
 export const rwmRuntime = {
   dispatch: ({ subsystem, cmd, targetWinId, ctx }: rwmMessage): void => {

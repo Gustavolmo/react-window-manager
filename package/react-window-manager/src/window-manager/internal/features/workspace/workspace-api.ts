@@ -1,5 +1,6 @@
 import { ResponsiveSizes } from '../../../model/workspace-types'
 import { rwmRuntime } from '../../runtime/rwm-runtime'
+import { WorkspaceCtx } from '../../runtime/workspace-resolver/workspace-commands'
 
 export const wsApi = {
   /**
@@ -13,7 +14,19 @@ export const wsApi = {
    * @param always always uses mobile format
    * @param number set custom break point value in px */
   setWsResponsiveBreak: (breakPoint: ResponsiveSizes) => {
-    rwmRuntime.dispatch({ subsystem: 'WORKSPACE', cmd: 'SET_RESPONSIVE_BREAK', ctx: breakPoint })
+    rwmRuntime.dispatch({
+      subsystem: 'WORKSPACE',
+      cmd: 'SET_RESPONSIVE_BREAK',
+      ctx: { responsiveBreak: breakPoint },
+    })
+  },
+
+  setWsFeatures: ({ isDockPannelEnabled = true, isGridEnabled = true }: WorkspaceCtx) => {
+    rwmRuntime.dispatch({
+      subsystem: 'WORKSPACE',
+      cmd: 'SET_WORKSPACE_FEATURES',
+      ctx: { isDockPannelEnabled: isDockPannelEnabled, isGridEnabled: isGridEnabled },
+    })
   },
 
   updateWsRect: () => {
