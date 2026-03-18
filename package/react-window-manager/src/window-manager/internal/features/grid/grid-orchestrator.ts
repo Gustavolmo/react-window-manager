@@ -50,32 +50,32 @@ const attachAdjacentGridBehavior = (winId: string) => {
 
     /* thisWin right edge <::::> remoteWin left edge || remoteWin is stacked up or down */
     if (currentResize === 'e') {
-      resizeCase.whenDraggingEast(dependencies)
-      attachAdjacentGridBehavior(remoteWin.windowId)
+      const isRemoteConneted = resizeCase.whenDraggingEast(dependencies)
+      if (isRemoteConneted) attachAdjacentGridBehavior(remoteWin.windowId)
     }
 
     /* thisWin left edge <::::> remoteWin right edge || remoteWin is stacked up or down */
     if (currentResize === 'w') {
-      resizeCase.whenDragginWest(dependencies)
-      attachAdjacentGridBehavior(remoteWin.windowId)
+      const isRemoteConneted = resizeCase.whenDragginWest(dependencies)
+      if (isRemoteConneted) attachAdjacentGridBehavior(remoteWin.windowId)
     }
 
     /* thisWin top edge <::::> remoteWin bottom edge || remoteWin is stacked left or right */
     if (currentResize === 'n') {
-      resizeCase.whenDragginNorth(dependencies)
-      attachAdjacentGridBehavior(remoteWin.windowId)
+      const isRemoteConneted = resizeCase.whenDragginNorth(dependencies)
+      if (isRemoteConneted) attachAdjacentGridBehavior(remoteWin.windowId)
     }
 
     /* thisWin bottom edge <::::> remoteWin top edge || remoteWin is stacked left or right */
     if (currentResize === 's') {
-      resizeCase.whenDraggingSouth(dependencies)
-      attachAdjacentGridBehavior(remoteWin.windowId)
+      const isRemoteConneted = resizeCase.whenDraggingSouth(dependencies)
+      if (isRemoteConneted) attachAdjacentGridBehavior(remoteWin.windowId)
     }
   }
 }
 
 const resizeCase = {
-  whenDraggingEast: (d: resizeCaseDependencies) => {
+  whenDraggingEast: (d: resizeCaseDependencies): boolean => {
     const isEdgeAlignedOnXAxis = Math.abs(d.thisWinEndX - d.remoteWinStartX) <= tolerance
     const isOverlapOnYAxis =
       d.thisWinStartY <= d.remoteWinEndY && d.thisWinEndY >= d.remoteWinStartY
@@ -84,7 +84,7 @@ const resizeCase = {
 
     if (isEdgeResize) {
       resizeApi.startResize(d.remoteId, 'w')
-      return
+      return true
     }
 
     const isRemoteOnSameLane =
@@ -99,11 +99,13 @@ const resizeCase = {
 
     if (isStackResize) {
       resizeApi.startResize(d.remoteId, 'e')
-      return
+      return true
     }
+
+    return false
   },
 
-  whenDragginWest: (d: resizeCaseDependencies) => {
+  whenDragginWest: (d: resizeCaseDependencies): boolean => {
     const isEdgeAlignedOnXAxis = Math.abs(d.thisWinStartX - d.remoteWinEndX) <= tolerance
     const isOverlapOnYAxis =
       d.thisWinStartY <= d.remoteWinEndY && d.thisWinEndY >= d.remoteWinStartY
@@ -112,7 +114,7 @@ const resizeCase = {
 
     if (isEdgeResize) {
       resizeApi.startResize(d.remoteId, 'e')
-      return
+      return true
     }
 
     const isRemoteOnSameLane =
@@ -127,10 +129,13 @@ const resizeCase = {
 
     if (isStackResize) {
       resizeApi.startResize(d.remoteId, 'w')
+      return true
     }
+
+    return false
   },
 
-  whenDragginNorth: (d: resizeCaseDependencies) => {
+  whenDragginNorth: (d: resizeCaseDependencies): boolean => {
     const isEdgeAlignedOnYAxis = Math.abs(d.thisWinStartY - d.remoteWinEndY) <= tolerance
     const isOverlapOnXAxis =
       d.thisWinStartX <= d.remoteWinEndX && d.thisWinEndX >= d.remoteWinStartX
@@ -139,6 +144,7 @@ const resizeCase = {
 
     if (isEdgeResize) {
       resizeApi.startResize(d.remoteId, 's')
+      return true
     }
 
     const isRemoteOnSameLane =
@@ -153,10 +159,13 @@ const resizeCase = {
 
     if (isStackResize) {
       resizeApi.startResize(d.remoteId, 'n')
+      return true
     }
+
+    return false
   },
 
-  whenDraggingSouth: (d: resizeCaseDependencies) => {
+  whenDraggingSouth: (d: resizeCaseDependencies): boolean => {
     const isEdgeAlignedOnYAxis = Math.abs(d.thisWinEndY - d.remoteWinStartY) <= tolerance
     const isOverlapOnXAxis =
       d.thisWinStartX <= d.remoteWinEndX && d.thisWinEndX >= d.remoteWinStartX
@@ -165,6 +174,7 @@ const resizeCase = {
 
     if (isEdgeResize) {
       resizeApi.startResize(d.remoteId, 'n')
+      return true
     }
 
     const isRemoteOnSameLane =
@@ -179,7 +189,10 @@ const resizeCase = {
 
     if (isStackResize) {
       resizeApi.startResize(d.remoteId, 's')
+      return true
     }
+
+    return false
   },
 }
 
