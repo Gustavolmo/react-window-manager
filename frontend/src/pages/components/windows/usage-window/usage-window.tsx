@@ -20,7 +20,6 @@ export default function UsageWindow() {
             <ArticleHeader>Components</ArticleHeader>
             <ArticleSection>
               <h3 className="font-semibold text-zinc-800">1. Window</h3>
-              <p>Props:</p>
               <InlineCode>windowName: ReactNode</InlineCode>
               <p>TBD...</p>
               <br />
@@ -53,7 +52,6 @@ export default function UsageWindow() {
 
             <ArticleSection>
               <h3 className="font-semibold text-zinc-800">2. Button</h3>
-              <p>Props:</p>
               <InlineCode>className?: string</InlineCode>
               <p>TBD...</p>
               <br />
@@ -71,7 +69,6 @@ export default function UsageWindow() {
               <h3 className="font-semibold text-zinc-800">
                 3. Workspace Layout
               </h3>
-              <p>Props:</p>
               <InlineCode>className?: string</InlineCode>
               <p>TBD...</p>
             </ArticleSection>
