@@ -15,7 +15,7 @@ export const rafDragLoopResolver: RafDragResolver = {
     const { winCoord, isDragging, windowId } = windowRegistry[targetWinId].getState()
 
     if (!isDragging)
-      throw new Error(`INIT_DRAG_LOOP called with isDragging false for winId: ${windowId}`)
+      throw new Error(`LOOP_DRAG called with isDragging false for winId: ${windowId}`)
 
     const pointerOffset = {
       left: x - winCoord.pointX,
@@ -37,9 +37,9 @@ const dragLoop = (
   const { x, y } = useCursorState.getState()
   if (!isDragging) return
 
-  let adjustedX = x - pointerOffset.left
+  let adjustedX = Math.round(x - pointerOffset.left)
   if (x > wsRect.right || x < wsRect.left) adjustedX = winCoord.pointX
-  let adjustedY = y - pointerOffset.top
+  let adjustedY = Math.round(y - pointerOffset.top)
   if (y > wsRect.bottom || y < wsRect.top) adjustedY = winCoord.pointY
 
   if (adjustedX !== winCoord.pointX || adjustedY !== winCoord.pointY) {

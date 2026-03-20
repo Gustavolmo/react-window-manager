@@ -31,7 +31,7 @@ export const gridOrchestrator = {
     attachAdjacentGridBehavior(winId)
   },
 }
-
+/* FIND ME: Idea, if a remote window gets below minWidth or minHeight, close, else, open again */
 const attachAdjacentGridBehavior = (winId: string, visited = new Set<string>()) => {
   if (visited.has(winId)) return
   else visited.add(winId)
