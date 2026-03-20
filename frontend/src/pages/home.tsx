@@ -1,13 +1,14 @@
 import { Github } from 'lucide-react'
 import { WorkspaceLayout } from '@gustavolmo/react-window-manager'
-import StartRwmWindow from './components/windows/start-rwm/start-rwm-window'
-import UsageWindow from './components/windows/usage/usage-window'
-import ApiWindow from './components/windows/api/api-window'
-import ApiButton from './components/windows/api/api-button'
-import UsageButton from './components/windows/usage/usage-button'
-import StartButton from './components/windows/start-rwm/start-rwm-button'
+import StartRwmWindow from './components/windows/start-rwm-window/start-rwm-window'
+import UsageWindow from './components/windows/usage-window/usage-window'
+import ApiWindow from './components/windows/api-window/api-window'
+import ApiButton from './components/windows/api-window/api-button'
+import UsageButton from './components/windows/usage-window/usage-button'
+import StartButton from './components/windows/start-rwm-window/start-rwm-button'
 
 export default function Home() {
+
   return (
     <section className="fixed w-full h-full flex flex-col">
       <WorkspaceLayout className="h-full w-full grow">
@@ -23,9 +24,9 @@ export default function Home() {
 
       <nav className="w-full h-12 bg-neutral-900 flex gap-2 px-4 justify-between z-50">
         <div className="flex gap-2 items-center overflow-x-auto overflow-y-hidden">
-          <StartButton />
           <UsageButton />
           <ApiButton />
+          <StartButton />
         </div>
 
         <div className="flex gap-4 items-center">

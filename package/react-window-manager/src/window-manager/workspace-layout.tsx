@@ -31,7 +31,7 @@ export default function WorkspaceLayout({ children, className }: Props) {
       ref={workspaceRef}
       onPointerLeave={disabledDragAndResize}
       onPointerUp={disabledDragAndResize}
-      className={className ? className : 'fixed overflow-hidden h-full w-full touch-none'}
+      className={className ? className : 'fixed overflow-hidden h-full w-full touch-none -z-50'}
     >
       <WorkspaceResizeListener />
       <CursorMoveListener />
