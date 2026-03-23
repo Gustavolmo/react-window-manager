@@ -105,7 +105,7 @@ Example:
     {/* any valid code */}
   </nav>
 </section>
-\`\`\`
+```
 
 ---
 
