@@ -5,7 +5,7 @@ import Blue from '../../shared/syntax-components/colors/blue'
 import Wht from '../../shared/syntax-components/colors/wht'
 import Yllw from '../../shared/syntax-components/colors/yllw'
 import Tab from '../../shared/syntax-components/tab'
-import Comment from '../../shared/syntax-components/comment'
+import Cmnt from '../../shared/syntax-components/comment'
 import Prpl from '../../shared/syntax-components/colors/prpl'
 import Strg from '../../shared/syntax-components/strg'
 import { useState } from 'react'
@@ -129,7 +129,7 @@ export default function StartRwmWindow() {
                 <Strg>"@gustavolmo/react-window-manager"</Strg>
                 <br />
                 <br />
-                <Comment>// ...</Comment>
+                <Cmnt>// ...</Cmnt>
                 <br />
                 <br />
                 <Tag s={'<'} e={'>'} type="component">
@@ -137,7 +137,7 @@ export default function StartRwmWindow() {
                 </Tag>
                 <br />
                 <Tab tabs={1} />
-                <Comment>{'// any valid code'}</Comment>
+                <Cmnt>{'// any valid code'}</Cmnt>
                 <br />
                 <br />
                 <Tab tabs={1} />
@@ -146,7 +146,7 @@ export default function StartRwmWindow() {
                 </Tag>
                 <br />
                 <Tab tabs={2} />
-                <Comment>{'// any valid code'}</Comment>
+                <Cmnt>{'// any valid code'}</Cmnt>
                 <br />
                 <Tab tabs={1} />
                 <Tag s={'</'} e={'>'} type="component">
@@ -160,7 +160,7 @@ export default function StartRwmWindow() {
                 </Tag>
                 <br />
                 <Tab tabs={2} />
-                <Comment>{'// any valid code'}</Comment>
+                <Cmnt>{'// any valid code'}</Cmnt>
                 <br />
                 <Tab tabs={1} />
                 <Tag s={'</'} e={'>'} type="component">
@@ -191,9 +191,9 @@ export default function StartRwmWindow() {
                 workspace layout you may do something like this:
               </p>
               <CodeSnippet>
-                <Comment>
+                <Cmnt>
                   {'// Example with Tailwind, css classes are also valid'}
-                </Comment>
+                </Cmnt>
                 <br />
                 <br />
                 <Tag
@@ -215,7 +215,7 @@ export default function StartRwmWindow() {
                 </Tag>
                 <br />
                 <Tab tabs={2} />
-                <Comment>{'// any valid code'}</Comment>
+                <Cmnt>{'// any valid code'}</Cmnt>
                 <br />
                 <br />
                 <Tab tabs={1} />
@@ -234,7 +234,7 @@ export default function StartRwmWindow() {
                 </Tag>
                 <br />
                 <Tab tabs={2} />
-                <Comment>{'// any valid code'}</Comment>
+                <Cmnt>{'// any valid code'}</Cmnt>
                 <br />
                 <Tab tabs={1} />
                 <Tag s={'</'} e={'>'}>
@@ -264,7 +264,7 @@ export default function StartRwmWindow() {
                 </Tag>
                 <br />
                 <Tab tabs={1} />
-                <Comment>// any valid code</Comment>
+                <Cmnt>// any valid code</Cmnt>
                 <br />
                 <Tag type="component" s="</" e=">">
                   myWindow1.Button
