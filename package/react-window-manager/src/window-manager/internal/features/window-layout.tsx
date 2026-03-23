@@ -15,6 +15,18 @@ export type WindowLayoutProps = {
   navbarChildren?: React.ReactNode
 
   /**
+   * @default
+   * 'bg-white shadow-lg border border-zinc-600 rounded-sm'
+   */
+  className?: string
+
+  /**
+   * @default
+   * 'bg-neutral-800 ${isActive ? 'brightness-100' : 'brightness-150'}'
+   */
+  navbarClassName?: string
+
+  /**
    * @default  'deafult'
    * @param `deafult` keeps the window near full width but detached from the workspace edges
    * @param `full`
@@ -41,6 +53,8 @@ export default function WindowLayout({
   children,
   windowName,
   navbarChildren,
+  navbarClassName,
+  className,
   winId,
   defaultDock = 'default',
   style,
@@ -122,7 +136,7 @@ export default function WindowLayout({
       <div
         id={windowId}
         ref={windowRef}
-        className={`fixed bg-white shadow-lg border border-zinc-600 rounded-sm overflow-hidden`}
+        className={`fixed overflow-hidden ${className ? className : 'bg-white shadow-lg border border-zinc-600 rounded-sm'} `}
         onPointerDown={() => focusApi.bringWindowToFocus(windowId)}
         style={{
           backgroundColor: style?.windowBackgroundColor,
@@ -145,9 +159,12 @@ export default function WindowLayout({
           style={{
             backgroundColor: style?.navBackgroundColor,
           }}
-          className={`
-            h-[32px] w-full flex items-center bg-neutral-800
-            ${isActive ? 'brightness-100 opacity-100' : 'brightness-75 opacity-80'}`}
+          className={
+            `h-[32px] w-full flex items-center
+            ${navbarClassName 
+              ? navbarClassName 
+              : `bg-neutral-800 ${isActive ? 'brightness-100' : 'brightness-150'}`} 
+          `}
         >
           <div className="shrink h-8 px-2 text-white flex items-center text-sm truncate min-w-0">
             {windowName}
@@ -166,7 +183,9 @@ export default function WindowLayout({
         {<ResizingControls winId={winId} />}
 
         {/* Offset the navbar => 'h-[calc(100%-32px)]' */}
-        <div className={`relative w-full h-[calc(100%-32px)] overflow-auto`}>{children}</div>
+        <div className={`relative w-full h-[calc(100%-32px)] overflow-auto select-text`}>
+          {children}
+        </div>
       </div>{' '}
     </>
   )

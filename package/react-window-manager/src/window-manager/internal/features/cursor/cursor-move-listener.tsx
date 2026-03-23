@@ -5,14 +5,14 @@ export function CursorMoveListener() {
   const { setXY } = useCursorState()
 
   useEffect(() => {
-    const handleWindowPosition = (e: PointerEvent) => {
+    const handlePointerMove = (e: PointerEvent) => {
       e.preventDefault()
       setXY(e.clientX, e.clientY)
     }
 
-    window.addEventListener('pointermove', handleWindowPosition)
+    window.addEventListener('pointermove', handlePointerMove)
 
-    return () => window.removeEventListener('pointermove', handleWindowPosition)
+    return () => window.removeEventListener('pointermove', handlePointerMove)
   }, [setXY])
 
   return <></>

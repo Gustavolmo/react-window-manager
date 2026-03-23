@@ -1,53 +1,39 @@
-import { ArrowDownToLine, CodeXml, Github, Unplug } from 'lucide-react'
-import ReadMe from '../components/read-me'
+import { Github } from 'lucide-react'
 import { WorkspaceLayout } from '@gustavolmo/react-window-manager'
-import { apiRefereceWin, usageWin, installWin } from '../window-registration/register-rwm'
+import StartRwmWindow from './components/windows/start-rwm-window/start-rwm-window'
+import UsageWindow from './components/windows/usage-window/usage-window'
+import ApiWindow from './components/windows/api-window/api-window'
+import ApiButton from './components/windows/api-window/api-button'
+import UsageButton from './components/windows/usage-window/usage-button'
+import StartButton from './components/windows/start-rwm-window/start-rwm-button'
 
 export default function Home() {
+
   return (
     <section className="fixed w-full h-full flex flex-col">
       <WorkspaceLayout className="h-full w-full grow">
+        <StartRwmWindow />
+        <UsageWindow />
+        <ApiWindow />
         <div className="p-8 w-full h-full flex flex-col items-center mb-32 desktop-background">
           <h1 className="font-mono w-full text-white text-2xl uppercase tracking-[0.4em] mb-0 block opacity-50 max-w-xl text-center">
             React Window Manager
           </h1>
         </div>
-
-        <installWin.Window windowName={'Install'} defaultDock="left">
-          <ReadMe />
-        </installWin.Window>
-
-        <apiRefereceWin.Window windowName={'Api'} defaultDock="full">
-          <p>Api</p>
-        </apiRefereceWin.Window>
-
-        <usageWin.Window windowName={'Usage'} defaultDock="right">
-          <p>Usage</p>
-        </usageWin.Window>
       </WorkspaceLayout>
 
       <nav className="w-full h-12 bg-neutral-900 flex gap-2 px-4 justify-between z-50">
         <div className="flex gap-2 items-center overflow-x-auto overflow-y-hidden">
-          <installWin.Button className={`px-2 w-16 py-0 rounded-sm h-full`}>
-            <p className="text-xs font-mono text-zinc-400 hover:text-zinc-50 flex flex-col items-center">
-              <ArrowDownToLine className="h-4 w-4" />
-              Install
-            </p>
-          </installWin.Button>
-          <usageWin.Button className={`px-2 w-16 py-0 rounded-sm h-full`}>
-            <p className="text-xs font-mono text-zinc-400 hover:text-zinc-50 flex flex-col items-center">
-              <CodeXml className="h-4 w-4" /> Usage
-            </p>
-          </usageWin.Button>
-          <apiRefereceWin.Button className={`px-2 w-16 py-0 rounded-sm h-full `}>
-            <p className="text-xs font-mono text-zinc-400 hover:text-zinc-50 flex flex-col items-center">
-              <Unplug className="h-4 w-4" /> Api
-            </p>
-          </apiRefereceWin.Button>
+          <UsageButton />
+          <ApiButton />
+          <StartButton />
         </div>
 
         <div className="flex gap-4 items-center">
-          <a target="_blank" href="https://github.com/Gustavolmo/react-window-manager">
+          <a
+            target="_blank"
+            href="https://github.com/Gustavolmo/react-window-manager"
+          >
             <Github className="text-zinc-400 hover:text-zinc-50" />
           </a>
         </div>

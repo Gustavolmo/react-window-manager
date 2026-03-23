@@ -5,7 +5,7 @@ import { dockApi } from './docking-api'
 
 export default function DockingControls() {
   const [isHovering, setIsHovering] = useState(false)
-
+  
   const { activeWindowId, isDockPannelEnabled, isBelowBreakPoint } = useWorkspaceState()
   const { isDragging } = windowRegistry[activeWindowId]()
 

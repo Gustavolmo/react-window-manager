@@ -30,7 +30,7 @@ export const rafResizeLoopResolver: RafResizeResolver = {
 
 const resizer = {
   e: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
-    const { wsRect, win, winBox, x, y } = resizeDep
+    const { wsRect, win, winBox, x } = resizeDep
     if (!win.resizeAction) return
     if (!winBox) return
 
@@ -42,7 +42,7 @@ const resizer = {
       commit([
         {
           winId: win.windowId,
-          patch: { winWidth: win.winWidth + sizeDiff },
+          patch: { winWidth: Math.round(win.winWidth + sizeDiff) },
         },
       ])
     }
@@ -51,7 +51,7 @@ const resizer = {
   },
 
   w: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
-    const { wsRect, win, winBox, x, y } = resizeDep
+    const { wsRect, win, winBox, x } = resizeDep
     if (!win.resizeAction) return
     if (!winBox) return
 
@@ -64,7 +64,7 @@ const resizer = {
         {
           winId: win.windowId,
           patch: {
-            winWidth: win.winWidth + sizeDiff,
+            winWidth: Math.round(win.winWidth + sizeDiff),
             winCoord: { pointX: x, pointY: win.winCoord.pointY },
           },
         },
@@ -75,7 +75,7 @@ const resizer = {
   },
 
   n: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
-    const { wsRect, win, winBox, x, y } = resizeDep
+    const { wsRect, win, winBox, y } = resizeDep
     if (!win.resizeAction) return
     if (!winBox) return
 
@@ -88,7 +88,7 @@ const resizer = {
         {
           winId: win.windowId,
           patch: {
-            winHeight: win.winHeight + sizeDiff,
+            winHeight: Math.round(win.winHeight + sizeDiff),
             winCoord: { pointX: win.winCoord.pointX, pointY: y },
           },
         },
@@ -99,7 +99,7 @@ const resizer = {
   },
 
   s: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
-    const { wsRect, win, winBox, x, y } = resizeDep
+    const { wsRect, win, winBox, y } = resizeDep
     if (!win.resizeAction) return
     if (!winBox) return
 
@@ -112,7 +112,7 @@ const resizer = {
         {
           winId: win.windowId,
           patch: {
-            winHeight: win.winHeight + sizeDiff,
+            winHeight: Math.round(win.winHeight + sizeDiff),
           },
         },
       ])
@@ -155,14 +155,14 @@ const resizer = {
     if (!minWinHeight && sizeDiffY !== 0) {
       stagedChagnes.push({
         winId: win.windowId,
-        patch: { winHeight: win.winHeight + sizeDiffY },
+        patch: { winHeight: Math.round(win.winHeight + sizeDiffY) },
       })
     }
 
     if (!minWinWidth && sizeDiffX !== 0) {
       stagedChagnes.push({
         winId: win.windowId,
-        patch: { winWidth: win.winWidth + sizeDiffX },
+        patch: { winWidth: Math.round(win.winWidth + sizeDiffX) },
       })
     }
 
