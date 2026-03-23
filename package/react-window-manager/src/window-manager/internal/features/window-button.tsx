@@ -40,7 +40,8 @@ export default function WindowButton({
       onClick={handleOpenCloseWin}
       className={`
         ${className} 
-        ${isWindowClosed ? isClosedClassName : isActive ? isActiveClassName : isOpenClassName}`}
+        ${isWindowClosed ? isClosedClassName : isActive ? isActiveClassName : isOpenClassName}
+      `}
     >
       {children}
     </button>

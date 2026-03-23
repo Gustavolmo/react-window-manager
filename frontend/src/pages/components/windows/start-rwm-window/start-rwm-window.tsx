@@ -296,7 +296,7 @@ export default function StartRwmWindow() {
                   isActiveClassName="none"
                 >
                   <div className="flex gap-2 items-center px-4 py-2 bg-zinc-800 text-zinc-50 rounded-sm">
-                    <CodeXml className="h-4 w-4" /> Usage Patterns
+                    <CodeXml className="h-4 w-4 shrink-0" /> Usage Patterns
                   </div>
                 </usageWin.Button>
                 <apiRefereceWin.Button
@@ -305,7 +305,7 @@ export default function StartRwmWindow() {
                   isActiveClassName="none"
                 >
                   <div className="flex gap-2 items-center px-4 py-2 bg-zinc-800 text-zinc-50 rounded-sm">
-                    <Unplug className="h-4 w-4" /> RWM Api Reference
+                    <Unplug className="h-4 w-4 shrink-0" /> RWM Api Reference
                   </div>
                 </apiRefereceWin.Button>
               </div>

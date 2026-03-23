@@ -160,10 +160,11 @@ export default function WindowLayout({
             backgroundColor: style?.navBackgroundColor,
           }}
           className={
-            navbarClassName
-              ? `h-[32px] w-full flex items-center ${navbarClassName}`
-              : `h-[32px] w-full flex items-center bg-neutral-800 ${isActive ? 'brightness-100' : 'brightness-150'}`
-          }
+            `h-[32px] w-full flex items-center
+            ${navbarClassName 
+              ? navbarClassName 
+              : `bg-neutral-800 ${isActive ? 'brightness-100' : 'brightness-150'}`} 
+          `}
         >
           <div className="shrink h-8 px-2 text-white flex items-center text-sm truncate min-w-0">
             {windowName}
@@ -182,7 +183,9 @@ export default function WindowLayout({
         {<ResizingControls winId={winId} />}
 
         {/* Offset the navbar => 'h-[calc(100%-32px)]' */}
-        <div className={`relative w-full h-[calc(100%-32px)] overflow-auto select-text`}>{children}</div>
+        <div className={`relative w-full h-[calc(100%-32px)] overflow-auto select-text`}>
+          {children}
+        </div>
       </div>{' '}
     </>
   )

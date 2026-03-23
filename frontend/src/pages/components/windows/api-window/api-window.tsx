@@ -86,64 +86,47 @@ export default function ApiWindow() {
 
             <ArticleSection>
               <p className="font-semibold text-zinc-800">Available methods:</p>
-              <p>
-                <InlineCode>
-                  maximizeWindow: {'(winId: string) => Void'}
-                </InlineCode>
-                <br />
-                <span className="text-zinc-400 text-xs italic">
-                  └── Fully covers the worskpace
-                </span>
+              <InlineCode>
+                maximizeWindow: {'(winId: string) => Void'}
+              </InlineCode>
+              <p className="text-zinc-400 text-xs">
+                └── Fully covers the worskpace
               </p>
-              <p>
-                <InlineCode>
-                  demaximizeWindow: {'(winId: string) => Void'}
-                </InlineCode>
-                <br />
-                <span className="text-zinc-400 text-xs italic">
-                  └── Covers most of the workspace without touching its edges
-                </span>
+              <InlineCode>
+                demaximizeWindow: {'(winId: string) => Void'}
+              </InlineCode>
+              <p className="text-zinc-400 text-xs">
+                └── Covers most of the workspace without touching its edges
               </p>
-              <p>
-                <InlineCode>
-                  dockWindowRight: {'(winId: string) => Void'}
-                </InlineCode>
-              </p>
-              <p>
-                <InlineCode>
-                  dockWindowLeft: {'(winId: string) => Void'}
-                </InlineCode>
-              </p>
-              <p>
-                <InlineCode>
-                  dockWindowTop: {'(winId: string) => Void'}
-                </InlineCode>
-              </p>
-              <p>
-                <InlineCode>
-                  dockWindowBottom: {'(winId: string) => Void'}
-                </InlineCode>
-              </p>
-              <p>
-                <InlineCode>
-                  dockWindowBottomRight: {'(winId: string) => Void'}
-                </InlineCode>
-              </p>
-              <p>
-                <InlineCode>
-                  dockWindowTopRight: {'(winId: string) => Void'}
-                </InlineCode>
-              </p>
-              <p>
-                <InlineCode>
-                  dockWindowBottomLeft: {'(winId: string) => Void'}
-                </InlineCode>
-              </p>
-              <p>
-                <InlineCode>
-                  dockWindowTopLeft: {'(winId: string) => Void'}
-                </InlineCode>
-              </p>
+              <InlineCode>
+                dockWindowRight: {'(winId: string) => Void'}
+              </InlineCode>
+              <InlineCode>
+                dockWindowLeft: {'(winId: string) => Void'}
+              </InlineCode>
+              <InlineCode>
+                dockWindowTop: {'(winId: string) => Void'}
+              </InlineCode>
+
+              <InlineCode>
+                dockWindowBottom: {'(winId: string) => Void'}
+              </InlineCode>
+
+              <InlineCode>
+                dockWindowBottomRight: {'(winId: string) => Void'}
+              </InlineCode>
+
+              <InlineCode>
+                dockWindowTopRight: {'(winId: string) => Void'}
+              </InlineCode>
+
+              <InlineCode>
+                dockWindowBottomLeft: {'(winId: string) => Void'}
+              </InlineCode>
+
+              <InlineCode>
+                dockWindowTopLeft: {'(winId: string) => Void'}
+              </InlineCode>
             </ArticleSection>
           </WindowArticle>
 
@@ -179,25 +162,19 @@ export default function ApiWindow() {
             </ArticleSection>
             <ArticleSection>
               <p className="font-semibold text-zinc-800">Available methods:</p>
-              <p>
-                <InlineCode>
-                  bringWindowToFocus: {'(winId: string) => Void'}
-                </InlineCode>
-                <br />
-                <span className="text-zinc-400 text-xs italic">
-                  └── If target window is closed, it will open the window and
-                  bring it to focus, otherwise it will only bring it to focus
-                </span>
+              <InlineCode>
+                bringWindowToFocus: {'(winId: string) => Void'}
+              </InlineCode>
+              <p className="text-zinc-400 text-xs">
+                └── If target window is closed, it will open the window and
+                bring it to focus, otherwise it will only bring it to focus
               </p>
-              <p>
-                <InlineCode>
-                  closeWindowAndRefocus: {'(winId: string) => Void'}
-                </InlineCode>
-                <br />
-                <span className="text-zinc-400 text-xs italic">
-                  └── Closes the target window and activates the front most
-                  opened window in the stack, if any
-                </span>
+              <InlineCode>
+                closeWindowAndRefocus: {'(winId: string) => Void'}
+              </InlineCode>
+              <p className="text-zinc-400 text-xs">
+                └── Closes the target window and activates the front most opened
+                window in the stack, if any
               </p>
             </ArticleSection>
           </WindowArticle>
@@ -212,13 +189,10 @@ export default function ApiWindow() {
             </ArticleSection>
             <ArticleSection>
               <p className="font-semibold text-zinc-800">Available methods:</p>
-              <p>
-                <InlineCode>resetStack: {'() => Void'}</InlineCode>
-                <br />
-                <span className="text-zinc-400 text-xs italic">
-                  └── It will close all windows and reset them to their initial
-                  position
-                </span>
+              <InlineCode>resetStack: {'() => Void'}</InlineCode>
+              <p className="text-zinc-400 text-xs">
+                └── It will close all windows and reset them to their initial
+                position
               </p>
             </ArticleSection>
           </WindowArticle>
@@ -233,36 +207,30 @@ export default function ApiWindow() {
             </ArticleSection>
             <ArticleSection>
               <p className="font-semibold text-zinc-800">Available methods:</p>
-              <p>
-                <InlineCode>
-                  setWsResponsiveBreak:{' '}
-                  {
-                    '(breakPoint: number | "sm" | "md" | "lg" | "xl" | "never" | "always") => Void'
-                  }
-                </InlineCode>
-                <br />
-                <span className="text-zinc-400 text-xs italic">
-                  └── (deafult = sm) uses mobile format at 640px. Mobile format
-                  disables resize and dock, every window becomes fullscreen
-                </span>
+              <InlineCode>
+                setWsResponsiveBreak:{' '}
+                {
+                  '(breakPoint: number | "sm" | "md" | "lg" | "xl" | "never" | "always") => Void'
+                }
+              </InlineCode>
+              <p className="text-zinc-400 text-xs">
+                └── (deafult = sm) uses mobile format at 640px. Mobile format
+                disables resize and dock, every window becomes fullscreen
               </p>
-              <p>
-                <InlineCode>
-                  setWsFeatures:{' '}
-                  {
-                    '({ isDockPannelEnabled = true, isGridEnabled = true }) => Void'
-                  }
-                </InlineCode>
-                <br />
-                <span className="text-zinc-400 text-xs italic">
-                  └── Set isDockPannelEnabled to false to remove the workspace
-                  docking pannel
-                </span>
-                <br />
-                <span className="text-zinc-400 text-xs italic">
-                  └── Set isGridEnabled to false to stop windows from connecting
-                  edges during size
-                </span>
+
+              <InlineCode>
+                setWsFeatures:{' '}
+                {
+                  '({ isDockPannelEnabled = true, isGridEnabled = true }) => Void'
+                }
+              </InlineCode>
+              <p className="text-zinc-400 text-xs">
+                └── Set isDockPannelEnabled to false to remove the workspace
+                docking pannel
+              </p>
+              <p className="text-zinc-400 text-xs">
+                └── Set isGridEnabled to false to stop windows from connecting
+                edges during size
               </p>
             </ArticleSection>
           </WindowArticle>
@@ -278,14 +246,24 @@ export default function ApiWindow() {
                 risk. The safest way to mutate any is state is to use exposed
                 api methods.
               </p>
-              <p>
-                You may access the store by calling{' '}
-                <InlineCode>workspaceStore.getState()</InlineCode> or as a hook{' '}
-                <InlineCode>
-                  const {'{ someState }'} = workspaceStore()
-                </InlineCode>
-                .
-              </p>
+              <p>You may access the store by:</p>
+              <CodeSnippet>
+                <Cmnt>// get the current state </Cmnt>
+                <br />
+                <Blue>const </Blue>
+                <Wht>state = </Wht>
+                <Wht>workspaceStore.</Wht>
+                <Yllw>getState</Yllw>
+                <Wht>()</Wht>
+                <br />
+                <br />
+                <Cmnt>// or get the state as a hook inside a component</Cmnt>
+                <br />
+                <Blue>const </Blue>
+                <Wht>{'{ someState }'} = </Wht>
+                <Yllw>workspaceStore</Yllw>
+                <Wht>()</Wht>
+              </CodeSnippet>
             </ArticleSection>
             <ArticleSection>
               <p>
@@ -314,14 +292,24 @@ export default function ApiWindow() {
                 risk. The safest way to mutate any is state is to use exposed
                 api methods.
               </p>
-              <p>
-                You may access any specific window state store by calling{' '}
-                <InlineCode>windowRegistry[windowId].getState()</InlineCode> or
-                as a hook{' '}
-                <InlineCode>
-                  const {'{ someState }'} = windowRegistry[windowId]()
-                </InlineCode>
-              </p>
+              <p>You may access any specific window state store by calling:</p>
+              <CodeSnippet>
+                <Cmnt>// get the current state </Cmnt>
+                <br />
+                <Blue>const </Blue>
+                <Wht>state = </Wht>
+                <Wht>windowRegistry</Wht>[windowId].
+                <Yllw>getState</Yllw>
+                <Wht>()</Wht>
+                <br />
+                <br />
+                <Cmnt>// or get the state as a hook inside a component</Cmnt>
+                <br />
+                <Blue>const </Blue>
+                <Wht>{'{ someState }'} = </Wht>
+                <Yllw>windowRegistry</Yllw>[windowId]
+                <Wht>()</Wht>
+              </CodeSnippet>
             </ArticleSection>
             <ArticleSection>
               <p>
