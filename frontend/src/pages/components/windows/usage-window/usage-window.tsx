@@ -31,7 +31,7 @@ export default function UsageWindow() {
               <h3 className="font-semibold text-zinc-800">1. Window</h3>
               <p>
                 Thse window component, accessed via the return object of{' '}
-                <InlineCode>createWindowStore()</InlineCode>, it has the
+                <InlineCode>createWindowStore()</InlineCode>, has the
                 following properties:
               </p>
               <CodeSnippet>
@@ -184,7 +184,7 @@ export default function UsageWindow() {
               <h3 className="font-semibold text-zinc-800">2. Button</h3>
               <p>
                 Thse button component, accessed via the return object of{' '}
-                <InlineCode>createWindowStore()</InlineCode>, it has the
+                <InlineCode>createWindowStore()</InlineCode>, has the
                 following properties:
               </p>
               <InlineCode>className?: string</InlineCode>
@@ -285,25 +285,67 @@ export default function UsageWindow() {
                 <br />
                 <Tab tabs={1} />
                 isBelowBreakPoint: <Teal>boolean</Teal>
+                <Cmnt>
+                  {' '}
+                  // true if the workspace width is less than responsiveBreak
+                </Cmnt>
                 <br />
                 <Tab tabs={1} />
                 isGridEnabled: <Teal>boolean</Teal>
+                <Cmnt>
+                  {' '}
+                  // deafult true. Disable grid behavior via rwm.workspaceApi
+                </Cmnt>
                 <br />
                 <Tab tabs={1} />
                 isDockPannelEnabled: <Teal>boolean</Teal>
+                <Cmnt>
+                  {' '}
+                  // deafult true. Disable the docking pannel via
+                  rwm.workspaceApi
+                </Cmnt>
                 <br />
                 <Tab tabs={1} />
                 responsiveBreak: <Teal>ResponsiveSizes</Teal>
+                <Cmnt>
+                  {' '}
+                  // deafult 'sm' (640px). Change it via rwm.workspaceApi
+                </Cmnt>
                 <br />
                 <br />
                 <Tab tabs={1} />
                 activeWindowId: <Teal>string</Teal>
+                <Cmnt>
+                  {' '}
+                  // Always points to the front most window in the satck
+                </Cmnt>
                 <br />
                 <br />
                 <Tab tabs={1} />
                 wsRect: <Teal>WorkspaceRect</Teal>
+                <Cmnt>
+                  {' '}
+                  // Keeps track of the current dimensions of the workspace
+                  element
+                </Cmnt>
                 <br />
                 <Blue>{'}'}</Blue>
+              </CodeSnippet>
+              <InlineCode>activeWindowId: string</InlineCode>
+              <p className="text-zinc-400 text-xs">
+                └── You may combine the active windowId with the workspaceRegistry to create actions specific to the currently active window
+              </p>
+              <p className="text-zinc-400 text-xs">└── Example ──┐</p>
+              <CodeSnippet>
+                <Cmnt>// Inside a component:</Cmnt><br/>
+                <Blue>const</Blue><Yllw>{' { '}</Yllw>activeWindowId<Yllw>{' } '}</Yllw>= <Yllw>workspaceStore</Yllw>()<br/>
+                <Blue>const</Blue><Yllw>{' { '}</Yllw>someState<Yllw>{' } '}</Yllw>= windowRegistry[activeWindowId]()
+              </CodeSnippet>
+                <p className="text-zinc-400 text-xs">└── Or ──┐</p>
+              <CodeSnippet>
+                <Cmnt>// Inside a function:</Cmnt><br/>
+                <Blue>const </Blue>activeWindowId = workspaceStore.<Yllw>getState</Yllw>().activeWindowId<br/>
+                rwm.dockApi.<Yllw>dockWindowLeft</Yllw>(activeWindowId)
               </CodeSnippet>
             </ArticleSection>
             <ArticleSection>
