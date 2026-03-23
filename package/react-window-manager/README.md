@@ -72,13 +72,14 @@ import { WorkspaceLayout } from "@gustavolmo/react-window-manager"
 <WorkspaceLayout>
   {/* any valid code */}
 
-<myWindow1.Window>
-{/* any valid code */}
-</myWindow1.Window>
+  <myWindow1.Window>
+    {/* any valid code */}
+  </myWindow1.Window>
 
-<myWindow2.Window>
-{/* any valid code */}
-</myWindow2.Window> </WorkspaceLayout>
+  <myWindow2.Window>
+    {/* any valid code */}
+  </myWindow2.Window>
+</WorkspaceLayout>
 ```
 
 ---
@@ -117,7 +118,7 @@ Buttons can be placed anywhere and can control the same window from multiple loc
 
 ```tsx
 <myWindow1.Button>
-{/* any valid code */}
+  {/* any valid code */}
 </myWindow1.Button>
 ```
 
@@ -138,13 +139,6 @@ No additional configuration is required for basic usage.
 ## FURTHER READING
 
 For advanced usage patterns and API details:
-
-* Usage Patterns
-* RWM API Reference
-
----
-
-## Documentation
 
 Full documentation:
 https://gustavolmo.github.io/react-window-manager/
