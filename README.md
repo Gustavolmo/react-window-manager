@@ -1,198 +1,150 @@
-# React Window Manager
+# React Window Manager (RWM)
+
+A flexible window management system for React applications.
 
 ---
 
-## Installation
+## INSTALL RWM
 
-### Install the package
+### 1. Install Dependencies
+
+Install React Window Manager along with React and React DOM.
+
+React and React DOM (v19+) are peer dependencies.
 
 ```bash
 pnpm add @gustavolmo/react-window-manager
-# or
+pnpm add react react-dom
+```
+
+```bash
 npm install @gustavolmo/react-window-manager
-# or
+npm install react react-dom
+```
+
+```bash
 yarn add @gustavolmo/react-window-manager
+yarn add react react-dom
 ```
 
-## Requirements
+---
 
-### You must have:
+### 2. Import Default Styles
 
-- **React 18+ (or 19)**
-- **React DOM**
-- **Zustand**
+The library includes its own compiled CSS. Import it once at your application root:
 
-Install it with
-
-```bash
-pnpm add react react-dom zustand
-```
-
-### Styling
-
-This library ships with its own compiled CSS.
-
-Import the stylesheet once at your application root:
-
-```bash
+```ts
 import "@gustavolmo/react-window-manager/index.css"
 ```
 
-The styling properties of compoents accept tailwind or regular css classes
-
 ---
 
-## Overview
+## QUICK START
 
-A lightweight desktop-style window manager built with:
+### 1. Create a Window
 
-- **React**
-- **Zustand** (isolated state per window)
-- A shared **WorkspaceLayout**
-- Independent **WindowLayout** instances
-- External **WindowButton** controllers
-
-Each window instance is fully isolated, draggable, dockable, and externally controllable via its own store.
-
----
-
-## 1. Create a Window Store
-
-Initialize a window instance early (module scope recommended):
+Call `createWindowStore()` to create a new window instance.
 
 ```ts
-const myWindow = createWindowStore('window-my-id')
+const myWindow1 = createWindowStore()
+const myWindow2 = createWindowStore()
 ```
 
-- The ID must be unique.
-- The return value is a standard Zustand hook.
-- Each window is automatically registered internally.
-
-You can create multiple windows:
-
-```ts
-const firstWindow = createWindowStore('window-first')
-const secondWindow = createWindowStore('window-second')
-```
+Each instance contains everything needed to render and control a window.
 
 ---
 
-## 2. Wrap Everything in `WorkspaceLayout`
+### 2. Render the Window
 
-All windows must be rendered inside a shared workspace:
+All windows must be rendered inside `WorkspaceLayout`.
+
+This component acts as:
+
+* The rendering surface
+* The coordinate system
+* The stacking context for all windows
 
 ```tsx
+import { WorkspaceLayout } from "@gustavolmo/react-window-manager"
+
+// ...
+
 <WorkspaceLayout>
-  {/* WindowLayout components */}
-</WorkspaceLayout>
+  {/* any valid code */}
+
+<myWindow1.Window>
+{/* any valid code */}
+</myWindow1.Window>
+
+<myWindow2.Window>
+{/* any valid code */}
+</myWindow2.Window> </WorkspaceLayout>
 ```
-
-The workspace acts as:
-
-- The rendering surface  
-- The stacking context  
-- The coordinate system for all windows  
 
 ---
 
-## 3. Render a Window
+### 3. Adjusting the Workspace Layout
 
-Use `WindowLayout` and pass:
+By default, the workspace layout is fixed with full width and height. You can override this using `className`.
 
-- `useWindowStore` → the store instance  
-- `windowName` → title (string or ReactNode)  
-- `defaultDock` → initial docking behavior (optional) 
+All windows will adjust their coordinates accordingly.
+
+To prevent visual overflow outside the workspace layout, elements placed outside must have a higher `z-index` than the total number of windows.
+
+Example:
 
 ```tsx
-<WindowLayout
-  useWindowStore={myWindow}
-  windowName="My Window"
-  defaultDock="right"
->
-  <div>Any React content</div>
-</WindowLayout>
-```
+// Example with Tailwind (regular CSS also works)
 
-Supported docking modes:
+<section className="fixed w-full h-full flex flex-col">
+  <WorkspaceLayout className="h-full w-full grow">
+    {/* any valid code */}
+  </WorkspaceLayout>
 
-- `"left"`
-- `"right"`
-- `"full"`
+  <nav className="w-full h-12 bg-neutral-900 flex gap-2 px-4 z-50">
+    {/* any valid code */}
+  </nav>
+</section>
+\`\`\`
 
-Responsive docking can be computed:
+---
+
+### 4. Control the Window
+
+Use the `.Button` property from the window store to control visibility.
+
+Buttons can be placed anywhere and can control the same window from multiple locations.
 
 ```tsx
-defaultDock={window.innerWidth < 800 ? 'full' : 'left'}
+<myWindow1.Button>
+{/* any valid code */}
+</myWindow1.Button>
 ```
 
 ---
 
-## 4. Control a Window with `WindowButton`
+### 5. Defaults
 
-Place a control button anywhere in your UI:
+The default setup includes:
 
-```tsx
-<WindowButton useWindowStore={myWindow}>
-  <p>Open Window</p>
-</WindowButton>
-```
+* Built-in styling
+* Docking panel
+* Resize edge detection
 
-- Multiple buttons can control the same window.
-- Buttons are fully decoupled from layout.
-- No prop drilling is required.
+No additional configuration is required for basic usage.
 
 ---
 
-## 5. Access Window State
+## FURTHER READING
 
-Since the store is a standard Zustand hook, you can read window state directly:
+For advanced usage patterns and API details:
 
-```ts
-const { isDragging, isResizing } = myWindow()
-```
-
-Example use case:
-
-```tsx
-className={
-  isDragging || isResizing
-    ? 'pointer-events-none'
-    : 'pointer-events-auto'
-}
-```
-
-This is useful when embedding iframes or other complex interactive content.
+* Usage Patterns
+* RWM API Reference
 
 ---
 
-## 6. Access via Registry (Optional)
+## Documentation
 
-Windows are also registered globally by ID:
-
-```ts
-const { isOpen } = windowRegistry['window-my-id']()
-```
-
-This is useful when you do not have direct access to the original store reference.
-
----
-
-## Architecture Summary
-
-- `createWindowStore(id)` → creates isolated window state  
-- `WorkspaceLayout` → shared window surface  
-- `WindowLayout` → draggable and dockable container  
-- `WindowButton` → external controller  
-- Zustand → reactive state management  
-
----
-
-## Design Principles
-
-- Fully decoupled window instances  
-- No global prop chains  
-- Arbitrary React content support (apps, iframes, components)  
-- Independent lifecycle per window  
-- Scalable to many concurrent windows  
-
-This enables building browser-based desktop-style interfaces with minimal setup and clean separation of concerns.
+Full documentation:
+https://gustavolmo.github.io/react-window-manager/
