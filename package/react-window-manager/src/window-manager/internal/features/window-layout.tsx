@@ -62,10 +62,11 @@ export default function WindowLayout({
   const { wsElement, wsRect, isBelowBreakPoint } = useWorkspaceState()
   const windowRef = useRef<HTMLDivElement>(null)
   const {
+    setWinElement,
+
     windowId,
     zIndex,
     isActive,
-    setWinElement,
 
     resetFlag,
 
@@ -87,12 +88,12 @@ export default function WindowLayout({
     if (isBelowBreakPoint) {
       dockApi.maximizeWindow(winId)
     } else {
-      dockingRoutes[defaultDock](winId)
+      dockingResolver[defaultDock](winId)
     }
     /* Initialization is dependent on the workspace (wsElement) being mounted */
   }, [wsElement, resetFlag]) // FIND ME: reset flag is anti-pattern
 
-  const dockingRoutes: Record<DockPosition, (winId: string) => void> = {
+  const dockingResolver: Record<DockPosition, (winId: string) => void> = {
     right: dockApi.dockWindowRight,
     left: dockApi.dockWindowLeft,
     full: dockApi.maximizeWindow,
@@ -159,11 +160,12 @@ export default function WindowLayout({
           style={{
             backgroundColor: style?.navBackgroundColor,
           }}
-          className={
-            `h-[32px] w-full flex items-center
-            ${navbarClassName 
-              ? navbarClassName 
-              : `bg-neutral-800 ${isActive ? 'brightness-100' : 'brightness-150'}`} 
+          className={`h-[32px] w-full flex items-center
+            ${
+              navbarClassName
+                ? navbarClassName
+                : `bg-neutral-800 ${isActive ? 'brightness-100' : 'brightness-150'}`
+            } 
           `}
         >
           <div className="shrink h-8 px-2 text-white flex items-center text-sm truncate min-w-0">

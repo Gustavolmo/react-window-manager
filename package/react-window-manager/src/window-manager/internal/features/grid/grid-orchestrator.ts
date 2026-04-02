@@ -28,11 +28,11 @@ export const gridOrchestrator = {
     if (getDraggingWinCount() < 1)
       throw new Error(`gridOrchestrator initalized but no window is currently resizing`)
 
-    attachAdjacentGridBehavior(winId)
+    attachNextGridBehavior(winId)
   },
 }
 /* FIND ME: Idea, if a remote window gets below minWidth or minHeight, close, else, open again */
-const attachAdjacentGridBehavior = (winId: string, visited = new Set<string>()) => {
+const attachNextGridBehavior = (winId: string, visited = new Set<string>()) => {
   if (visited.has(winId)) return
   else visited.add(winId)
 
@@ -51,25 +51,25 @@ const attachAdjacentGridBehavior = (winId: string, visited = new Set<string>()) 
     /* thisWin right edge <::::> remoteWin left edge || remoteWin is stacked up or down */
     if (currentResize === 'e') {
       const isRemoteConneted = resizeCase.whenDraggingEast(dependencies)
-      if (isRemoteConneted) attachAdjacentGridBehavior(remoteWin.windowId, visited)
+      if (isRemoteConneted) attachNextGridBehavior(remoteWin.windowId, visited)
     }
 
     /* thisWin left edge <::::> remoteWin right edge || remoteWin is stacked up or down */
     if (currentResize === 'w') {
       const isRemoteConneted = resizeCase.whenDragginWest(dependencies)
-      if (isRemoteConneted) attachAdjacentGridBehavior(remoteWin.windowId, visited)
+      if (isRemoteConneted) attachNextGridBehavior(remoteWin.windowId, visited)
     }
 
     /* thisWin top edge <::::> remoteWin bottom edge || remoteWin is stacked left or right */
     if (currentResize === 'n') {
       const isRemoteConneted = resizeCase.whenDragginNorth(dependencies)
-      if (isRemoteConneted) attachAdjacentGridBehavior(remoteWin.windowId, visited)
+      if (isRemoteConneted) attachNextGridBehavior(remoteWin.windowId, visited)
     }
 
     /* thisWin bottom edge <::::> remoteWin top edge || remoteWin is stacked left or right */
     if (currentResize === 's') {
       const isRemoteConneted = resizeCase.whenDraggingSouth(dependencies)
-      if (isRemoteConneted) attachAdjacentGridBehavior(remoteWin.windowId, visited)
+      if (isRemoteConneted) attachNextGridBehavior(remoteWin.windowId, visited)
     }
   }
 }

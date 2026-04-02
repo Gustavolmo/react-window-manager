@@ -48,7 +48,7 @@ export default function ApiWindow() {
                 <Wht>workspaceApi,</Wht>
                 <br />
                 <Tab tabs={1} />
-                <Wht>worskpaceState,</Wht>
+                <Wht>workspaceState,</Wht>
                 <br />
                 <Tab tabs={1} />
                 <Wht>windowRegistry,</Wht>
@@ -74,7 +74,7 @@ export default function ApiWindow() {
               <p className="font-semibold text-zinc-800">For example:</p>
               <CodeSnippet>
                 <Blue>const</Blue> <Wht>myWindow = </Wht>
-                <Yllw>createdWindowStore</Yllw>
+                <Yllw>createWindowStore</Yllw>
                 <Wht>()</Wht>
                 <br />
                 <br />
@@ -90,7 +90,7 @@ export default function ApiWindow() {
                 maximizeWindow: {'(winId: string) => Void'}
               </InlineCode>
               <p className="text-zinc-400 text-xs">
-                └── Fully covers the worskpace
+                └── Fully covers the workspace
               </p>
               <InlineCode>
                 demaximizeWindow: {'(winId: string) => Void'}
@@ -139,14 +139,14 @@ export default function ApiWindow() {
               </p>
 
               <p>
-                To target which to control via the docus api, you will need to
+                To target which to control via the focus api, you will need to
                 pass the respective window ID, which is generated when calling
                 the <InlineCode>createWindowStore()</InlineCode> method.
               </p>
               <p className="font-semibold text-zinc-800">For example:</p>
               <CodeSnippet>
                 <Blue>const</Blue> <Wht>myWindow = </Wht>
-                <Yllw>createdWindowStore</Yllw>
+                <Yllw>createWindowStore</Yllw>
                 <Wht>()</Wht>
                 <br />
                 <br />
@@ -221,12 +221,12 @@ export default function ApiWindow() {
               <InlineCode>
                 setWsFeatures:{' '}
                 {
-                  '({ isDockPannelEnabled = true, isGridEnabled = true }) => Void'
+                  '({ isDockPanelEnabled = true, isGridEnabled = true }) => Void'
                 }
               </InlineCode>
               <p className="text-zinc-400 text-xs">
-                └── Set isDockPannelEnabled to false to remove the workspace
-                docking pannel
+                └── Set isDockPanelEnabled to false to remove the workspace
+                docking panel
               </p>
               <p className="text-zinc-400 text-xs">
                 └── Set isGridEnabled to false to stop windows from connecting
@@ -243,7 +243,7 @@ export default function ApiWindow() {
                 the workspace state store, useful for keeping track of current
                 states. We highly discourage using the{' '}
                 <InlineCode>.setState()</InlineCode> method, use it at your own
-                risk. The safest way to mutate any is state is to use exposed
+                risk. The safest way to mutate any state is to use exposed
                 api methods.
               </p>
               <p>You may access the store by:</p>
@@ -289,7 +289,7 @@ export default function ApiWindow() {
                 The <InlineCode>windowRegistry</InlineCode> is a record of every
                 window state store. We highly discourage using the{' '}
                 <InlineCode>.setState()</InlineCode> method, use it at your own
-                risk. The safest way to mutate any is state is to use exposed
+                risk. The safest way to mutate any state is to use exposed
                 api methods.
               </p>
               <p>You may access any specific window state store by calling:</p>

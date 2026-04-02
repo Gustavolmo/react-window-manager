@@ -9,7 +9,7 @@ export type WorkspaceCommands =
 
 export type WorkspaceCtx = {
   responsiveBreak?: ResponsiveSizes
-  isDockPannelEnabled?: boolean
+  isDockPanelEnabled?: boolean
   isGridEnabled?: boolean
 }
 
@@ -48,12 +48,12 @@ export const workspaceCommandResolver: WorkspaceResolver = {
   },
 
   SET_WORKSPACE_FEATURES: (_?: string, ctx?: WorkspaceCtx) => {
-    if (ctx?.isGridEnabled === undefined || ctx?.isDockPannelEnabled === undefined)
+    if (ctx?.isGridEnabled === undefined || ctx?.isDockPanelEnabled === undefined)
       throw new Error(`SET_WORKSPACE_FEATURES called without a ctx value`)
 
     return {
       isGridEnabled: ctx.isGridEnabled,
-      isDockPannelEnabled: ctx.isDockPannelEnabled,
+      isDockPanelEnabled: ctx.isDockPanelEnabled,
     }
   },
 

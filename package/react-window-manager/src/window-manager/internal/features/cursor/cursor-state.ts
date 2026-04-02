@@ -6,6 +6,7 @@ type CursorState = {
   setXY: (x: number, y: number) => void
 }
 
+/* FIND ME: make this a regular object, ui should not update from cursor movment */
 export const useCursorState = create<CursorState>((set) => ({
   x: 10,
   y: 10,

@@ -5,8 +5,8 @@ import { dockApi } from './docking-api'
 
 export default function DockingControls() {
   const [isHovering, setIsHovering] = useState(false)
-  
-  const { activeWindowId, isDockPannelEnabled, isBelowBreakPoint } = useWorkspaceState()
+
+  const { activeWindowId, isDockPanelEnabled, isBelowBreakPoint } = useWorkspaceState()
   const { isDragging } = windowRegistry[activeWindowId]()
 
   const cornerDockControl = (
@@ -60,7 +60,7 @@ export default function DockingControls() {
     </div>
   )
 
-  const windowDockPannel = (
+  const windowDockPanel = (
     <span
       className="pointer-events-auto px-4 pb-3"
       onPointerOver={() => setIsHovering(true)}
@@ -81,8 +81,8 @@ export default function DockingControls() {
 
   // FIND ME
   /** @Note could easily add a 'drop on area to dock' feature */
-  if (isBelowBreakPoint) return;
-  if (!isDockPannelEnabled) return;
+  if (isBelowBreakPoint) return
+  if (!isDockPanelEnabled) return
   return (
     <>
       <div
@@ -98,7 +98,7 @@ export default function DockingControls() {
         absolute z-50 flex items-center justify-center 
         w-full mx-auto pointer-events-none`}
       >
-        {windowDockPannel}
+        {windowDockPanel}
       </div>
     </>
   )

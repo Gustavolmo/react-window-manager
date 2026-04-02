@@ -21,11 +21,11 @@ export const wsApi = {
     })
   },
 
-  setWsFeatures: ({ isDockPannelEnabled = true, isGridEnabled = true }: WorkspaceCtx) => {
+  setWsFeatures: ({ isDockPanelEnabled = true, isGridEnabled = true }: WorkspaceCtx) => {
     rwmRuntime.dispatch({
       subsystem: 'WORKSPACE',
       cmd: 'SET_WORKSPACE_FEATURES',
-      ctx: { isDockPannelEnabled: isDockPannelEnabled, isGridEnabled: isGridEnabled },
+      ctx: { isDockPanelEnabled: isDockPanelEnabled, isGridEnabled: isGridEnabled },
     })
   },
 
