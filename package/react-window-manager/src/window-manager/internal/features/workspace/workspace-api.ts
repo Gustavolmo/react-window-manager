@@ -29,7 +29,7 @@ export const wsApi = {
     })
   },
 
-  updateWsRect: () => {
-    rwmRuntime.dispatch({ subsystem: 'WORKSPACE', cmd: 'UPDATE_WORKSPACE_RECT' })
+  updateWsSize: () => {
+    rwmRuntime.dispatch({ subsystem: 'WORKSPACE', cmd: 'UPDATE_WORKSPACE_SIZE' })
   },
 }

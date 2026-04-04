@@ -68,8 +68,6 @@ export default function WindowLayout({
     zIndex,
     isActive,
 
-    resetFlag,
-
     winVisualState,
 
     isWindowClosed,
@@ -91,7 +89,7 @@ export default function WindowLayout({
       dockingResolver[defaultDock](winId)
     }
     /* Initialization is dependent on the workspace (wsElement) being mounted */
-  }, [wsElement, resetFlag]) // FIND ME: reset flag is anti-pattern
+  }, [wsElement]) // FIND ME: reset flag is anti-pattern
 
   const dockingResolver: Record<DockPosition, (winId: string) => void> = {
     right: dockApi.dockWindowRight,
@@ -182,7 +180,7 @@ export default function WindowLayout({
           {closeControl}
         </nav>
 
-        {<ResizingControls winId={winId} />}
+        {!isBelowBreakPoint && <ResizingControls winId={winId} />}
 
         {/* Offset the navbar => 'h-[calc(100%-32px)]' */}
         <div className={`relative w-full h-[calc(100%-32px)] overflow-auto select-text`}>

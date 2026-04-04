@@ -1,11 +1,7 @@
-import { ResizeDirection, WindowStore } from '../../model/window-types'
+import { ResizeDirection, WindowRegistry, WindowStore } from '../../model/window-types'
 import { windowRegistry } from '../../registration/window-registry'
 import { useWorkspaceState } from '../features/workspace/workspace-state'
-import {
-  dockCommandResolver,
-  DockCommands,
-  getDockDependencies,
-} from './dock-resolver/dock-commands'
+import { dockCommandResolver, DockCommands } from './dock-resolver/dock-commands'
 import { rafDragLoopResolver, RafDragCommands } from './drag-resolver/drag-loop'
 import { dragCommandResolver, DragCommands, isDragAllowed } from './drag-resolver/drag-commands'
 import { focusCommandResolver, FocusCommands } from './focus-resolver/focus-commands'
@@ -19,13 +15,16 @@ import { resizeCommandResolver, ResizeCommands } from './resize-resolver/resize-
 import { RafResizeCommands, rafResizeLoopResolver } from './resize-resolver/resize-loop'
 import { WorkspaceStore } from '../../model/workspace-types'
 
-/* 
-  SUBSYSTEM
-  - POLICY?
-  - CTX?
-  - STAGING
-  - COMMIT
-  */
+/**
+ * FIND ME:
+ * In the next release there is a need to move store access from resolves to the runtime
+ * 
+ * Subsystem structure needs formalization
+  => policy
+  => getDependencies
+  => stageChanges
+  => commitChanges
+ */
 
 type rwmMessage =
   | { targetWinId: string; subsystem: 'DOCK'; cmd: DockCommands; ctx?: undefined }
@@ -40,7 +39,7 @@ export const rwmRuntime = {
     switch (subsystem) {
       case 'WORKSPACE': {
         const stagedChanges = workspaceCommandResolver[cmd](targetWinId, ctx)
-        commitToWorkspace(stagedChanges)
+        commitBatch(stagedChanges)
         break
       }
       case 'DRAG': {
@@ -50,7 +49,7 @@ export const rwmRuntime = {
         break
       }
       case 'DOCK': {
-        const { wsRect } = getDockDependencies()
+        const { wsRect } = useWorkspaceState.getState()
         const stagedChanges = dockCommandResolver[cmd](targetWinId, wsRect)
         commitToWindow(stagedChanges)
         break
@@ -113,3 +112,6 @@ function commitToWorkspace(patch: WorkspaceMutation) {
     useWorkspaceState.setState(patch)
   }
 }
+
+// type AppMoment =  { ws: WorkspaceStore; win: WindowRegistry }
+// export const appHistory: { ws: WorkspaceStore; win: WindowRegistry } = []

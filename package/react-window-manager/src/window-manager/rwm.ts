@@ -5,7 +5,7 @@ import { wsApi } from './internal/features/workspace/workspace-api'
 import { useWorkspaceState } from './internal/features/workspace/workspace-state'
 import { windowRegistry } from './registration/window-registry'
 
-const { updateWsRect, ...publicWsApi } = wsApi
+const { updateWsSize, ...publicWsApi } = wsApi
 
 const rwm = {
   dockApi: dockApi,

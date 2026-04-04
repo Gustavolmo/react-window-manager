@@ -24,23 +24,23 @@ export const createWindowStore = (): WindowRegistration => {
   const zIndexAtLaunch = Object.keys(windowRegistry).length + 1
   const windowInstanceId = `react-dynamic-window-instance${Object.keys(windowRegistry).length}`
 
-  const storeInstance = create<WindowStore>((set, get) => ({
+  const storeInstance = create<WindowStore>((set) => ({
     setWinElement: (ref: HTMLDivElement | null) => set({ winElement: ref }),
     winElement: undefined,
     windowId: windowInstanceId,
-    resetFlag: false,
 
     zIndex: zIndexAtLaunch,
+
     winCoord: { pointX: 40, pointY: 40 },
+    winWidth: defaultMinWidth,
+    winHeight: defaultMinHeight,
+
     winVisualState: 'demaximized',
 
     isActive: false,
     isDragging: false,
     isWindowClosed: true,
     resizeAction: false,
-
-    winWidth: defaultMinWidth,
-    winHeight: defaultMinHeight,
 
     WIN_MIN_WIDTH: defaultMinWidth,
     WIN_MIN_HEIGHT: defaultMinHeight,

@@ -12,7 +12,7 @@ export const resizeCommandResolver: ResizeResolver = {
   ENABLE_RESIZE: (targetWinId: string, direction: ResizeDirection) => {
     const currentResizeAction = windowRegistry[targetWinId].getState().resizeAction
     if (currentResizeAction)
-      throw new Error(`ENABLE_RESIZE called on a window that is already risizing`)
+      throw new Error(`ENABLE_RESIZE called on a window that is already resizing`)
 
     return [
       {

@@ -1,5 +1,5 @@
 import { windowRegistry } from '../../../registration/window-registry'
-import { useCursorState } from '../../features/cursor/cursor-state'
+import { cursorPosition } from '../../features/cursor/cursor-state'
 import { useWorkspaceState } from '../../features/workspace/workspace-state'
 import { WindowMutation } from '../rwm-runtime'
 
@@ -11,7 +11,7 @@ type RafDragResolver = Record<
 >
 export const rafDragLoopResolver: RafDragResolver = {
   LOOP_DRAG: (targetWinId: string, commit: (patchStack: WindowMutation[]) => void) => {
-    const { x, y } = useCursorState.getState()
+    const { x, y } = cursorPosition
     const { winCoord, isDragging, windowId } = windowRegistry[targetWinId].getState()
 
     if (!isDragging)
@@ -34,7 +34,7 @@ const dragLoop = (
 ) => {
   const { winCoord, isDragging } = windowRegistry[targetWinId].getState()
   const { wsRect } = useWorkspaceState.getState()
-  const { x, y } = useCursorState.getState()
+  const { x, y } = cursorPosition
   if (!isDragging) return
 
   let adjustedX = Math.round(x - pointerOffset.left)

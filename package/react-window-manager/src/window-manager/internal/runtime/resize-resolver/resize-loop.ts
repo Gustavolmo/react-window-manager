@@ -1,7 +1,7 @@
 import { WindowStore } from '../../../model/window-types'
 import { WorkspaceRect } from '../../../model/workspace-types'
 import { windowRegistry } from '../../../registration/window-registry'
-import { useCursorState } from '../../features/cursor/cursor-state'
+import { cursorPosition } from '../../features/cursor/cursor-state'
 import { useWorkspaceState } from '../../features/workspace/workspace-state'
 import { WindowMutation } from '../rwm-runtime'
 
@@ -199,6 +199,6 @@ const getRafResizeDependencies = (winId: string): ResizeDep => {
   const win = windowRegistry[winId].getState()
   const winBox = win.winElement?.getBoundingClientRect()
   const wsRect = useWorkspaceState.getState().wsRect
-  const { x, y } = useCursorState.getState()
+  const { x, y } = cursorPosition
   return { wsRect, win, winBox, x, y }
 }
