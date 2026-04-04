@@ -130,7 +130,7 @@ const resizer = {
     const cursorOutOfBoundsX = x > wsRect.right || x < wsRect.left
     const isCursorOutOfBounds = cursorOutOfBoundsY || cursorOutOfBoundsX
     if (isCursorOutOfBounds) {
-      requestAnimationFrame(() => resizer.nw(getRafResizeDependencies(win.windowId), commit))
+      return
     }
 
     const minWinHeight = winBox.bottom - y <= win.WIN_MIN_HEIGHT

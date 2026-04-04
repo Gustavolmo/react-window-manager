@@ -80,16 +80,13 @@ export default function WindowLayout({
 
   useEffect(() => {
     setWinElement(windowRef.current)
-  }, [setWinElement, windowRef.current])
+  }, [setWinElement])
 
   useEffect(() => {
-    if (isBelowBreakPoint) {
-      dockApi.maximizeWindow(winId)
-    } else {
-      dockingResolver[defaultDock](winId)
-    }
+    dockingResolver[defaultDock](winId)
+
     /* Initialization is dependent on the workspace (wsElement) being mounted */
-  }, [wsElement]) // FIND ME: reset flag is anti-pattern
+  }, [wsElement])
 
   const dockingResolver: Record<DockPosition, (winId: string) => void> = {
     right: dockApi.dockWindowRight,

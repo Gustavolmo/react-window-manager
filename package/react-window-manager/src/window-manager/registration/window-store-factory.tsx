@@ -10,7 +10,7 @@ import WindowButton from '../internal/features/window-button'
 import { windowRegistry } from './window-registry'
 
 const defaultMinWidth = 232
-const defaultMinHeight = 128
+const defaultMinHeight = 32
 
 /**
  * @return `id` auto generated id at the root of the window component.`id` can be used in `windowRegistry` to access the state store associated to this window instnace

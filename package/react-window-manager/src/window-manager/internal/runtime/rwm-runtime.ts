@@ -16,7 +16,6 @@ import { WorkspaceStore } from '../../model/workspace-types'
 
 /**
  * FIND ME:
- * In the next release there is a need to move store access from resolves to the runtime
  * 
  * Subsystem structure needs formalization
   => policy
