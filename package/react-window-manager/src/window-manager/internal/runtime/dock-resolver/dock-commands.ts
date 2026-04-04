@@ -1,5 +1,4 @@
 import { WorkspaceRect } from '../../../model/workspace-types'
-import { windowRegistry } from '../../../registration/window-registry'
 import { WindowMutation } from '../rwm-runtime'
 
 export type DockCommands =
@@ -12,7 +11,6 @@ export type DockCommands =
   | 'DOCK_WINDOW_BOTTOM_LEFT'
   | 'DOCK_WINDOW_TOP_LEFT'
   | 'MAXIMIZE_WINDOW'
-  | 'MAXIMIZE_ALL_WINDOWS'
   | 'DEMAXIMIZE_WINDOW'
 
 type DockResolver = Record<
@@ -148,24 +146,6 @@ export const dockCommandResolver: DockResolver = {
         },
       },
     ]
-  },
-  MAXIMIZE_ALL_WINDOWS: (_: string, wsRect: WorkspaceRect) => {
-    const batchUpdate: WindowMutation[] = []
-
-    for (const key of Object.keys(windowRegistry)) {
-      batchUpdate.push({
-        winId: key,
-        patch: {
-          winCoord: { pointX: wsRect.left, pointY: wsRect.top },
-          winHeight: wsRect.innerHeight,
-          winWidth: wsRect.innerWidth,
-          winVisualState: 'maximized',
-          isDragging: false,
-        },
-      })
-    }
-
-    return batchUpdate
   },
   DEMAXIMIZE_WINDOW: (targetWinId: string, wsRect: WorkspaceRect) => {
     return [

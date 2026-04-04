@@ -40,17 +40,13 @@ export type WindowStore = {
   winCoord: Point
   winWidth: number
   winHeight: number
-  
+
   isActive: boolean
   isDragging: boolean
   isWindowClosed: boolean
   resizeAction: ResizeDirection
   winVisualState: WindowStates
-  
 
   WIN_MIN_WIDTH: number
   WIN_MIN_HEIGHT: number
 }
-
-// lastWinRect
-// winRect

@@ -1,4 +1,3 @@
-import { windowRegistry } from '../../../registration/window-registry'
 import { rwmRuntime } from '../../runtime/rwm-runtime'
 
 export const dockApi = {
@@ -63,13 +62,6 @@ export const dockApi = {
       targetWinId: winId,
       subsystem: 'DOCK',
       cmd: 'MAXIMIZE_WINDOW',
-    }),
-
-  maximizeAllWindows: () =>
-    rwmRuntime.dispatch({
-      targetWinId: '_',
-      subsystem: 'DOCK',
-      cmd: 'MAXIMIZE_ALL_WINDOWS',
     }),
 
   demaximizeWindow: (winId: string) =>

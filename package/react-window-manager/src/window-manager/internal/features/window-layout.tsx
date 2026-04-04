@@ -139,10 +139,10 @@ export default function WindowLayout({
         onPointerDown={() => focusApi.bringWindowToFocus(windowId)}
         style={{
           backgroundColor: style?.windowBackgroundColor,
-          top: `${winCoord.pointY}px`,
-          left: `${winCoord.pointX}px`,
-          width: `${winWidth}px`,
-          height: `${winHeight}px`,
+          top: isBelowBreakPoint ? wsRect.top : `${winCoord.pointY}px`,
+          left: isBelowBreakPoint ? wsRect.left : `${winCoord.pointX}px`,
+          width: isBelowBreakPoint ? wsRect.innerWidth : `${winWidth}px`,
+          height: isBelowBreakPoint ? wsRect.innerHeight : `${winHeight}px`,
           zIndex: `${zIndex}`,
 
           /* MINIMIZE LOGIC */

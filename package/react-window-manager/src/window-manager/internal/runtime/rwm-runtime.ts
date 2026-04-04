@@ -1,11 +1,10 @@
-import { ResizeDirection, WindowRegistry, WindowStore } from '../../model/window-types'
+import { ResizeDirection, WindowStore } from '../../model/window-types'
 import { windowRegistry } from '../../registration/window-registry'
 import { useWorkspaceState } from '../features/workspace/workspace-state'
 import { dockCommandResolver, DockCommands } from './dock-resolver/dock-commands'
 import { rafDragLoopResolver, RafDragCommands } from './drag-resolver/drag-loop'
 import { dragCommandResolver, DragCommands, isDragAllowed } from './drag-resolver/drag-commands'
 import { focusCommandResolver, FocusCommands } from './focus-resolver/focus-commands'
-import { stackCommandResolver, StackCommands } from './stack-resolver/stack-commands'
 import {
   workspaceCommandResolver,
   WorkspaceCommands,
@@ -31,7 +30,6 @@ type rwmMessage =
   | { targetWinId: string; subsystem: 'DRAG'; cmd: DragCommands; ctx?: undefined }
   | { targetWinId: string; subsystem: 'FOCUS'; cmd: FocusCommands; ctx?: undefined }
   | { targetWinId: string; subsystem: 'RESIZE'; cmd: ResizeCommands; ctx: ResizeDirection }
-  | { targetWinId?: string; subsystem: 'STACK'; cmd: StackCommands; ctx?: undefined }
   | { targetWinId?: string; subsystem: 'WORKSPACE'; cmd: WorkspaceCommands; ctx?: WorkspaceCtx }
 
 export const rwmRuntime = {
@@ -56,11 +54,6 @@ export const rwmRuntime = {
       }
       case 'RESIZE': {
         const stagedChanges = resizeCommandResolver[cmd](targetWinId, ctx)
-        commitToWindow(stagedChanges)
-        break
-      }
-      case 'STACK': {
-        const stagedChanges = stackCommandResolver[cmd](targetWinId)
         commitToWindow(stagedChanges)
         break
       }
