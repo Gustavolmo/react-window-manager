@@ -80,7 +80,7 @@ export default function DockingControls() {
   )
 
   // FIND ME
-  /** @Note could easily add a 'drop on area to dock' feature */
+  /** @Note could easily add a 'drop on area to dock' feature - orchestrate empty slots and auto suggest arbitrary docking */
   if (isBelowBreakPoint) return
   if (!isDockPanelEnabled) return
   return (
