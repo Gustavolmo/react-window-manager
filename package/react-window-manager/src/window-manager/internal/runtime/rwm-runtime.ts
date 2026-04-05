@@ -13,6 +13,8 @@ import {
 import { resizeCommandResolver, ResizeCommands } from './resize-resolver/resize-commands'
 import { RafResizeCommands, rafResizeLoopResolver } from './resize-resolver/resize-loop'
 import { WorkspaceStore } from '../../model/workspace-types'
+import { HistorySnapshot, saveSnapshot } from './history-resolver/app-history'
+import { historyCommandResolver, HistoryCommands } from './history-resolver/history-commands'
 
 /**
  * FIND ME:
@@ -30,6 +32,7 @@ type rwmMessage =
   | { targetWinId: string; subsystem: 'FOCUS'; cmd: FocusCommands; ctx?: undefined }
   | { targetWinId: string; subsystem: 'RESIZE'; cmd: ResizeCommands; ctx: ResizeDirection }
   | { targetWinId?: string; subsystem: 'WORKSPACE'; cmd: WorkspaceCommands; ctx?: WorkspaceCtx }
+  | { targetWinId?: string; subsystem: 'HISTORY'; cmd: HistoryCommands; ctx?: HistorySnapshot }
 
 export const rwmRuntime = {
   dispatch: ({ subsystem, cmd, targetWinId, ctx }: rwmMessage): void => {
@@ -61,12 +64,19 @@ export const rwmRuntime = {
         commitBatch(stagedChanges)
         break
       }
+      case 'HISTORY': {
+        const stagedChanges = historyCommandResolver[cmd]()
+        commitBatch(stagedChanges)
+        break
+      }
 
       default:
         throw new Error(
           `Unregistered rwmRuntime subsystem called: ${{ subsystem, cmd, targetWinId, ctx }}`
         )
     }
+
+    saveSnapshot(cmd)
   },
 }
 
@@ -114,7 +124,3 @@ function commitToWorkspace(patch: WorkspaceMutation) {
     useWorkspaceState.setState(patch)
   }
 }
-
-/* FIND ME: Would be cool to add ctrl+z and ctrl+shift+z */
-// type AppMoment =  { ws: WorkspaceStore; win: WindowRegistry }
-// export const appHistory: { ws: WorkspaceStore; win: WindowRegistry } = []

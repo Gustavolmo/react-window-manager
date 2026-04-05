@@ -38,8 +38,9 @@ export const createWindowStore = (): WindowRegistration => {
     winVisualState: 'demaximized',
 
     isActive: false,
-    isDragging: false,
     isWindowClosed: true,
+
+    isDragging: false,
     resizeAction: false,
 
     WIN_MIN_WIDTH: defaultMinWidth,

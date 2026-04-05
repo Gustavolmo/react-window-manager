@@ -7,6 +7,7 @@ import DragHandle from './drag/drag-handle'
 import { useWorkspaceState } from './workspace/workspace-state'
 import { focusApi } from './focus/focus-api'
 import { DockPosition } from '../../model/window-types'
+import { appHistoryApi } from './history/history-api'
 
 export type WindowLayoutProps = {
   children: React.ReactNode
@@ -84,10 +85,12 @@ export default function WindowLayout({
 
   useEffect(() => {
     dockingResolver[defaultDock](winId)
-
+    appHistoryApi.clearHistory()
     /* Initialization is dependent on the workspace (wsElement) being mounted */
   }, [wsElement])
 
+  /* FIND ME:
+   * This needs to die - use default dock in createWindow, not here */
   const dockingResolver: Record<DockPosition, (winId: string) => void> = {
     right: dockApi.dockWindowRight,
     left: dockApi.dockWindowLeft,

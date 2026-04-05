@@ -5,6 +5,7 @@ import { resizeApi } from './internal/features/resizing/resizing-api'
 import { CursorMoveListener } from './internal/features/cursor/cursor-move-listener'
 import WorkspaceResizeListener from './internal/features/workspace/workspace-resize-listener'
 import { dragApi } from './internal/features/drag/drag-api'
+import { HistoryKeysListener } from './internal/features/history/history-keys-listener'
 
 type Props = {
   children: React.ReactNode
@@ -34,6 +35,7 @@ export default function WorkspaceLayout({ children, className }: Props) {
       className={className ? className : 'fixed overflow-hidden h-full w-full touch-none -z-50'}
     >
       <WorkspaceResizeListener />
+      <HistoryKeysListener />
       <CursorMoveListener />
       <div className=" w-full h-full relative overflow-hidden">
         {!isBelowBreakPoint && <DockingControls />}
