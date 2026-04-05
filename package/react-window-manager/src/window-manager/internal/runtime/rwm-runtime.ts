@@ -61,6 +61,11 @@ export const rwmRuntime = {
         commitBatch(stagedChanges)
         break
       }
+
+      default:
+        throw new Error(
+          `Unregistered rwmRuntime subsystem called: ${{ subsystem, cmd, targetWinId, ctx }}`
+        )
     }
   },
 }
@@ -81,6 +86,11 @@ export const rafRuntime = {
         rafResizeLoopResolver[cmd](targetWinId, commitToWindow)
         break
       }
+
+      default:
+        throw new Error(
+          `Unregistered rafRuntime subsystem called: ${{ subsystem, cmd, targetWinId }}`
+        )
     }
   },
 }
