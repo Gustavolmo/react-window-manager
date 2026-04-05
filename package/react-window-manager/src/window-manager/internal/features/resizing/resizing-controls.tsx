@@ -99,8 +99,8 @@ export default function ResizingControls({ winId }: Props) {
         id="win-resize-top-right-all"
         className="fixed h-3 w-3 opacity-60 cursor-ne-resize z-20"
         style={{
-          top: `${winCoord.pointY - 6}px`,
-          left: `${winCoord.pointX + winWidth - 6}px`,
+          top: `${winCoord.pointY - 8}px`,
+          left: `${winCoord.pointX + winWidth - 8}px`,
         }}
       ></span>
       <span
@@ -109,8 +109,8 @@ export default function ResizingControls({ winId }: Props) {
         id="win-resize-top-left-all"
         className="fixed h-3 w-3 opacity-60 cursor-nw-resize z-20"
         style={{
-          top: `${winCoord.pointY - 6}px`,
-          left: `${winCoord.pointX - 6}px`,
+          top: `${winCoord.pointY - 8}px`,
+          left: `${winCoord.pointX - 8}px`,
         }}
       ></span>
     </>

@@ -3,10 +3,10 @@ import { WorkspaceStore } from '../../../model/workspace-types'
 import { windowRegistry } from '../../../registration/window-registry'
 import { useWorkspaceState } from '../../features/workspace/workspace-state'
 
-/* FIND ME: Needs refinement, I need to define when a snapshot should activate in a better way */
 export const MAX_HISTORY = 100
 const excludedCommands = [
-  'CLEAR_HISTORY',
+  'UPDATE_WORKSPACE_SIZE',
+
   'APPLY_PREVIOUS',
   'APPLY_NEXT',
 
@@ -45,7 +45,6 @@ export function saveSnapshot(cmd: string) {
   }
 
   appHistory.ptr = appHistory.snapshots.length - 1
-  console.log(appHistory.snapshots)
 }
 
 const getSnapshot = () => {

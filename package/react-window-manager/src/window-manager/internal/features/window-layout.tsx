@@ -90,7 +90,7 @@ export default function WindowLayout({
   }, [wsElement])
 
   /* FIND ME:
-   * This needs to die - use default dock in createWindow, not here */
+   * This needs to die - Need to find a better way to do this */
   const dockingResolver: Record<DockPosition, (winId: string) => void> = {
     right: dockApi.dockWindowRight,
     left: dockApi.dockWindowLeft,

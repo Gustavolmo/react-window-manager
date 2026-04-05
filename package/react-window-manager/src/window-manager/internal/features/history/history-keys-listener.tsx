@@ -10,13 +10,11 @@ export function HistoryKeysListener() {
       if (e.key.toLowerCase() === 'z' && !e.shiftKey) {
         e.preventDefault()
         appHistoryApi.moveToPreviousSnapshot()
-        console.log('undo')
       }
 
       if (e.key.toLowerCase() === 'z' && e.shiftKey) {
         e.preventDefault()
         appHistoryApi.moveToNextSnapshot()
-        console.log('redo')
       }
     }
 

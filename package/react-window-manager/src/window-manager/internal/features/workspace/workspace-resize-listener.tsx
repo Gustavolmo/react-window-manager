@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useWorkspaceState } from './workspace-state'
 import { wsApi } from './workspace-api'
+import { appHistoryApi } from '../history/history-api'
 
 export default function WorkspaceResizeListener() {
   const { wsElement } = useWorkspaceState()
@@ -10,6 +11,9 @@ export default function WorkspaceResizeListener() {
 
     const onResize = () => {
       wsApi.updateWsSize()
+      /* FIND ME:
+       * Shitty way to deal with history not being compatible with browser resize */
+      appHistoryApi.clearHistory()
     }
 
     onResize()
