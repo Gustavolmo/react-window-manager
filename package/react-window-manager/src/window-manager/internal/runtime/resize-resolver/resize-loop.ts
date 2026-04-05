@@ -4,6 +4,7 @@ import { windowRegistry } from '../../../registration/window-registry'
 import { cursorPosition } from '../../features/cursor/cursor-state'
 import { useWorkspaceState } from '../../features/workspace/workspace-state'
 import { WindowMutation } from '../rwm-runtime'
+import { resolveNeighbourResizeLimit } from './resize-loop-rules'
 
 export type RafResizeCommands = 'LOOP_RESIZE'
 type RafResizeResolver = Record<
@@ -22,14 +23,19 @@ export const rafResizeLoopResolver: RafResizeResolver = {
     if (!winElementBox)
       throw new Error(`LOOP_RESIZE called with null window element for winId: ${targetWinId}`)
 
-    requestAnimationFrame(() =>
-      resizer[resizeDirection](getRafResizeDependencies(targetWinId), commitCb)
-    )
+    requestAnimationFrame(() => {
+      const neighbourLimit = resolveNeighbourResizeLimit(dep.win.windowId, resizeDirection)
+      resizer[resizeDirection](getRafResizeDependencies(targetWinId), commitCb, neighbourLimit)
+    })
   },
 }
 
 const resizer = {
-  e: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
+  e: (
+    resizeDep: ResizeDep,
+    commit: (patchStack: WindowMutation[]) => void,
+    neighbourLimit?: number
+  ) => {
     const { wsRect, win, winBox, x } = resizeDep
     if (!win.resizeAction) return
     if (!winBox) return
@@ -40,8 +46,9 @@ const resizer = {
     const isResizeActive = !cursorOutOfBounds && sizeDiff !== 0
     const minWinWidth = x - winBox.left < win.WIN_MIN_WIDTH
 
-    const leftMostXAtMinWidth = eastNeightbourLeftAtMinWidth(win.windowId)
-    if (leftMostXAtMinWidth && isResizeActive) {
+    const leftMostXAtMinWidth = neighbourLimit
+    const isNeighbourLimit = leftMostXAtMinWidth && x > leftMostXAtMinWidth
+    if (isNeighbourLimit && isResizeActive) {
       commit([
         {
           winId: win.windowId,
@@ -64,10 +71,16 @@ const resizer = {
       ])
     }
 
-    requestAnimationFrame(() => resizer.e(getRafResizeDependencies(win.windowId), commit))
+    requestAnimationFrame(() =>
+      resizer.e(getRafResizeDependencies(win.windowId), commit, neighbourLimit)
+    )
   },
 
-  w: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
+  w: (
+    resizeDep: ResizeDep,
+    commit: (patchStack: WindowMutation[]) => void,
+    neighbourLimit?: number
+  ) => {
     const { wsRect, win, winBox, x } = resizeDep
     if (!win.resizeAction) return
     if (!winBox) return
@@ -78,8 +91,9 @@ const resizer = {
     const isResizeActive = !cursorOutOfBounds && sizeDiff !== 0
     const minWinWidth = winBox.right - x <= win.WIN_MIN_WIDTH
 
-    const rightMostXAtMinWidth = westNeightbourRightAtMinWidth(win.windowId)
-    if (rightMostXAtMinWidth) {
+    const rightMostXAtMinWidth = neighbourLimit
+    const isNeighbourLimit = rightMostXAtMinWidth && x < rightMostXAtMinWidth
+    if (isNeighbourLimit) {
       commit([
         {
           winId: win.windowId,
@@ -117,10 +131,16 @@ const resizer = {
       ])
     }
 
-    requestAnimationFrame(() => resizer.w(getRafResizeDependencies(win.windowId), commit))
+    requestAnimationFrame(() =>
+      resizer.w(getRafResizeDependencies(win.windowId), commit, neighbourLimit)
+    )
   },
 
-  n: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
+  n: (
+    resizeDep: ResizeDep,
+    commit: (patchStack: WindowMutation[]) => void,
+    neighbourLimit?: number
+  ) => {
     const { wsRect, win, winBox, y } = resizeDep
     if (!win.resizeAction) return
     if (!winBox) return
@@ -131,8 +151,9 @@ const resizer = {
     const isResizeActive = !cursorOutOfBounds && sizeDiff !== 0
     const minWinHeight = winBox.bottom - y <= win.WIN_MIN_HEIGHT
 
-    const bottomMostYAtMinWidth = northNeightbourBottomAtMinWidth(win.windowId)
-    if (bottomMostYAtMinWidth && isResizeActive) {
+    const bottomMostYAtMinWidth = neighbourLimit
+    const isNeighbourLimit = bottomMostYAtMinWidth && y < bottomMostYAtMinWidth
+    if (isNeighbourLimit && isResizeActive) {
       commit([
         {
           winId: win.windowId,
@@ -170,10 +191,16 @@ const resizer = {
       ])
     }
 
-    requestAnimationFrame(() => resizer.n(getRafResizeDependencies(win.windowId), commit))
+    requestAnimationFrame(() =>
+      resizer.n(getRafResizeDependencies(win.windowId), commit, neighbourLimit)
+    )
   },
 
-  s: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
+  s: (
+    resizeDep: ResizeDep,
+    commit: (patchStack: WindowMutation[]) => void,
+    neighbourLimit?: number
+  ) => {
     const { wsRect, win, winBox, y } = resizeDep
     if (!win.resizeAction) return
     if (!winBox) return
@@ -184,8 +211,9 @@ const resizer = {
     const isResizeActive = !cursorOutOfBounds && sizeDiff !== 0
     const minWinHeight = y - winBox.top < win.WIN_MIN_HEIGHT
 
-    const topMostYAtMinWidth = southNeightbourTopAtMinWidth(win.windowId)
-    if (topMostYAtMinWidth && isResizeActive) {
+    const topMostYAtMinWidth = neighbourLimit
+    const isNeighbourLimit = topMostYAtMinWidth && y > topMostYAtMinWidth
+    if (isNeighbourLimit && isResizeActive) {
       commit([
         {
           winId: win.windowId,
@@ -212,7 +240,9 @@ const resizer = {
       ])
     }
 
-    requestAnimationFrame(() => resizer.s(getRafResizeDependencies(win.windowId), commit))
+    requestAnimationFrame(() =>
+      resizer.s(getRafResizeDependencies(win.windowId), commit, neighbourLimit)
+    )
   },
 
   nw: (resizeDep: ResizeDep, commit: (patchStack: WindowMutation[]) => void) => {
@@ -282,100 +312,4 @@ const getRafResizeDependencies = (winId: string): ResizeDep => {
   const wsRect = useWorkspaceState.getState().wsRect
   const { x, y } = cursorPosition
   return { wsRect, win, winBox, x, y }
-}
-
-const eastNeightbourLeftAtMinWidth = (currentWinId: string) => {
-  let leftMostXAtMinWidth = undefined
-
-  for (const key of Object.keys(windowRegistry)) {
-    const remoteWin = windowRegistry[key].getState()
-    if (key === currentWinId) continue
-    if (remoteWin.resizeAction !== 'w') continue
-    if (remoteWin.isWindowClosed) continue
-
-    const { x } = cursorPosition
-    const winBox = remoteWin.winElement?.getBoundingClientRect()
-    if (!winBox) continue
-
-    const minWinWidth = winBox.right - x <= remoteWin.WIN_MIN_WIDTH
-
-    if (minWinWidth) {
-      if (leftMostXAtMinWidth === undefined) leftMostXAtMinWidth = winBox.left
-      if (leftMostXAtMinWidth > winBox.left) leftMostXAtMinWidth = winBox.left
-    }
-  }
-
-  return leftMostXAtMinWidth
-}
-
-const westNeightbourRightAtMinWidth = (currentWinId: string) => {
-  let rightMostXAtMinWidth = undefined
-
-  for (const key of Object.keys(windowRegistry)) {
-    const remoteWin = windowRegistry[key].getState()
-    if (key === currentWinId) continue
-    if (remoteWin.resizeAction !== 'e') continue
-    if (remoteWin.isWindowClosed) continue
-
-    const { x } = cursorPosition
-    const winBox = remoteWin.winElement?.getBoundingClientRect()
-    if (!winBox) continue
-
-    const minWinWidth = x - winBox.left < remoteWin.WIN_MIN_WIDTH
-
-    if (minWinWidth) {
-      if (rightMostXAtMinWidth === undefined) rightMostXAtMinWidth = winBox.right
-      if (rightMostXAtMinWidth < winBox.right) rightMostXAtMinWidth = winBox.right
-    }
-  }
-
-  return rightMostXAtMinWidth
-}
-
-const northNeightbourBottomAtMinWidth = (currentWinId: string) => {
-  let bottomMostYAtMinWidth = undefined
-
-  for (const key of Object.keys(windowRegistry)) {
-    const remoteWin = windowRegistry[key].getState()
-    if (key === currentWinId) continue
-    if (remoteWin.resizeAction !== 's') continue
-    if (remoteWin.isWindowClosed) continue
-
-    const { y } = cursorPosition
-    const winBox = remoteWin.winElement?.getBoundingClientRect()
-    if (!winBox) continue
-
-    const minWinHeight = y - winBox.top < remoteWin.WIN_MIN_HEIGHT
-
-    if (minWinHeight) {
-      if (bottomMostYAtMinWidth === undefined) bottomMostYAtMinWidth = winBox.bottom
-      if (bottomMostYAtMinWidth < winBox.bottom) bottomMostYAtMinWidth = winBox.bottom
-    }
-  }
-
-  return bottomMostYAtMinWidth
-}
-
-const southNeightbourTopAtMinWidth = (currentWinId: string) => {
-  let topMostYAtMinWidth = undefined
-
-  for (const key of Object.keys(windowRegistry)) {
-    const remoteWin = windowRegistry[key].getState()
-    if (key === currentWinId) continue
-    if (remoteWin.resizeAction !== 'n') continue
-    if (remoteWin.isWindowClosed) continue
-
-    const { y } = cursorPosition
-    const winBox = remoteWin.winElement?.getBoundingClientRect()
-    if (!winBox) continue
-
-    const minWinHeight = winBox.bottom - y <= remoteWin.WIN_MIN_HEIGHT
-
-    if (minWinHeight) {
-      if (topMostYAtMinWidth === undefined) topMostYAtMinWidth = winBox.top
-      if (topMostYAtMinWidth > winBox.top) topMostYAtMinWidth = winBox.top
-    }
-  }
-
-  return topMostYAtMinWidth
 }
