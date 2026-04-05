@@ -59,7 +59,7 @@ const resizer = {
       commit([
         {
           winId: win.windowId,
-          patch: { winWidth: Math.round(win.winWidth + sizeDiff) },
+          patch: { winWidth: win.winWidth + sizeDiff },
         },
       ])
     } else if (minWinWidth && isResizeActive) {
@@ -111,7 +111,7 @@ const resizer = {
         {
           winId: win.windowId,
           patch: {
-            winWidth: Math.round(win.winWidth + sizeDiff),
+            winWidth: win.winWidth + sizeDiff,
             winCoord: { pointX: x, pointY: win.winCoord.pointY },
           },
         },
@@ -171,7 +171,7 @@ const resizer = {
         {
           winId: win.windowId,
           patch: {
-            winHeight: Math.round(win.winHeight + sizeDiff),
+            winHeight: win.winHeight + sizeDiff,
             winCoord: { pointX: win.winCoord.pointX, pointY: y },
           },
         },
@@ -227,7 +227,7 @@ const resizer = {
         {
           winId: win.windowId,
           patch: {
-            winHeight: Math.round(win.winHeight + sizeDiff),
+            winHeight: win.winHeight + sizeDiff,
           },
         },
       ])
@@ -268,8 +268,8 @@ const resizer = {
         {
           winId: win.windowId,
           patch: {
-            winWidth: minWinWidth ? win.WIN_MIN_WIDTH : Math.round(win.winWidth + sizeDiffX),
-            winHeight: minWinHeight ? win.WIN_MIN_HEIGHT : Math.round(win.winHeight + sizeDiffY),
+            winWidth: minWinWidth ? win.WIN_MIN_WIDTH : win.winWidth + sizeDiffX,
+            winHeight: minWinHeight ? win.WIN_MIN_HEIGHT : win.winHeight + sizeDiffY,
             winCoord: {
               pointX: minWinWidth ? win.winCoord.pointX + win.winWidth - win.WIN_MIN_WIDTH : x,
               pointY: minWinHeight ? win.winCoord.pointY + win.winHeight - win.WIN_MIN_HEIGHT : y,
