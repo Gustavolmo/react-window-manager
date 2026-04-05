@@ -3,7 +3,7 @@ import { windowRegistry } from '../../registration/window-registry'
 import { useWorkspaceState } from '../features/workspace/workspace-state'
 import { dockCommandResolver, DockCommands } from './dock-resolver/dock-commands'
 import { rafDragLoopResolver, RafDragCommands } from './drag-resolver/drag-loop'
-import { dragCommandResolver, DragCommands, isDragAllowed } from './drag-resolver/drag-commands'
+import { dragCommandResolver, DragCommands } from './drag-resolver/drag-commands'
 import { focusCommandResolver, FocusCommands } from './focus-resolver/focus-commands'
 import {
   workspaceCommandResolver,
@@ -18,8 +18,8 @@ import { WorkspaceStore } from '../../model/workspace-types'
  * FIND ME:
  * 
  * Subsystem structure needs formalization
-  => policy
   => getDependencies
+  => policy
   => stageChanges
   => commitChanges
  */
@@ -40,7 +40,7 @@ export const rwmRuntime = {
         break
       }
       case 'DRAG': {
-        if (!isDragAllowed()) return
+        if (useWorkspaceState.getState().isBelowBreakPoint) return
         const stagedChanges = dragCommandResolver[cmd](targetWinId)
         commitToWindow(stagedChanges)
         break
@@ -78,7 +78,7 @@ export const rafRuntime = {
   dispatch: ({ subsystem, cmd, targetWinId }: rafMessage): void => {
     switch (subsystem) {
       case 'RAF_DRAG': {
-        if (!isDragAllowed()) return
+        if (useWorkspaceState.getState().isBelowBreakPoint) return
         rafDragLoopResolver[cmd](targetWinId, commitToWindow)
         break
       }
@@ -115,5 +115,6 @@ function commitToWorkspace(patch: WorkspaceMutation) {
   }
 }
 
+/* FIND ME: Would be cool to add ctrl+z and ctrl+shift+z */
 // type AppMoment =  { ws: WorkspaceStore; win: WindowRegistry }
 // export const appHistory: { ws: WorkspaceStore; win: WindowRegistry } = []
