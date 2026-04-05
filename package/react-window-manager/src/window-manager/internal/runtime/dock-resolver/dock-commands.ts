@@ -1,5 +1,4 @@
 import { WorkspaceRect } from '../../../model/workspace-types'
-import { useWorkspaceState } from '../../features/workspace/workspace-state'
 import { WindowMutation } from '../rwm-runtime'
 
 export type DockCommands =
@@ -162,9 +161,4 @@ export const dockCommandResolver: DockResolver = {
       },
     ]
   },
-}
-
-export const getDockDependencies = () => {
-  const { wsRect } = useWorkspaceState.getState()
-  return { wsRect }
 }

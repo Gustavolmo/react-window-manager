@@ -1,29 +1,27 @@
 import { dockApi } from './internal/features/docking/docking-api'
 import { focusApi } from './internal/features/focus/focus-api'
-import { stackApi } from './internal/features/stack/stack-api'
 import { wsApi } from './internal/features/workspace/workspace-api'
 import { useWorkspaceState } from './internal/features/workspace/workspace-state'
 import { windowRegistry } from './registration/window-registry'
 
-const { updateWsRect, ...publicWsApi } = wsApi
+const { updateWsSize, ...publicWsApi } = wsApi
 
 const rwm = {
   dockApi: dockApi,
   focusApi: focusApi,
-  stackApi: stackApi,
   workspaceApi: publicWsApi,
 
   /**
    * @about
    * Zustand hook, can be used to access the current state of the workspace by either
-   * calling `const { <someState> } = worskpaceState()` inside a component or by calling
-   * `worskpaceState.getState()` anywhere.
+   * calling `const { <someState> } = workspaceState()` inside a component or by calling
+   * `workspaceState.getState()` anywhere.
    *
    * @note
    * The hook also exposes the `setState()` method, however, this is highly discouraged. Prefer calling
    * the exposed apis in rwm for state mutation.
    */
-  worskpaceState: useWorkspaceState,
+  workspaceState: useWorkspaceState,
 
   /**
    * @about

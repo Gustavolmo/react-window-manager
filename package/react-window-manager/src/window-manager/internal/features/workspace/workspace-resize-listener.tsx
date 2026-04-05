@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { useWorkspaceState } from './workspace-state'
 import { wsApi } from './workspace-api'
-import { stackApi } from '../stack/stack-api'
 
 export default function WorkspaceResizeListener() {
   const { wsElement } = useWorkspaceState()
@@ -10,8 +9,7 @@ export default function WorkspaceResizeListener() {
     if (!wsElement) return
 
     const onResize = () => {
-      wsApi.updateWsRect()
-      stackApi.resetStack() // FIND ME: Reset should not be needed once we figure out how to maintain proportions
+      wsApi.updateWsSize()
     }
 
     onResize()

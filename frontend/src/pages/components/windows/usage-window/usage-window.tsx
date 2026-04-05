@@ -30,7 +30,7 @@ export default function UsageWindow() {
             <ArticleSection>
               <h3 className="font-semibold text-zinc-800">1. Window</h3>
               <p>
-                Thse window component, accessed via the return object of{' '}
+                The window component, accessed via the return object of{' '}
                 <InlineCode>createWindowStore()</InlineCode>, has the
                 following properties:
               </p>
@@ -67,7 +67,7 @@ export default function UsageWindow() {
               <InlineCode>windowName: ReactNode</InlineCode>
               <p className="text-zinc-400 text-xs">
                 └── It will place the string or element in the left end of the
-                navbar. Use empty string to keep it empty.
+                navbar. Use an empty string to keep it empty.
               </p>
 
               <InlineCode>navbarChildren?: ReactNode</InlineCode>
@@ -79,7 +79,7 @@ export default function UsageWindow() {
 
               <InlineCode>className?: string</InlineCode>
               <p className="text-zinc-400 text-xs">
-                └── Overide the default window styles
+                └── Override the default window styles
               </p>
               <p className="text-zinc-400 text-xs">└── Default ──┐</p>
               <CodeSnippet>
@@ -108,7 +108,7 @@ export default function UsageWindow() {
 
               <InlineCode>navbarClassName?: string</InlineCode>
               <p className="text-zinc-400 text-xs">
-                └── Overide the default navbar styles
+                └── Override the default navbar styles
               </p>
               <p className="text-zinc-400 text-xs">└── Default ──┐</p>
               <CodeSnippet>
@@ -158,7 +158,7 @@ export default function UsageWindow() {
                 'top-left' | 'bottom-right' | 'bottom-left' | 'default'
               </InlineCode>
               <p className="text-zinc-400 text-xs">
-                └── Defines the the default window position or dock when
+                └── Defines the default window position or dock when
                 starting the app
               </p>
 
@@ -183,7 +183,7 @@ export default function UsageWindow() {
             <ArticleSection>
               <h3 className="font-semibold text-zinc-800">2. Button</h3>
               <p>
-                Thse button component, accessed via the return object of{' '}
+                The button component, accessed via the return object of{' '}
                 <InlineCode>createWindowStore()</InlineCode>, has the
                 following properties:
               </p>
@@ -200,7 +200,7 @@ export default function UsageWindow() {
                 isActiveClassName?: string
               </InlineCode>
               <p className="text-zinc-400 text-xs">
-                └── Overides the default styles for when the window is open,
+                └── Overrides the default styles for when the window is open,
                 closed and active
               </p>
               <p className="text-zinc-400 text-xs">└── Default ──┐</p>
@@ -244,7 +244,7 @@ export default function UsageWindow() {
               </h3>
               <InlineCode>className?: string</InlineCode>
               <p className="text-zinc-400 text-xs">
-                └── Overides the default workspace style
+                └── Overrides the default workspace style
               </p>
               <p className="text-zinc-400 text-xs">└── Default ──┐</p>
               <CodeSnippet>
@@ -298,10 +298,10 @@ export default function UsageWindow() {
                 </Cmnt>
                 <br />
                 <Tab tabs={1} />
-                isDockPannelEnabled: <Teal>boolean</Teal>
+                isDockPanelEnabled: <Teal>boolean</Teal>
                 <Cmnt>
                   {' '}
-                  // deafult true. Disable the docking pannel via
+                  // deafult true. Disable the docking panel via
                   rwm.workspaceApi
                 </Cmnt>
                 <br />
@@ -317,7 +317,7 @@ export default function UsageWindow() {
                 activeWindowId: <Teal>string</Teal>
                 <Cmnt>
                   {' '}
-                  // Always points to the front most window in the satck
+                  // Always points to the front most window in the stack
                 </Cmnt>
                 <br />
                 <br />
@@ -374,7 +374,7 @@ export default function UsageWindow() {
                 windowId: <Teal>string</Teal>
                 <br />
                 <Tab tabs={1} />
-                zIndex: <Teal>umber</Teal>
+                zIndex: <Teal>number</Teal>
                 <br />
                 <br />
                 <Tab tabs={1} />

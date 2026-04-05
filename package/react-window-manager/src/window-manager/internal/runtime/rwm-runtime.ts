@@ -1,15 +1,10 @@
 import { ResizeDirection, WindowStore } from '../../model/window-types'
 import { windowRegistry } from '../../registration/window-registry'
 import { useWorkspaceState } from '../features/workspace/workspace-state'
-import {
-  dockCommandResolver,
-  DockCommands,
-  getDockDependencies,
-} from './dock-resolver/dock-commands'
+import { dockCommandResolver, DockCommands } from './dock-resolver/dock-commands'
 import { rafDragLoopResolver, RafDragCommands } from './drag-resolver/drag-loop'
-import { dragCommandResolver, DragCommands, isDragAllowed } from './drag-resolver/drag-commands'
+import { dragCommandResolver, DragCommands } from './drag-resolver/drag-commands'
 import { focusCommandResolver, FocusCommands } from './focus-resolver/focus-commands'
-import { stackCommandResolver, StackCommands } from './stack-resolver/stack-commands'
 import {
   workspaceCommandResolver,
   WorkspaceCommands,
@@ -19,20 +14,21 @@ import { resizeCommandResolver, ResizeCommands } from './resize-resolver/resize-
 import { RafResizeCommands, rafResizeLoopResolver } from './resize-resolver/resize-loop'
 import { WorkspaceStore } from '../../model/workspace-types'
 
-/* 
-  SUBSYSTEM
-  - POLICY?
-  - CTX?
-  - STAGING
-  - COMMIT
-  */
+/**
+ * FIND ME:
+ * 
+ * Subsystem structure needs formalization
+  => getDependencies
+  => policy
+  => stageChanges
+  => commitChanges
+ */
 
 type rwmMessage =
   | { targetWinId: string; subsystem: 'DOCK'; cmd: DockCommands; ctx?: undefined }
   | { targetWinId: string; subsystem: 'DRAG'; cmd: DragCommands; ctx?: undefined }
   | { targetWinId: string; subsystem: 'FOCUS'; cmd: FocusCommands; ctx?: undefined }
   | { targetWinId: string; subsystem: 'RESIZE'; cmd: ResizeCommands; ctx: ResizeDirection }
-  | { targetWinId?: string; subsystem: 'STACK'; cmd: StackCommands; ctx?: undefined }
   | { targetWinId?: string; subsystem: 'WORKSPACE'; cmd: WorkspaceCommands; ctx?: WorkspaceCtx }
 
 export const rwmRuntime = {
@@ -40,17 +36,17 @@ export const rwmRuntime = {
     switch (subsystem) {
       case 'WORKSPACE': {
         const stagedChanges = workspaceCommandResolver[cmd](targetWinId, ctx)
-        commitToWorkspace(stagedChanges)
+        commitBatch(stagedChanges)
         break
       }
       case 'DRAG': {
-        if (!isDragAllowed()) return
+        if (useWorkspaceState.getState().isBelowBreakPoint) return
         const stagedChanges = dragCommandResolver[cmd](targetWinId)
         commitToWindow(stagedChanges)
         break
       }
       case 'DOCK': {
-        const { wsRect } = getDockDependencies()
+        const { wsRect } = useWorkspaceState.getState()
         const stagedChanges = dockCommandResolver[cmd](targetWinId, wsRect)
         commitToWindow(stagedChanges)
         break
@@ -60,16 +56,16 @@ export const rwmRuntime = {
         commitToWindow(stagedChanges)
         break
       }
-      case 'STACK': {
-        const stagedChanges = stackCommandResolver[cmd](targetWinId)
-        commitToWindow(stagedChanges)
-        break
-      }
       case 'FOCUS': {
         const stagedChanges = focusCommandResolver[cmd](targetWinId)
         commitBatch(stagedChanges)
         break
       }
+
+      default:
+        throw new Error(
+          `Unregistered rwmRuntime subsystem called: ${{ subsystem, cmd, targetWinId, ctx }}`
+        )
     }
   },
 }
@@ -82,7 +78,7 @@ export const rafRuntime = {
   dispatch: ({ subsystem, cmd, targetWinId }: rafMessage): void => {
     switch (subsystem) {
       case 'RAF_DRAG': {
-        if (!isDragAllowed()) return
+        if (useWorkspaceState.getState().isBelowBreakPoint) return
         rafDragLoopResolver[cmd](targetWinId, commitToWindow)
         break
       }
@@ -90,6 +86,11 @@ export const rafRuntime = {
         rafResizeLoopResolver[cmd](targetWinId, commitToWindow)
         break
       }
+
+      default:
+        throw new Error(
+          `Unregistered rafRuntime subsystem called: ${{ subsystem, cmd, targetWinId }}`
+        )
     }
   },
 }
@@ -113,3 +114,7 @@ function commitToWorkspace(patch: WorkspaceMutation) {
     useWorkspaceState.setState(patch)
   }
 }
+
+/* FIND ME: Would be cool to add ctrl+z and ctrl+shift+z */
+// type AppMoment =  { ws: WorkspaceStore; win: WindowRegistry }
+// export const appHistory: { ws: WorkspaceStore; win: WindowRegistry } = []

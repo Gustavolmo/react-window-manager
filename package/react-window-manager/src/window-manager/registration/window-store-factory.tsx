@@ -9,8 +9,8 @@ import WindowLayout from '../internal/features/window-layout'
 import WindowButton from '../internal/features/window-button'
 import { windowRegistry } from './window-registry'
 
-const defaultMinWidth = 232
-const defaultMinHeight = 128
+const defaultMinWidth = 256
+const defaultMinHeight = 64
 
 /**
  * @return `id` auto generated id at the root of the window component.`id` can be used in `windowRegistry` to access the state store associated to this window instnace
@@ -24,23 +24,23 @@ export const createWindowStore = (): WindowRegistration => {
   const zIndexAtLaunch = Object.keys(windowRegistry).length + 1
   const windowInstanceId = `react-dynamic-window-instance${Object.keys(windowRegistry).length}`
 
-  const storeInstance = create<WindowStore>((set, get) => ({
+  const storeInstance = create<WindowStore>((set) => ({
     setWinElement: (ref: HTMLDivElement | null) => set({ winElement: ref }),
     winElement: undefined,
     windowId: windowInstanceId,
-    resetFlag: false,
 
     zIndex: zIndexAtLaunch,
+
     winCoord: { pointX: 40, pointY: 40 },
+    winWidth: defaultMinWidth,
+    winHeight: defaultMinHeight,
+
     winVisualState: 'demaximized',
 
     isActive: false,
     isDragging: false,
     isWindowClosed: true,
     resizeAction: false,
-
-    winWidth: defaultMinWidth,
-    winHeight: defaultMinHeight,
 
     WIN_MIN_WIDTH: defaultMinWidth,
     WIN_MIN_HEIGHT: defaultMinHeight,

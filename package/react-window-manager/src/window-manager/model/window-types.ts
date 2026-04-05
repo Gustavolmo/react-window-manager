@@ -21,7 +21,7 @@ export type DockPosition =
 export type WindowRegistry = Record<string, UseBoundStore<StoreApi<WindowStore>>>
 export type ResizeDirection = false | 's' | 'e' | 'n' | 'w' | 'se' | 'sw' | 'ne' | 'nw'
 export type WindowStates = 'maximized' | 'demaximized'
-export type Coord = { pointX: number; pointY: number }
+export type Point = { pointX: number; pointY: number }
 
 export type WindowRegistration = {
   id: string
@@ -34,19 +34,18 @@ export type WindowStore = {
   setWinElement: (ref: HTMLDivElement | null) => void
   winElement: HTMLDivElement | null | undefined
   windowId: string
-  resetFlag: boolean
 
   zIndex: number
-  winCoord: Coord
-  winVisualState: WindowStates
+
+  winCoord: Point
+  winWidth: number
+  winHeight: number
 
   isActive: boolean
   isDragging: boolean
   isWindowClosed: boolean
   resizeAction: ResizeDirection
-
-  winWidth: number
-  winHeight: number
+  winVisualState: WindowStates
 
   WIN_MIN_WIDTH: number
   WIN_MIN_HEIGHT: number

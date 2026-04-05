@@ -1,25 +1,29 @@
 import { ResponsiveSizes } from '../../../model/workspace-types'
+import { windowRegistry } from '../../../registration/window-registry'
 import { useWorkspaceState } from '../../features/workspace/workspace-state'
-import { WorkspaceMutation } from '../rwm-runtime'
+import { BatchMutation, WindowMutation, WorkspaceMutation } from '../rwm-runtime'
 
 export type WorkspaceCommands =
-  | 'UPDATE_WORKSPACE_RECT'
+  | 'UPDATE_WORKSPACE_SIZE'
   | 'SET_RESPONSIVE_BREAK'
   | 'SET_WORKSPACE_FEATURES'
 
 export type WorkspaceCtx = {
   responsiveBreak?: ResponsiveSizes
-  isDockPannelEnabled?: boolean
+  isDockPanelEnabled?: boolean
   isGridEnabled?: boolean
 }
 
 type WorkspaceResolver = Record<
   WorkspaceCommands,
-  (targetWinId?: string, ctx?: WorkspaceCtx) => WorkspaceMutation
+  (targetWinId?: string, ctx?: WorkspaceCtx) => BatchMutation
 >
 export const workspaceCommandResolver: WorkspaceResolver = {
-  UPDATE_WORKSPACE_RECT: () => {
+  UPDATE_WORKSPACE_SIZE: () => {
+    const prevRect = useWorkspaceState.getState().wsRect
     const rect = useWorkspaceState.getState().wsElement?.getBoundingClientRect()
+    const breakPoint = useWorkspaceState.getState().responsiveBreak
+
     const top = rect?.top ?? 0
     const left = rect?.left ?? 0
     const innerHeight = rect?.height ?? 0
@@ -29,11 +33,8 @@ export const workspaceCommandResolver: WorkspaceResolver = {
     const centerX = left + innerWidth / 2
     const centerY = top + innerHeight / 2
 
-    const breakPoint = useWorkspaceState.getState().responsiveBreak
-    const isBelowBreakPoint = innerWidth < responsiveBreakInPx(breakPoint)
-
-    return {
-      isBelowBreakPoint: isBelowBreakPoint,
+    const workspaceUpdate: WorkspaceMutation = {
+      isBelowBreakPoint: innerWidth < responsiveBreakInPx(breakPoint),
       wsRect: {
         top: top,
         left: left,
@@ -45,15 +46,47 @@ export const workspaceCommandResolver: WorkspaceResolver = {
         centerY: centerY,
       },
     }
+
+    const windowBatchUpdate: WindowMutation[] = []
+    const { innerHeight: prevWsHeight, innerWidth: prevWsWidth } = prevRect
+    const currWsHeight = innerHeight
+    const currWsWidth = innerWidth
+
+    const widthChangeRatio = currWsWidth / prevWsWidth
+    const heightChangeRatio = currWsHeight / prevWsHeight
+
+    for (const key of Object.keys(windowRegistry)) {
+      const win = windowRegistry[key].getState()
+
+      windowBatchUpdate.push({
+        winId: key,
+        patch: {
+          winWidth: win.winWidth * widthChangeRatio,
+          winHeight: win.winHeight * heightChangeRatio,
+          winCoord: {
+            pointX: win.winCoord.pointX * widthChangeRatio,
+            pointY: win.winCoord.pointY * heightChangeRatio,
+          },
+        },
+      })
+    }
+
+    return {
+      win: windowBatchUpdate,
+      ws: workspaceUpdate,
+    }
   },
 
   SET_WORKSPACE_FEATURES: (_?: string, ctx?: WorkspaceCtx) => {
-    if (ctx?.isGridEnabled === undefined || ctx?.isDockPannelEnabled === undefined)
+    if (ctx?.isGridEnabled === undefined || ctx?.isDockPanelEnabled === undefined)
       throw new Error(`SET_WORKSPACE_FEATURES called without a ctx value`)
 
     return {
-      isGridEnabled: ctx.isGridEnabled,
-      isDockPannelEnabled: ctx.isDockPannelEnabled,
+      win: [],
+      ws: {
+        isGridEnabled: ctx.isGridEnabled,
+        isDockPanelEnabled: ctx.isDockPanelEnabled,
+      },
     }
   },
 
@@ -62,7 +95,10 @@ export const workspaceCommandResolver: WorkspaceResolver = {
       throw new Error(`SET_RESPONSIVE_BREAK called without a ctx value`)
 
     return {
-      responsiveBreak: ctx.responsiveBreak,
+      win: [],
+      ws: {
+        responsiveBreak: ctx.responsiveBreak,
+      },
     }
   },
 }

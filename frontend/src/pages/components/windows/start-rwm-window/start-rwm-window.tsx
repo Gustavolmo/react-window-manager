@@ -182,7 +182,7 @@ export default function StartRwmWindow() {
                 full height, you may override the defult using{' '}
                 <InlineCode>className</InlineCode>. All windows will adjust
                 their coordinates accordingly. In order to avoid visible
-                overflow outside the worskpace layout, elements placed outside
+                overflow outside the workspace layout, elements placed outside
                 must have a z-index greater than the total number of windows
                 created.
               </p>
@@ -276,7 +276,7 @@ export default function StartRwmWindow() {
               <h3 className="font-semibold text-zinc-800">4. That's it</h3>
               <p>
                 This is the simplest way to use the library. All defaults are
-                enabled, such as styling, the docking pannel and resize edge
+                enabled, such as styling, the docking panel and resize edge
                 detection.
               </p>
             </ArticleSection>

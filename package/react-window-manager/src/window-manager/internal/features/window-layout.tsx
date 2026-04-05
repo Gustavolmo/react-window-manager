@@ -62,12 +62,11 @@ export default function WindowLayout({
   const { wsElement, wsRect, isBelowBreakPoint } = useWorkspaceState()
   const windowRef = useRef<HTMLDivElement>(null)
   const {
+    setWinElement,
+
     windowId,
     zIndex,
     isActive,
-    setWinElement,
-
-    resetFlag,
 
     winVisualState,
 
@@ -81,18 +80,15 @@ export default function WindowLayout({
 
   useEffect(() => {
     setWinElement(windowRef.current)
-  }, [setWinElement, windowRef.current])
+  }, [setWinElement])
 
   useEffect(() => {
-    if (isBelowBreakPoint) {
-      dockApi.maximizeWindow(winId)
-    } else {
-      dockingRoutes[defaultDock](winId)
-    }
-    /* Initialization is dependent on the workspace (wsElement) being mounted */
-  }, [wsElement, resetFlag]) // FIND ME: reset flag is anti-pattern
+    dockingResolver[defaultDock](winId)
 
-  const dockingRoutes: Record<DockPosition, (winId: string) => void> = {
+    /* Initialization is dependent on the workspace (wsElement) being mounted */
+  }, [wsElement])
+
+  const dockingResolver: Record<DockPosition, (winId: string) => void> = {
     right: dockApi.dockWindowRight,
     left: dockApi.dockWindowLeft,
     full: dockApi.maximizeWindow,
@@ -140,10 +136,10 @@ export default function WindowLayout({
         onPointerDown={() => focusApi.bringWindowToFocus(windowId)}
         style={{
           backgroundColor: style?.windowBackgroundColor,
-          top: `${winCoord.pointY}px`,
-          left: `${winCoord.pointX}px`,
-          width: `${winWidth}px`,
-          height: `${winHeight}px`,
+          top: isBelowBreakPoint ? wsRect.top : `${winCoord.pointY}px`,
+          left: isBelowBreakPoint ? wsRect.left : `${winCoord.pointX}px`,
+          width: isBelowBreakPoint ? wsRect.innerWidth : `${winWidth}px`,
+          height: isBelowBreakPoint ? wsRect.innerHeight : `${winHeight}px`,
           zIndex: `${zIndex}`,
 
           /* MINIMIZE LOGIC */
@@ -159,11 +155,12 @@ export default function WindowLayout({
           style={{
             backgroundColor: style?.navBackgroundColor,
           }}
-          className={
-            `h-[32px] w-full flex items-center
-            ${navbarClassName 
-              ? navbarClassName 
-              : `bg-neutral-800 ${isActive ? 'brightness-100' : 'brightness-150'}`} 
+          className={`h-[32px] w-full flex items-center
+            ${
+              navbarClassName
+                ? navbarClassName
+                : `bg-neutral-800 ${isActive ? 'brightness-100' : 'brightness-150'}`
+            } 
           `}
         >
           <div className="shrink h-8 px-2 text-white flex items-center text-sm truncate min-w-0">
@@ -180,7 +177,7 @@ export default function WindowLayout({
           {closeControl}
         </nav>
 
-        {<ResizingControls winId={winId} />}
+        {!isBelowBreakPoint && <ResizingControls winId={winId} />}
 
         {/* Offset the navbar => 'h-[calc(100%-32px)]' */}
         <div className={`relative w-full h-[calc(100%-32px)] overflow-auto select-text`}>

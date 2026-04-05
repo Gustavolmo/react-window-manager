@@ -1,4 +1,4 @@
-import { WindowStore } from '../../../model/window-types'
+import { ResizeDirection, WindowStore } from '../../../model/window-types'
 import { windowRegistry } from '../../../registration/window-registry'
 import { resizeApi } from '../resizing/resizing-api'
 import { useWorkspaceState } from '../workspace/workspace-state'
@@ -18,26 +18,28 @@ type resizeCaseDependencies = {
   isRemoteOutside: boolean
 }
 
-export const gridOrchestrator = {
-  attachAdjacentGridBehavior: (winId: string) => {
+export const resizeOrchestrator = {
+  initializeResize: (winId: string, direction: ResizeDirection) => {
     if (!useWorkspaceState.getState().isGridEnabled) return
 
     if (getOpenWinCount() < 1)
       throw new Error(`gridOrchestrator initalized but all windows are closed`)
 
-    if (getDraggingWinCount() < 1)
-      throw new Error(`gridOrchestrator initalized but no window is currently resizing`)
-
-    attachAdjacentGridBehavior(winId)
+    initNeighbourResizeBehavior(winId, new Set<string>(), direction)
+    resizeApi.startResize(winId, direction)
   },
 }
-/* FIND ME: Idea, if a remote window gets below minWidth or minHeight, close, else, open again */
-const attachAdjacentGridBehavior = (winId: string, visited = new Set<string>()) => {
+
+const initNeighbourResizeBehavior = (
+  winId: string,
+  visited: Set<string>,
+  direction?: ResizeDirection
+) => {
   if (visited.has(winId)) return
   else visited.add(winId)
 
   const thisWin = windowRegistry[winId].getState()
-  const currentResize = thisWin.resizeAction
+  const currentResize = direction ? direction : thisWin.resizeAction
 
   for (const key of Object.keys(windowRegistry)) {
     const remoteWin = windowRegistry[key].getState()
@@ -51,25 +53,25 @@ const attachAdjacentGridBehavior = (winId: string, visited = new Set<string>()) 
     /* thisWin right edge <::::> remoteWin left edge || remoteWin is stacked up or down */
     if (currentResize === 'e') {
       const isRemoteConneted = resizeCase.whenDraggingEast(dependencies)
-      if (isRemoteConneted) attachAdjacentGridBehavior(remoteWin.windowId, visited)
+      if (isRemoteConneted) initNeighbourResizeBehavior(remoteWin.windowId, visited)
     }
 
     /* thisWin left edge <::::> remoteWin right edge || remoteWin is stacked up or down */
     if (currentResize === 'w') {
       const isRemoteConneted = resizeCase.whenDragginWest(dependencies)
-      if (isRemoteConneted) attachAdjacentGridBehavior(remoteWin.windowId, visited)
+      if (isRemoteConneted) initNeighbourResizeBehavior(remoteWin.windowId, visited)
     }
 
     /* thisWin top edge <::::> remoteWin bottom edge || remoteWin is stacked left or right */
     if (currentResize === 'n') {
       const isRemoteConneted = resizeCase.whenDragginNorth(dependencies)
-      if (isRemoteConneted) attachAdjacentGridBehavior(remoteWin.windowId, visited)
+      if (isRemoteConneted) initNeighbourResizeBehavior(remoteWin.windowId, visited)
     }
 
     /* thisWin bottom edge <::::> remoteWin top edge || remoteWin is stacked left or right */
     if (currentResize === 's') {
       const isRemoteConneted = resizeCase.whenDraggingSouth(dependencies)
-      if (isRemoteConneted) attachAdjacentGridBehavior(remoteWin.windowId, visited)
+      if (isRemoteConneted) initNeighbourResizeBehavior(remoteWin.windowId, visited)
     }
   }
 }
@@ -207,14 +209,6 @@ const buildDependencies = (thisWin: WindowStore, remoteWin: WindowStore) => {
     remoteWinEndX: remoteWinEndX,
     isRemoteOutside: isRemoteOutside,
   }
-}
-
-const getDraggingWinCount = () => {
-  let isWindowResizingCount = 0
-  for (const key of Object.keys(windowRegistry))
-    if (windowRegistry[key].getState().resizeAction) isWindowResizingCount++
-
-  return isWindowResizingCount
 }
 
 const getOpenWinCount = () => {
