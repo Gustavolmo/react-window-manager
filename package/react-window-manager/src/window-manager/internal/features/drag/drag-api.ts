@@ -1,3 +1,4 @@
+import { windowRegistry } from '../../../registration/window-registry'
 import { rafRuntime, rwmRuntime } from '../../runtime/rwm-runtime'
 
 export const dragApi = {
@@ -11,6 +12,9 @@ export const dragApi = {
   },
 
   stopDrag: (targetWinId: string) => {
+    const isNotDragging =!windowRegistry[targetWinId].getState().isDragging
+    if (isNotDragging) return
+
     rwmRuntime.dispatch({
       targetWinId: targetWinId,
       subsystem: 'DRAG',

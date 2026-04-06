@@ -6,15 +6,14 @@ import { useWorkspaceState } from '../../features/workspace/workspace-state'
 export const MAX_HISTORY = 100
 const excludedCommands = [
   'UPDATE_WORKSPACE_SIZE',
+  'SET_RESPONSIVE_BREAK',
+  'SET_WORKSPACE_FEATURES',
 
   'APPLY_PREVIOUS',
   'APPLY_NEXT',
 
   'ENABLE_DRAG',
-  'DISABLE_DRAG',
-
   'ENABLE_RESIZE',
-  'DISABLE_RESIZE',
 ]
 
 export type HistorySnapshot = {
@@ -32,11 +31,13 @@ export const appHistory: {
 
 export function saveSnapshot(cmd: string) {
   if (excludedCommands.includes(cmd)) return
+
+  const snapshot = getSnapshot()
+  if (!snapshot) return
+
   if (appHistory.ptr < appHistory.snapshots.length - 1) {
     appHistory.snapshots = appHistory.snapshots.slice(0, appHistory.ptr + 1)
   }
-
-  const snapshot = getSnapshot()
 
   appHistory.snapshots.push(snapshot)
 
@@ -47,20 +48,48 @@ export function saveSnapshot(cmd: string) {
   appHistory.ptr = appHistory.snapshots.length - 1
 }
 
-const getSnapshot = () => {
-  const { wsRect, wsElement, setWsElement, ...ws } = useWorkspaceState.getState()
-  const wsUpdate = structuredClone(ws)
+const getSnapshot = (): HistorySnapshot | undefined => {
+  const { wsElement, setWsElement, ...wsSnapshot } = useWorkspaceState.getState()
+  const wsUpdate = structuredClone(wsSnapshot)
 
-  const winStateUpdate: Partial<WindowStore>[] = []
+  const winStateSnapshots: Partial<WindowStore>[] = []
   for (const key of Object.keys(windowRegistry)) {
-    const { setWinElement, winElement, isDragging, resizeAction, ...windowState } =
+    const { winElement, setWinElement, isDragging, resizeAction, ...windowSnapshot } =
       windowRegistry[key].getState()
 
-    winStateUpdate.push(structuredClone(windowState))
+    winStateSnapshots.push(structuredClone(windowSnapshot))
+  }
+
+  if (!isValidSnapshot(winStateSnapshots)) {
+    return
   }
 
   return {
     ws: wsUpdate,
-    winState: winStateUpdate,
+    winState: winStateSnapshots,
   }
+}
+
+const isValidSnapshot = (winStateSnapshots: Partial<WindowStore>[]) => {
+  if (appHistory.ptr < 0) return true
+  const prevSnapshot = appHistory.snapshots[appHistory.ptr].winState
+
+  for (const newWinState of winStateSnapshots) {
+    for (const prevWinState of prevSnapshot) {
+      if (newWinState.windowId !== prevWinState.windowId) continue
+
+      if (
+        newWinState.zIndex !== prevWinState.zIndex ||
+        newWinState.winVisualState !== prevWinState.winVisualState ||
+        newWinState.isWindowClosed !== prevWinState.isWindowClosed ||
+        newWinState.winCoord?.pointX !== prevWinState.winCoord?.pointX ||
+        newWinState.winCoord?.pointY !== prevWinState.winCoord?.pointY ||
+        newWinState.winWidth !== prevWinState.winWidth ||
+        newWinState.winHeight !== prevWinState.winHeight
+      )
+        return true
+    }
+  }
+
+  return false
 }

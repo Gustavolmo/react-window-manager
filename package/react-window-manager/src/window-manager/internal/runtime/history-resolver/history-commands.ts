@@ -11,6 +11,7 @@ export const historyCommandResolver: HistoryResolver = {
     appHistory.ptr -= 1
     const snapshot = appHistory.snapshots[appHistory.ptr]
 
+    const wsUpdate = snapshot.ws
     const winBatchUpdate: WindowMutation[] = []
 
     snapshot.winState.forEach((win) => {
@@ -22,7 +23,7 @@ export const historyCommandResolver: HistoryResolver = {
     })
 
     return {
-      ws: snapshot.ws,
+      ws: wsUpdate,
       win: winBatchUpdate,
     }
   },
@@ -33,6 +34,7 @@ export const historyCommandResolver: HistoryResolver = {
     appHistory.ptr += 1
     const snapshot = appHistory.snapshots[appHistory.ptr]
 
+    const wsUpdate = snapshot.ws
     const winBatchUpdate: WindowMutation[] = []
 
     snapshot.winState.forEach((win) => {
@@ -44,7 +46,7 @@ export const historyCommandResolver: HistoryResolver = {
     })
 
     return {
-      ws: snapshot.ws,
+      ws: wsUpdate,
       win: winBatchUpdate,
     }
   },
